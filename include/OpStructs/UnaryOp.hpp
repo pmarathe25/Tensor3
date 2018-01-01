@@ -25,12 +25,20 @@ namespace StealthTileMap {
             constexpr UnaryOp(const LHS& lhs) noexcept
                 : lhs(lhs) { }
 
-            constexpr ScalarType operator()(int x, int y = 0, int z = 0) const {
+            constexpr ScalarType operator()(int x, int y, int z) const {
                 return op(lhs(x, y, z));
             }
 
-            constexpr TileMap<ScalarType, internal::traits<UnaryOp>::length,
-                internal::traits<UnaryOp>::width, internal::traits<UnaryOp>::height> eval() {
+            constexpr ScalarType operator()(int x, int y) const {
+                return op(lhs(x, y));
+            }
+
+            constexpr ScalarType operator()(int x) const {
+                return op(lhs(x));
+            }
+
+            constexpr TileMap<ScalarType, internal::traits<UnaryOp>::width,
+                internal::traits<UnaryOp>::length, internal::traits<UnaryOp>::height> eval() {
                 return (*this);
             }
         private:

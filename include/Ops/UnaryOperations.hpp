@@ -4,7 +4,7 @@
 
 namespace StealthTileMap {
     template <typename LHS>
-    constexpr UnaryOp<LHS, internal::ops::notOp> operator!(const LHS& lhs) noexcept {
+    constexpr auto operator!(const LHS& lhs) noexcept {
         return UnaryOp<LHS, internal::ops::notOp>{lhs};
     }
 } /* StealthTileMap */

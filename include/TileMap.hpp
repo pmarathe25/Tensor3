@@ -64,12 +64,29 @@ namespace StealthTileMap {
                 return *this;
             }
 
-            constexpr ScalarType& operator()(int x, int y = 0, int z = 0) {
+            // Accessors
+            constexpr ScalarType& operator()(int x, int y, int z) {
                 return tiles[area() * z + width() * y + x];
             }
 
-            constexpr const ScalarType& operator()(int x, int y = 0, int z = 0) const {
+            constexpr const ScalarType& operator()(int x, int y, int z) const {
                 return tiles[area() * z + width() * y + x];
+            }
+
+            constexpr ScalarType& operator()(int x, int y) {
+                return tiles[width() * y + x];
+            }
+
+            constexpr const ScalarType& operator()(int x, int y) const {
+                return tiles[width() * y + x];
+            }
+
+            constexpr ScalarType& operator()(int x) {
+                return tiles[x];
+            }
+
+            constexpr const ScalarType& operator()(int x) const {
+                return tiles[x];
             }
 
             constexpr const ScalarType* data() const noexcept {
@@ -177,8 +194,17 @@ namespace StealthTileMap {
                 copyMultithreaded(other);
             }
 
-            constexpr bool operator()(int x, int y = 0, int z = 0) const {
+            // Accessors
+            constexpr bool operator()(int x, int y, int z) const {
                 return tiles[area() * z + width() * y + x];
+            }
+
+            constexpr bool operator()(int x, int y) const {
+                return tiles[width() * y + x];
+            }
+
+            constexpr bool operator()(int x) const {
+                return tiles[x];
             }
 
             // Dimensions
@@ -263,8 +289,8 @@ namespace StealthTileMap {
     constexpr void display(const TileMapType& tileMap, const std::string& title = "") {
         std::cout << title << (title != "" ? '\n' : '\0');
         for (int k = 0; k < tileMap.height(); ++k) {
-            for (int i = 0; i < tileMap.length(); ++i) {
-                for (int j = 0; j < tileMap.width(); ++j) {
+            for (int j = 0; j < tileMap.length(); ++j) {
+                for (int i = 0; i < tileMap.width(); ++i) {
                     std::cout << to_string(tileMap(i, j, k)) << " ";
                 }
                 std::cout << '\n';

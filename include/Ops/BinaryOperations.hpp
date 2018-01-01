@@ -14,79 +14,79 @@ namespace StealthTileMap {
     }
 
     template <typename LHS, typename RHS>
-    constexpr BinaryOp<LHS, RHS, internal::ops::add> operator+(const LHS& lhs, const RHS& rhs) noexcept {
+    constexpr auto operator+(const LHS& lhs, const RHS& rhs) noexcept {
         checkTileMapCompatibility<LHS, RHS>();
         return BinaryOp<LHS, RHS, internal::ops::add>{lhs, rhs};
     }
 
     template <typename LHS, typename RHS>
-    constexpr BinaryOp<LHS, RHS, internal::ops::subtract> operator-(const LHS& lhs, const RHS& rhs) noexcept {
+    constexpr auto operator-(const LHS& lhs, const RHS& rhs) noexcept {
         checkTileMapCompatibility<LHS, RHS>();
         return BinaryOp<LHS, RHS, internal::ops::subtract>{lhs, rhs};
     }
 
     template <typename LHS, typename RHS>
-    constexpr BinaryOp<LHS, RHS, internal::ops::multiply> operator*(const LHS& lhs, const RHS& rhs) noexcept {
+    constexpr auto operator*(const LHS& lhs, const RHS& rhs) noexcept {
         checkTileMapCompatibility<LHS, RHS>();
         return BinaryOp<LHS, RHS, internal::ops::multiply>{lhs, rhs};
     }
 
     template <typename LHS, typename RHS>
-    constexpr BinaryOp<LHS, RHS, internal::ops::divide> operator/(const LHS& lhs, const RHS& rhs) noexcept {
+    constexpr auto operator/(const LHS& lhs, const RHS& rhs) noexcept {
         checkTileMapCompatibility<LHS, RHS>();
         return BinaryOp<LHS, RHS, internal::ops::divide>{lhs, rhs};
     }
 
     template <typename LHS, typename RHS>
-    constexpr BinaryOp<LHS, RHS, internal::ops::eq> operator==(const LHS& lhs, const RHS& rhs) noexcept {
+    constexpr auto operator==(const LHS& lhs, const RHS& rhs) noexcept {
         checkTileMapCompatibility<LHS, RHS>();
         return BinaryOp<LHS, RHS, internal::ops::eq>{lhs, rhs};
     }
 
     template <typename LHS, typename RHS>
-    constexpr BinaryOp<LHS, RHS, internal::ops::less> operator<(const LHS& lhs, const RHS& rhs) noexcept {
+    constexpr auto operator<(const LHS& lhs, const RHS& rhs) noexcept {
         checkTileMapCompatibility<LHS, RHS>();
         return BinaryOp<LHS, RHS, internal::ops::less>{lhs, rhs};
     }
 
     template <typename LHS, typename RHS>
-    constexpr BinaryOp<LHS, RHS, internal::ops::lessEq> operator<=(const LHS& lhs, const RHS& rhs) noexcept {
+    constexpr auto operator<=(const LHS& lhs, const RHS& rhs) noexcept {
         checkTileMapCompatibility<LHS, RHS>();
         return BinaryOp<LHS, RHS, internal::ops::lessEq>{lhs, rhs};
     }
 
     template <typename LHS, typename RHS>
-    constexpr BinaryOp<LHS, RHS, internal::ops::greater> operator>(const LHS& lhs, const RHS& rhs) noexcept {
+    constexpr auto operator>(const LHS& lhs, const RHS& rhs) noexcept {
         checkTileMapCompatibility<LHS, RHS>();
         return BinaryOp<LHS, RHS, internal::ops::greater>{lhs, rhs};
     }
 
     template <typename LHS, typename RHS>
-    constexpr BinaryOp<LHS, RHS, internal::ops::greaterEq> operator>=(const LHS& lhs, const RHS& rhs) noexcept {
+    constexpr auto operator>=(const LHS& lhs, const RHS& rhs) noexcept {
         checkTileMapCompatibility<LHS, RHS>();
         return BinaryOp<LHS, RHS, internal::ops::greaterEq>{lhs, rhs};
     }
 
     template <typename LHS, typename RHS>
-    constexpr BinaryOp<LHS, RHS, internal::ops::andOp> operator&&(const LHS& lhs, const RHS& rhs) noexcept {
+    constexpr auto operator&&(const LHS& lhs, const RHS& rhs) noexcept {
         checkTileMapCompatibility<LHS, RHS>();
         return BinaryOp<LHS, RHS, internal::ops::andOp>{lhs, rhs};
     }
 
     template <typename LHS, typename RHS>
-    constexpr BinaryOp<LHS, RHS, internal::ops::orOp> operator||(const LHS& lhs, const RHS& rhs) noexcept {
+    constexpr auto operator||(const LHS& lhs, const RHS& rhs) noexcept {
         checkTileMapCompatibility<LHS, RHS>();
         return BinaryOp<LHS, RHS, internal::ops::orOp>{lhs, rhs};
     }
 
     template <typename LHS, typename RHS>
-    constexpr BinaryOp<LHS, RHS, internal::ops::min> min(const LHS& lhs, const RHS& rhs) noexcept {
+    constexpr auto min(const LHS& lhs, const RHS& rhs) noexcept {
         checkTileMapCompatibility<LHS, RHS>();
         return BinaryOp<LHS, RHS, internal::ops::min>{lhs, rhs};
     }
 
     template <typename LHS, typename RHS>
-    constexpr BinaryOp<LHS, RHS, internal::ops::max> max(const LHS& lhs, const RHS& rhs) noexcept {
+    constexpr auto max(const LHS& lhs, const RHS& rhs) noexcept {
         checkTileMapCompatibility<LHS, RHS>();
         return BinaryOp<LHS, RHS, internal::ops::max>{lhs, rhs};
     }

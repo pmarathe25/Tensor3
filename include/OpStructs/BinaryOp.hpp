@@ -30,7 +30,7 @@ namespace StealthTileMap {
             constexpr BinaryOp(const LHS& lhs, const RHS& rhs) noexcept
                 : lhs(lhs), rhs(rhs) { }
 
-            constexpr ScalarType operator()(int x, int y = 0, int z = 0) const {
+            constexpr ScalarType operator()(int x, int y, int z) const {
                 if constexpr (std::is_scalar<RHS>::value) {
                     return op(lhs(x, y, z), rhs);
                 } else if constexpr (std::is_scalar<LHS>::value) {
@@ -40,8 +40,28 @@ namespace StealthTileMap {
                 }
             }
 
-            constexpr TileMap<ScalarType, internal::traits<BinaryOp>::length,
-                internal::traits<BinaryOp>::width, internal::traits<BinaryOp>::height> eval() {
+            constexpr ScalarType operator()(int x, int y) const {
+                if constexpr (std::is_scalar<RHS>::value) {
+                    return op(lhs(x, y), rhs);
+                } else if constexpr (std::is_scalar<LHS>::value) {
+                    return op(lhs, rhs(x, y));
+                } else {
+                    return op(lhs(x, y), rhs(x, y));
+                }
+            }
+
+            constexpr ScalarType operator()(int x) const {
+                if constexpr (std::is_scalar<RHS>::value) {
+                    return op(lhs(x), rhs);
+                } else if constexpr (std::is_scalar<LHS>::value) {
+                    return op(lhs, rhs(x));
+                } else {
+                    return op(lhs(x), rhs(x));
+                }
+            }
+
+            constexpr TileMap<ScalarType, internal::traits<BinaryOp>::width,
+                internal::traits<BinaryOp>::length, internal::traits<BinaryOp>::height> eval() {
                 return (*this);
             }
         private:

@@ -4,7 +4,7 @@
 
 namespace StealthTileMap {
     template <typename LHS, typename RuntimeOperation>
-    constexpr RuntimeOp<LHS, RuntimeOperation> apply(const RuntimeOperation& op, const LHS& lhs) noexcept {
+    constexpr auto apply(const RuntimeOperation& op, const LHS& lhs) noexcept {
         return RuntimeOp<LHS, RuntimeOperation>{op, lhs};
     }
 } /* StealthTileMap */

@@ -25,12 +25,37 @@ namespace StealthTileMap {
             constexpr TileMapView(TileMapType& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
                 : tileMap{tileMap}, minX{minX}, minY{minY}, minZ{minZ} { }
 
-            constexpr ScalarType& operator()(int x, int y = 0, int z = 0) {
+            constexpr ScalarType& operator()(int x, int y, int z) {
                 return tileMap(x + minX, y + minY, z + minZ);
             }
 
-            constexpr const ScalarType& operator()(int x, int y = 0, int z = 0) const {
+            constexpr const ScalarType& operator()(int x, int y, int z) const {
                 return tileMap(x + minX, y + minY, z + minZ);
+            }
+
+            // TODO: Implement accessors that accept fewer indices.
+            constexpr ScalarType& operator()(int x, int y) {
+                int z = y / length();
+                y %= length();
+                return (*this)(x, y, z);
+            }
+
+            constexpr const ScalarType& operator()(int x, int y) const {
+                int z = y / length();
+                y %= length();
+                return (*this)(x, y, z);
+            }
+
+            constexpr ScalarType& operator()(int x) {
+                int y = x / width();
+                x %= width();
+                return (*this)(x, y);
+            }
+
+            constexpr const ScalarType& operator()(int x) const {
+                int y = x / width();
+                x %= width();
+                return (*this)(x, y);
             }
 
             // Dimensions
@@ -52,6 +77,11 @@ namespace StealthTileMap {
 
             static constexpr int size() noexcept {
                 return internal::traits<TileMapView>::size;
+            }
+
+            constexpr TileMap<ScalarType, internal::traits<TileMapView>::width,
+                internal::traits<TileMapView>::length, internal::traits<TileMapView>::height> eval() {
+                return (*this);
             }
         private:
             TileMapType& tileMap;
@@ -67,8 +97,21 @@ namespace StealthTileMap {
             constexpr TileMapView(const TileMapType& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
                 : tileMap{tileMap}, minX{minX}, minY{minY}, minZ{minZ} { }
 
-            constexpr ScalarType operator()(int x, int y = 0, int z = 0) const {
+            constexpr ScalarType operator()(int x, int y, int z) const {
                 return tileMap(x + minX, y + minY, z + minZ);
+            }
+
+            // TODO: Implement accessors that accept fewer indices.
+            constexpr ScalarType operator()(int x, int y) const {
+                int z = y / length();
+                y %= length();
+                return (*this)(x, y, z);
+            }
+
+            constexpr ScalarType operator()(int x) const {
+                int y = x / width();
+                x %= width();
+                return (*this)(x, y);
             }
 
             // Dimensions
@@ -90,6 +133,11 @@ namespace StealthTileMap {
 
             static constexpr int size() noexcept {
                 return internal::traits<TileMapView>::size;
+            }
+
+            constexpr TileMap<ScalarType, internal::traits<TileMapView>::width,
+                internal::traits<TileMapView>::length, internal::traits<TileMapView>::height> eval() {
+                return (*this);
             }
         private:
             const TileMapType& tileMap;
