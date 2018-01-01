@@ -30,7 +30,6 @@ namespace StealthTileMap {
             internal::traits<typename std::remove_reference<LHS>::type>::height,
             typename std::remove_reference<LHS>::type>{std::forward<LHS>(lhs), minX, 0, 0};
     }
-
 } /* StealthTileMap */
 
 #endif /* end of include guard: TILE_MAP_VIEW_OPERATIONS_H */
