@@ -7,24 +7,25 @@
 #include <iostream>
 #include <thread>
 
-constexpr int NUM_THREADS = 8;
 
 namespace StealthTileMap {
+    constexpr int NUM_THREADS = 8;
+
     constexpr int ceilDivide(int numerator, int denominator) {
         return 1 + ((numerator - 1) / denominator);
     }
 
     namespace internal {
-        template <typename type, int rowsAtCompileTime, int colsAtCompileTime, int layersAtCompileTime,
+        template <typename type, int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
             int areaAtCompileTime, int sizeAtCompileTime>
-        struct traits<TileMap<type, rowsAtCompileTime, colsAtCompileTime, layersAtCompileTime, areaAtCompileTime, sizeAtCompileTime>> {
+        struct traits<TileMap<type, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime>> {
             typedef type ScalarType;
-            static constexpr int rows = rowsAtCompileTime, cols = colsAtCompileTime, layers = layersAtCompileTime,
+            static constexpr int length = widthAtCompileTime, width = lengthAtCompileTime, height = heightAtCompileTime,
                 area = areaAtCompileTime, size = sizeAtCompileTime;
         };
     } /* internal */
 
-    template <typename type, int rowsAtCompileTime, int colsAtCompileTime, int layersAtCompileTime,
+    template <typename type, int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
         int areaAtCompileTime, int sizeAtCompileTime>
     class TileMap {
         public:
@@ -59,12 +60,12 @@ namespace StealthTileMap {
                 return *this;
             }
 
-            constexpr ScalarType& operator()(int row, int col = 0, int layer = 0) {
-                return tiles[row * cols() + col];
+            constexpr ScalarType& operator()(int x, int y = 0, int z = 0) {
+                return tiles[area() * z + width() * y + x];
             }
 
-            constexpr const ScalarType& operator()(int row, int col, int layer = 0) const {
-                return tiles[row * cols() + col];
+            constexpr const ScalarType& operator()(int x, int y = 0, int z = 0) const {
+                return tiles[area() * z + width() * y + x];
             }
 
             constexpr const ScalarType* data() const noexcept {
@@ -76,23 +77,23 @@ namespace StealthTileMap {
             }
 
             // Dimensions
-            constexpr int rows() const noexcept {
-                return rowsAtCompileTime;
+            static constexpr int width() noexcept {
+                return widthAtCompileTime;
             }
 
-            constexpr int cols() const noexcept {
-                return colsAtCompileTime;
+            static constexpr int length() noexcept {
+                return lengthAtCompileTime;
             }
 
-            constexpr int layers() const noexcept {
-                return layersAtCompileTime;
+            static constexpr int height() noexcept {
+                return heightAtCompileTime;
             }
 
-            constexpr int area() const noexcept {
+            static constexpr int area() noexcept {
                 return areaAtCompileTime;
             }
 
-            constexpr int size() const noexcept {
+            static constexpr int size() noexcept {
                 return sizeAtCompileTime;
             }
 
@@ -118,9 +119,9 @@ namespace StealthTileMap {
             template <typename OtherTileMap>
             constexpr void copyPortion(const OtherTileMap* other, int id) {
                 // Copy elements for a single portion of the TileMap.
-                constexpr int portionSize = ceilDivide(size, NUM_THREADS);
+                constexpr int portionSize = ceilDivide(size(), NUM_THREADS);
                 const int start = id * portionSize;
-                const int end = std::min(start + portionSize, size);
+                const int end = std::min(start + portionSize, size());
                 for (int i = start; i < end; ++i) {
                     tiles[i] = other -> operator()(i);
                 }
@@ -129,11 +130,11 @@ namespace StealthTileMap {
             template <typename OtherTileMap>
             constexpr void copyMultithreaded(const OtherTileMap& other) {
                 // Make sure dimensions are compatible
-                static_assert(internal::traits<Derived>::rows == rows && internal::traits<Derived>::cols == cols,
+                static_assert(internal::traits<OtherTileMap>::length == length() && internal::traits<OtherTileMap>::width == width(),
                     "Cannot copy incompatible TileMaps");
                 // Create threads
                 for (int i = 0; i < NUM_THREADS; ++i) {
-                    copyThreads[i] = std::thread{&TileMap::copyPortion<Derived>, this, &other, i};
+                    copyThreads[i] = std::thread{&TileMap::copyPortion<OtherTileMap>, this, &other, i};
                 }
                 // Wait for all threads to finish
                 for (auto& thread : copyThreads) {
@@ -143,9 +144,9 @@ namespace StealthTileMap {
     };
 
     // Specialization for boolean maps
-    template <int rowsAtCompileTime, int colsAtCompileTime, int layersAtCompileTime, int areaAtCompileTime,
+    template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, int areaAtCompileTime,
         int sizeAtCompileTime>
-    class TileMap<bool, rowsAtCompileTime, colsAtCompileTime, layersAtCompileTime, areaAtCompileTime, sizeAtCompileTime> {
+    class TileMap<bool, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime> {
         public:
             constexpr TileMap() : tiles(sizeAtCompileTime) { }
 
@@ -172,28 +173,28 @@ namespace StealthTileMap {
                 copyMultithreaded(other);
             }
 
-            constexpr bool operator()(int row, int col = 0, int layer = 0) const {
-                return tiles[row * cols() + col];
+            constexpr bool operator()(int x, int y = 0, int z = 0) const {
+                return tiles[area() * z + width() * y + x];
             }
 
             // Dimensions
-            constexpr int rows() const noexcept {
-                return rowsAtCompileTime;
+            static constexpr int width() noexcept {
+                return widthAtCompileTime;
             }
 
-            constexpr int cols() const noexcept {
-                return colsAtCompileTime;
+            static constexpr int length() noexcept {
+                return lengthAtCompileTime;
             }
 
-            constexpr int layers() const noexcept {
-                return layersAtCompileTime;
+            static constexpr int height() noexcept {
+                return heightAtCompileTime;
             }
 
-            constexpr int area() const noexcept {
+            static constexpr int area() noexcept {
                 return areaAtCompileTime;
             }
 
-            constexpr int size() const noexcept {
+            static constexpr int size() noexcept {
                 return sizeAtCompileTime;
             }
 
@@ -220,9 +221,9 @@ namespace StealthTileMap {
             template <typename OtherTileMap>
             constexpr void copyPortion(const OtherTileMap* other, int id) {
                 // Copy elements for a single portion of the TileMap.
-                constexpr int portionSize = ceilDivide(size, NUM_THREADS);
+                constexpr int portionSize = ceilDivide(size(), NUM_THREADS);
                 const int start = id * portionSize;
-                const int end = std::min(start + portionSize, size);
+                const int end = std::min(start + portionSize, size());
                 for (int i = start; i < end; ++i) {
                     tiles[i] = other -> operator()(i);
                 }
@@ -231,11 +232,11 @@ namespace StealthTileMap {
             template <typename OtherTileMap>
             constexpr void copyMultithreaded(const OtherTileMap& other) {
                 // Make sure dimensions are compatible
-                static_assert(internal::traits<Derived>::rows == rows && internal::traits<Derived>::cols == cols,
+                static_assert(internal::traits<OtherTileMap>::length == length() && internal::traits<OtherTileMap>::width == width(),
                     "Cannot copy incompatible TileMaps");
                 // Create threads
                 for (int i = 0; i < NUM_THREADS; ++i) {
-                    copyThreads[i] = std::thread{&TileMap::copyPortion<Derived>, this, &other, i};
+                    copyThreads[i] = std::thread{&TileMap::copyPortion<OtherTileMap>, this, &other, i};
                 }
                 // Wait for all threads to finish
                 for (auto& thread : copyThreads) {
@@ -257,20 +258,23 @@ namespace StealthTileMap {
     template <typename TileMapType>
     constexpr void display(const TileMapType& tileMap, const std::string& title = "") {
         std::cout << title << (title != "" ? '\n' : '\0');
-        for (int i = 0; i < tileMap.rows(); ++i) {
-            for (int j = 0; j < tileMap.cols(); ++j) {
-                std::cout << to_string(tileMap(i, j)) << " ";
+        for (int k = 0; k < tileMap.height(); ++k) {
+            for (int i = 0; i < tileMap.length(); ++i) {
+                for (int j = 0; j < tileMap.width(); ++j) {
+                    std::cout << to_string(tileMap(i, j, k)) << " ";
+                }
+                std::cout << '\n';
             }
             std::cout << '\n';
         }
         std::cout << '\n';
     }
 
-    template <int rowsAtCompileTime, int colsAtCompileTime>
-    using TileMapF = TileMap<float, rowsAtCompileTime, colsAtCompileTime>;
+    template <int widthAtCompileTime, int lengthAtCompileTime = 1, int heightAtCompileTime = 1>
+    using TileMapF = TileMap<float, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime>;
 
-    template <int rowsAtCompileTime, int colsAtCompileTime>
-    using TileMapD = TileMap<double, rowsAtCompileTime, colsAtCompileTime>;
+    template <int widthAtCompileTime, int lengthAtCompileTime = 1, int heightAtCompileTime = 1>
+    using TileMapD = TileMap<double, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime>;
 } /* StealthTileMap */
 
 #endif

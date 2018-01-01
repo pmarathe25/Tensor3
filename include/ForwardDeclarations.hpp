@@ -6,13 +6,13 @@ namespace StealthTileMap {
     namespace internal {
         template <typename T> struct traits {
             typedef T ScalarType;
-            static constexpr int rows = 1, cols = 1, layers = 1, size = 1;
+            static constexpr int length = 1, width = 1, height = 1, size = 1;
         };
     } /* internal */
 
     // TileMap
-    template <typename type, int rowsAtCompileTime, int colsAtCompileTime = 1, int layersAtCompileTime = 1,
-        int areaAtCompileTime = rowsAtCompileTime * colsAtCompileTime, int sizeAtCompileTime = rowsAtCompileTime * colsAtCompileTime * layersAtCompileTime>
+    template <typename type, int widthAtCompileTime, int lengthAtCompileTime = 1, int heightAtCompileTime = 1,
+        int areaAtCompileTime = widthAtCompileTime * lengthAtCompileTime, int sizeAtCompileTime = widthAtCompileTime * lengthAtCompileTime * heightAtCompileTime>
     class TileMap;
 
     // Binary Op
