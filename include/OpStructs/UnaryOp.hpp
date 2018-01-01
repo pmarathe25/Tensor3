@@ -1,8 +1,7 @@
 #ifndef UNARY_OP_H
 #define UNARY_OP_H
-#include "TileMap/TileMapBase.hpp"
 
-namespace StealthWorldGenerator {
+namespace StealthTileMap {
     namespace internal {
         template <typename LHS, UnaryOperation<typename internal::traits<LHS>::ScalarType> op>
         struct traits<UnaryOp<LHS, op>> {
@@ -15,7 +14,7 @@ namespace StealthWorldGenerator {
     } /* internal */
 
     template <typename LHS, UnaryOperation<typename internal::traits<LHS>::ScalarType> op>
-    class UnaryOp : public TileMapBase<UnaryOp<LHS, op>> {
+    class UnaryOp {
         public:
             typedef typename internal::traits<UnaryOp>::ScalarType ScalarType;
             // Dimensions
@@ -25,12 +24,8 @@ namespace StealthWorldGenerator {
             constexpr UnaryOp(const LHS& lhs) noexcept
                 : lhs(lhs) { }
 
-            constexpr ScalarType operator[](int index) const {
-                return op(lhs[index]);
-            }
-
-            constexpr ScalarType at(int i, int j) const {
-                return op(lhs.at(i, j));
+            constexpr ScalarType at(int row, int col = 0, int layer = 0) const {
+                return op(lhs.at(row, col, layer));
             }
 
             constexpr TileMap<ScalarType, rows, cols> eval() {
@@ -39,6 +34,6 @@ namespace StealthWorldGenerator {
         private:
             const LHS& lhs;
     };
-} /* StealthWorldGenerator */
+} /* StealthTileMap */
 
 #endif

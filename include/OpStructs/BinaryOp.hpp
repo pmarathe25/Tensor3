@@ -1,9 +1,8 @@
 #ifndef BINARY_OP_H
 #define BINARY_OP_H
-#include "TileMap/TileMapBase.hpp"
 #include <type_traits>
 
-namespace StealthWorldGenerator {
+namespace StealthTileMap {
     namespace internal {
         template <typename LHS, typename RHS, BinaryOperation<typename internal::traits<LHS>::ScalarType,
             typename internal::traits<RHS>::ScalarType> op>
@@ -20,7 +19,7 @@ namespace StealthWorldGenerator {
 
     template <typename LHS, typename RHS, BinaryOperation<typename internal::traits<LHS>::ScalarType,
         typename internal::traits<RHS>::ScalarType> op>
-    class BinaryOp : public TileMapBase<BinaryOp<LHS, RHS, op>> {
+    class BinaryOp {
         public:
             typedef typename internal::traits<BinaryOp>::ScalarType ScalarType;
             typedef typename internal::traits<BinaryOp>::ScalarTypeLHS ScalarTypeLHS;
@@ -32,23 +31,13 @@ namespace StealthWorldGenerator {
             constexpr BinaryOp(const LHS& lhs, const RHS& rhs) noexcept
                 : lhs(lhs), rhs(rhs) { }
 
-            constexpr ScalarType operator[](int index) const {
+            constexpr ScalarType at(int row, int col = 0, int layer = 0) const {
                 if constexpr (std::is_scalar<RHS>::value) {
-                    return op(lhs[index], rhs);
+                    return op(lhs.at(row, col, layer), rhs);
                 } else if constexpr (std::is_scalar<LHS>::value) {
-                    return op(lhs, rhs[index]);
+                    return op(lhs, rhs.at(row, col, layer));
                 } else {
-                    return op(lhs[index], rhs[index]);
-                }
-            }
-
-            constexpr ScalarType at(int i, int j) const {
-                if constexpr (std::is_scalar<RHS>::value) {
-                    return op(lhs.at(i, j), rhs);
-                } else if constexpr (std::is_scalar<LHS>::value) {
-                    return op(lhs, rhs.at(i, j));
-                } else {
-                    return op(lhs.at(i, j), rhs.at(i, j));
+                    return op(lhs.at(row, col, layer), rhs.at(row, col, layer));
                 }
             }
 
@@ -59,6 +48,6 @@ namespace StealthWorldGenerator {
             const LHS& lhs;
             const RHS& rhs;
     };
-} /* StealthWorldGenerator */
+} /* StealthTileMap */
 
 #endif

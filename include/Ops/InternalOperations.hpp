@@ -1,9 +1,9 @@
-#ifndef INTERNAL_OPERATIONS_H
-#define INTERNAL_OPERATIONS_H
+#ifndef INTERNAL_OPS_H
+#define INTERNAL_OPS_H
 #include <algorithm>
 #include <type_traits>
 
-namespace StealthWorldGenerator::internal::ops {
+namespace StealthTileMap::internal::ops {
     template <typename LHS, typename RHS>
     constexpr auto add(const LHS& lhs, const RHS& rhs) {
         return lhs + rhs;
@@ -74,6 +74,6 @@ namespace StealthWorldGenerator::internal::ops {
         return !lhs;
     }
 
-} /* StealthWorldGenerator::internal::ops */
+} /* StealthTileMap::internal::ops */
 
 #endif

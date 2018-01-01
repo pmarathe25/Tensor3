@@ -1,12 +1,12 @@
-#ifndef BINARY_OPERATIONS_H
-#define BINARY_OPERATIONS_H
+#ifndef BINARY_OPS_H
+#define BINARY_OPS_H
 #define CHECK_TILEMAP_COMPAT(Derived, OtherDerived) static_assert((internal::traits<Derived>::rows == internal::traits<OtherDerived>::rows \
     && internal::traits<Derived>::cols == internal::traits<OtherDerived>::cols) \
     || (internal::traits<Derived>::size == 1 || internal::traits<OtherDerived>::size == 1), "Cannot operate on incompatible arguments");
-#include "TileMap/BinaryOp.hpp"
-#include "TileMap/Operations/InternalOperations.hpp"
+#include "../OpStructs/BinaryOp.hpp"
+#include "Ops/InternalOperations.hpp"
 
-namespace StealthWorldGenerator {
+namespace StealthTileMap {
     template <typename Derived, typename OtherDerived>
     constexpr BinaryOp<Derived, OtherDerived, internal::ops::add> operator+(const Derived& lhs, const OtherDerived& rhs) noexcept {
         CHECK_TILEMAP_COMPAT(Derived, OtherDerived);
@@ -84,6 +84,6 @@ namespace StealthWorldGenerator {
         CHECK_TILEMAP_COMPAT(Derived, OtherDerived);
         return BinaryOp<Derived, OtherDerived, internal::ops::max>{lhs, rhs};
     }
-} /* StealthWorldGenerator */
+} /* StealthTileMap */
 
 #endif

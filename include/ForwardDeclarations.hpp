@@ -2,20 +2,17 @@
 #define FORWARD_DECLARATIONS_H
 #include <type_traits>
 
-namespace StealthWorldGenerator {
+namespace StealthTileMap {
     namespace internal {
         template <typename T> struct traits {
             typedef T ScalarType;
-            static constexpr int rows = 1, cols = 1, size = 1;
+            static constexpr int rows = 1, cols = 1, layers = 1, size = 1;
         };
     } /* internal */
 
-    // TileMapBase
-    template <typename Derived>
-    class TileMapBase;
-
     // TileMap
-    template <typename type, int rowsAtCompileTime, int colsAtCompileTime, int sizeAtCompileTime = rowsAtCompileTime * colsAtCompileTime>
+    template <typename type, int rowsAtCompileTime, int colsAtCompileTime = 1, int layersAtCompileTime = 1,
+        int areaAtCompileTime = rowsAtCompileTime * colsAtCompileTime, int sizeAtCompileTime = rowsAtCompileTime * colsAtCompileTime * layersAtCompileTime>
     class TileMap;
 
     // Binary Op
@@ -33,6 +30,6 @@ namespace StealthWorldGenerator {
     // Runtime Op
     template <typename LHS, typename RuntimeOperation>
     class RuntimeOp;
-} /* StealthWorldGenerator */
+} /* StealthTileMap */
 
 #endif
