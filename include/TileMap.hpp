@@ -289,13 +289,13 @@ namespace StealthTileMap {
     constexpr void display(const TileMapType& tileMap, const std::string& title = "") {
         std::cout << title << (title != "" ? '\n' : '\0');
         for (int k = 0; k < tileMap.height(); ++k) {
+            std::cout << "Layer " << k << '\n';
             for (int j = 0; j < tileMap.length(); ++j) {
                 for (int i = 0; i < tileMap.width(); ++i) {
                     std::cout << to_string(tileMap(i, j, k)) << " ";
                 }
                 std::cout << '\n';
             }
-            std::cout << '\n';
         }
         std::cout << '\n';
     }
