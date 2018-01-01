@@ -3,9 +3,9 @@
 #include "../OpStructs/RuntimeOp.hpp"
 
 namespace StealthTileMap {
-    template <typename Derived, typename RuntimeOperation>
-    constexpr RuntimeOp<Derived, RuntimeOperation> apply(const RuntimeOperation& op, const Derived& lhs) noexcept {
-        return RuntimeOp<Derived, RuntimeOperation>{op, lhs};
+    template <typename LHS, typename RuntimeOperation>
+    constexpr RuntimeOp<LHS, RuntimeOperation> apply(const RuntimeOperation& op, const LHS& lhs) noexcept {
+        return RuntimeOp<LHS, RuntimeOperation>{op, lhs};
     }
 } /* StealthTileMap */
 

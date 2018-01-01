@@ -12,24 +12,30 @@ namespace StealthTileMap {
 
     // TileMap
     template <typename type, int widthAtCompileTime, int lengthAtCompileTime = 1, int heightAtCompileTime = 1,
-        int areaAtCompileTime = widthAtCompileTime * lengthAtCompileTime, int sizeAtCompileTime = widthAtCompileTime * lengthAtCompileTime * heightAtCompileTime>
+        int areaAtCompileTime = widthAtCompileTime * lengthAtCompileTime, int sizeAtCompileTime
+        = widthAtCompileTime * lengthAtCompileTime * heightAtCompileTime>
     class TileMap;
 
     // Binary Op
-    template <typename LHS, typename RHS>
-    using BinaryOperation = typename std::common_type<LHS, RHS>::type (*)(const LHS&, const RHS&);
+    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
+    using BinaryOperation = typename std::common_type<ScalarTypeLHS, ScalarTypeRHS>::type (*)(const ScalarTypeLHS&, const ScalarTypeRHS&);
     template <typename LHS, typename RHS, BinaryOperation<typename internal::traits<LHS>::ScalarType, typename internal::traits<RHS>::ScalarType> op>
     class BinaryOp;
 
     // Unary Op
-    template <typename LHS>
-    using UnaryOperation = LHS (*)(const LHS&);
+    template <typename ScalarTypeLHS>
+    using UnaryOperation = ScalarTypeLHS (*)(const ScalarTypeLHS&);
     template <typename LHS, UnaryOperation<typename internal::traits<LHS>::ScalarType> op>
     class UnaryOp;
 
     // Runtime Op
     template <typename LHS, typename RuntimeOperation>
     class RuntimeOp;
+
+    // View of a section of a TileMap or OpStruct
+    template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
+        typename TileMapType, bool isTemporary = internal::traits<TileMapType>::isTemporary>
+    class TileMapView;
 } /* StealthTileMap */
 
 #endif

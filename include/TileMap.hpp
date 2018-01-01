@@ -1,12 +1,13 @@
 #ifndef STEALTH_TILEMAP_H
 #define STEALTH_TILEMAP_H
-#include "Ops/BinaryOperations.hpp"
-#include "Ops/UnaryOperations.hpp"
-#include "Ops/RuntimeOperations.hpp"
+#include "./ForwardDeclarations.hpp"
+#include "./Ops/BinaryOperations.hpp"
+#include "./Ops/UnaryOperations.hpp"
+#include "./Ops/RuntimeOperations.hpp"
+#include "./Ops/TileMapViewOperations.hpp"
 #include <vector>
 #include <iostream>
 #include <thread>
-
 
 namespace StealthTileMap {
     constexpr int NUM_THREADS = 8;
@@ -22,6 +23,7 @@ namespace StealthTileMap {
             typedef type ScalarType;
             static constexpr int length = widthAtCompileTime, width = lengthAtCompileTime, height = heightAtCompileTime,
                 area = areaAtCompileTime, size = sizeAtCompileTime;
+            static constexpr bool isTemporary = false;
         };
     } /* internal */
 
@@ -30,6 +32,8 @@ namespace StealthTileMap {
     class TileMap {
         public:
             typedef type ScalarType;
+
+            static constexpr bool isTemporary = false;
 
             constexpr TileMap() noexcept : tiles(sizeAtCompileTime) { }
 

@@ -4,91 +4,91 @@
 #include "./InternalOperations.hpp"
 
 namespace StealthTileMap {
-    template <typename Derived, typename OtherDerived>
+    template <typename LHS, typename RHS>
     constexpr void checkTileMapCompatibility() noexcept {
-        static_assert(internal::traits<Derived>::length == internal::traits<OtherDerived>::length
-            && internal::traits<Derived>::width == internal::traits<OtherDerived>::width
-            && internal::traits<Derived>::height == internal::traits<OtherDerived>::height
-            || (internal::traits<Derived>::size == 1 || internal::traits<OtherDerived>::size == 1),
+        static_assert(internal::traits<LHS>::length == internal::traits<RHS>::length
+            && internal::traits<LHS>::width == internal::traits<RHS>::width
+            && internal::traits<LHS>::height == internal::traits<RHS>::height
+            || (internal::traits<LHS>::size == 1 || internal::traits<RHS>::size == 1),
             "Cannot operate on incompatible arguments");
     }
 
-    template <typename Derived, typename OtherDerived>
-    constexpr BinaryOp<Derived, OtherDerived, internal::ops::add> operator+(const Derived& lhs, const OtherDerived& rhs) noexcept {
-        checkTileMapCompatibility<Derived, OtherDerived>();
-        return BinaryOp<Derived, OtherDerived, internal::ops::add>{lhs, rhs};
+    template <typename LHS, typename RHS>
+    constexpr BinaryOp<LHS, RHS, internal::ops::add> operator+(const LHS& lhs, const RHS& rhs) noexcept {
+        checkTileMapCompatibility<LHS, RHS>();
+        return BinaryOp<LHS, RHS, internal::ops::add>{lhs, rhs};
     }
 
-    template <typename Derived, typename OtherDerived>
-    constexpr BinaryOp<Derived, OtherDerived, internal::ops::subtract> operator-(const Derived& lhs, const OtherDerived& rhs) noexcept {
-        checkTileMapCompatibility<Derived, OtherDerived>();
-        return BinaryOp<Derived, OtherDerived, internal::ops::subtract>{lhs, rhs};
+    template <typename LHS, typename RHS>
+    constexpr BinaryOp<LHS, RHS, internal::ops::subtract> operator-(const LHS& lhs, const RHS& rhs) noexcept {
+        checkTileMapCompatibility<LHS, RHS>();
+        return BinaryOp<LHS, RHS, internal::ops::subtract>{lhs, rhs};
     }
 
-    template <typename Derived, typename OtherDerived>
-    constexpr BinaryOp<Derived, OtherDerived, internal::ops::multiply> operator*(const Derived& lhs, const OtherDerived& rhs) noexcept {
-        checkTileMapCompatibility<Derived, OtherDerived>();
-        return BinaryOp<Derived, OtherDerived, internal::ops::multiply>{lhs, rhs};
+    template <typename LHS, typename RHS>
+    constexpr BinaryOp<LHS, RHS, internal::ops::multiply> operator*(const LHS& lhs, const RHS& rhs) noexcept {
+        checkTileMapCompatibility<LHS, RHS>();
+        return BinaryOp<LHS, RHS, internal::ops::multiply>{lhs, rhs};
     }
 
-    template <typename Derived, typename OtherDerived>
-    constexpr BinaryOp<Derived, OtherDerived, internal::ops::divide> operator/(const Derived& lhs, const OtherDerived& rhs) noexcept {
-        checkTileMapCompatibility<Derived, OtherDerived>();
-        return BinaryOp<Derived, OtherDerived, internal::ops::divide>{lhs, rhs};
+    template <typename LHS, typename RHS>
+    constexpr BinaryOp<LHS, RHS, internal::ops::divide> operator/(const LHS& lhs, const RHS& rhs) noexcept {
+        checkTileMapCompatibility<LHS, RHS>();
+        return BinaryOp<LHS, RHS, internal::ops::divide>{lhs, rhs};
     }
 
-    template <typename Derived, typename OtherDerived>
-    constexpr BinaryOp<Derived, OtherDerived, internal::ops::eq> operator==(const Derived& lhs, const OtherDerived& rhs) noexcept {
-        checkTileMapCompatibility<Derived, OtherDerived>();
-        return BinaryOp<Derived, OtherDerived, internal::ops::eq>{lhs, rhs};
+    template <typename LHS, typename RHS>
+    constexpr BinaryOp<LHS, RHS, internal::ops::eq> operator==(const LHS& lhs, const RHS& rhs) noexcept {
+        checkTileMapCompatibility<LHS, RHS>();
+        return BinaryOp<LHS, RHS, internal::ops::eq>{lhs, rhs};
     }
 
-    template <typename Derived, typename OtherDerived>
-    constexpr BinaryOp<Derived, OtherDerived, internal::ops::less> operator<(const Derived& lhs, const OtherDerived& rhs) noexcept {
-        checkTileMapCompatibility<Derived, OtherDerived>();
-        return BinaryOp<Derived, OtherDerived, internal::ops::less>{lhs, rhs};
+    template <typename LHS, typename RHS>
+    constexpr BinaryOp<LHS, RHS, internal::ops::less> operator<(const LHS& lhs, const RHS& rhs) noexcept {
+        checkTileMapCompatibility<LHS, RHS>();
+        return BinaryOp<LHS, RHS, internal::ops::less>{lhs, rhs};
     }
 
-    template <typename Derived, typename OtherDerived>
-    constexpr BinaryOp<Derived, OtherDerived, internal::ops::lessEq> operator<=(const Derived& lhs, const OtherDerived& rhs) noexcept {
-        checkTileMapCompatibility<Derived, OtherDerived>();
-        return BinaryOp<Derived, OtherDerived, internal::ops::lessEq>{lhs, rhs};
+    template <typename LHS, typename RHS>
+    constexpr BinaryOp<LHS, RHS, internal::ops::lessEq> operator<=(const LHS& lhs, const RHS& rhs) noexcept {
+        checkTileMapCompatibility<LHS, RHS>();
+        return BinaryOp<LHS, RHS, internal::ops::lessEq>{lhs, rhs};
     }
 
-    template <typename Derived, typename OtherDerived>
-    constexpr BinaryOp<Derived, OtherDerived, internal::ops::greater> operator>(const Derived& lhs, const OtherDerived& rhs) noexcept {
-        checkTileMapCompatibility<Derived, OtherDerived>();
-        return BinaryOp<Derived, OtherDerived, internal::ops::greater>{lhs, rhs};
+    template <typename LHS, typename RHS>
+    constexpr BinaryOp<LHS, RHS, internal::ops::greater> operator>(const LHS& lhs, const RHS& rhs) noexcept {
+        checkTileMapCompatibility<LHS, RHS>();
+        return BinaryOp<LHS, RHS, internal::ops::greater>{lhs, rhs};
     }
 
-    template <typename Derived, typename OtherDerived>
-    constexpr BinaryOp<Derived, OtherDerived, internal::ops::greaterEq> operator>=(const Derived& lhs, const OtherDerived& rhs) noexcept {
-        checkTileMapCompatibility<Derived, OtherDerived>();
-        return BinaryOp<Derived, OtherDerived, internal::ops::greaterEq>{lhs, rhs};
+    template <typename LHS, typename RHS>
+    constexpr BinaryOp<LHS, RHS, internal::ops::greaterEq> operator>=(const LHS& lhs, const RHS& rhs) noexcept {
+        checkTileMapCompatibility<LHS, RHS>();
+        return BinaryOp<LHS, RHS, internal::ops::greaterEq>{lhs, rhs};
     }
 
-    template <typename Derived, typename OtherDerived>
-    constexpr BinaryOp<Derived, OtherDerived, internal::ops::andOp> operator&&(const Derived& lhs, const OtherDerived& rhs) noexcept {
-        checkTileMapCompatibility<Derived, OtherDerived>();
-        return BinaryOp<Derived, OtherDerived, internal::ops::andOp>{lhs, rhs};
+    template <typename LHS, typename RHS>
+    constexpr BinaryOp<LHS, RHS, internal::ops::andOp> operator&&(const LHS& lhs, const RHS& rhs) noexcept {
+        checkTileMapCompatibility<LHS, RHS>();
+        return BinaryOp<LHS, RHS, internal::ops::andOp>{lhs, rhs};
     }
 
-    template <typename Derived, typename OtherDerived>
-    constexpr BinaryOp<Derived, OtherDerived, internal::ops::orOp> operator||(const Derived& lhs, const OtherDerived& rhs) noexcept {
-        checkTileMapCompatibility<Derived, OtherDerived>();
-        return BinaryOp<Derived, OtherDerived, internal::ops::orOp>{lhs, rhs};
+    template <typename LHS, typename RHS>
+    constexpr BinaryOp<LHS, RHS, internal::ops::orOp> operator||(const LHS& lhs, const RHS& rhs) noexcept {
+        checkTileMapCompatibility<LHS, RHS>();
+        return BinaryOp<LHS, RHS, internal::ops::orOp>{lhs, rhs};
     }
 
-    template <typename Derived, typename OtherDerived>
-    constexpr BinaryOp<Derived, OtherDerived, internal::ops::min> min(const Derived& lhs, const OtherDerived& rhs) noexcept {
-        checkTileMapCompatibility<Derived, OtherDerived>();
-        return BinaryOp<Derived, OtherDerived, internal::ops::min>{lhs, rhs};
+    template <typename LHS, typename RHS>
+    constexpr BinaryOp<LHS, RHS, internal::ops::min> min(const LHS& lhs, const RHS& rhs) noexcept {
+        checkTileMapCompatibility<LHS, RHS>();
+        return BinaryOp<LHS, RHS, internal::ops::min>{lhs, rhs};
     }
 
-    template <typename Derived, typename OtherDerived>
-    constexpr BinaryOp<Derived, OtherDerived, internal::ops::max> max(const Derived& lhs, const OtherDerived& rhs) noexcept {
-        checkTileMapCompatibility<Derived, OtherDerived>();
-        return BinaryOp<Derived, OtherDerived, internal::ops::max>{lhs, rhs};
+    template <typename LHS, typename RHS>
+    constexpr BinaryOp<LHS, RHS, internal::ops::max> max(const LHS& lhs, const RHS& rhs) noexcept {
+        checkTileMapCompatibility<LHS, RHS>();
+        return BinaryOp<LHS, RHS, internal::ops::max>{lhs, rhs};
     }
 } /* StealthTileMap */
 

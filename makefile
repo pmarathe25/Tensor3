@@ -6,9 +6,9 @@ SRCDIR = src/
 OBJS =
 TESTOBJS = $(addprefix $(BUILDDIR)/, test.o)
 # Headers
-INCLUDEPATH = /usr/local/include/TileMap/
+INCLUDEPATH = include
 INCLUDE = -I$(INCLUDEPATH)
-HEADERS = $(addprefix $(INCLUDEPATH)/, TileMap.hpp OpStructs/BinaryOp.hpp)
+HEADERS = $(addprefix $(INCLUDEPATH)/, TileMap.hpp ForwardDeclarations.hpp OpStructs/BinaryOp.hpp OpStructs/RuntimeOp.hpp OpStructs/UnaryOp.hpp OpStructs/TileMapView.hpp)
 # Compiler settings
 CXX = g++
 CFLAGS = -fPIC -c -std=c++17 $(INCLUDE) -O3 -Wpedantic -march=native

@@ -13,6 +13,7 @@ namespace StealthTileMap {
                 height = internal::traits<LHS>::height,
                 area = internal::traits<LHS>::area,
                 size = internal::traits<LHS>::size;
+            static constexpr bool isTemporary = true;
         };
     } /* internal */
 
@@ -20,10 +21,6 @@ namespace StealthTileMap {
     class RuntimeOp {
         public:
             typedef typename internal::traits<RuntimeOp>::ScalarType ScalarType;
-            // Dimensions
-            static constexpr int length = internal::traits<RuntimeOp>::length, width = internal::traits<RuntimeOp>::width,
-                height = internal::traits<RuntimeOp>::height, area = internal::traits<RuntimeOp>::area,
-                size = internal::traits<RuntimeOp>::size;
 
             constexpr RuntimeOp(const RuntimeOperation& op, const LHS& lhs) noexcept
                 : op(op), lhs(lhs) { }
@@ -32,7 +29,8 @@ namespace StealthTileMap {
                 return op(lhs(x, y, z));
             }
 
-            constexpr TileMap<ScalarType, length, width, height> eval() {
+            constexpr TileMap<ScalarType, internal::traits<RuntimeOp>::length,
+                internal::traits<RuntimeOp>::width, internal::traits<RuntimeOp>::height> eval() {
                 return (*this);
             }
         private:

@@ -3,9 +3,9 @@
 #include "../OpStructs/UnaryOp.hpp"
 
 namespace StealthTileMap {
-    template <typename Derived>
-    constexpr UnaryOp<Derived, internal::ops::notOp> operator!(const Derived& lhs) noexcept {
-        return UnaryOp<Derived, internal::ops::notOp>{lhs};
+    template <typename LHS>
+    constexpr UnaryOp<LHS, internal::ops::notOp> operator!(const LHS& lhs) noexcept {
+        return UnaryOp<LHS, internal::ops::notOp>{lhs};
     }
 } /* StealthTileMap */
 

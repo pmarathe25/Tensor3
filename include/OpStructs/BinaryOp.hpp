@@ -17,6 +17,7 @@ namespace StealthTileMap {
                 height = (std::is_scalar<LHS>::value ? internal::traits<RHS>::height : internal::traits<LHS>::height),
                 area = (std::is_scalar<LHS>::value ? internal::traits<RHS>::area : internal::traits<LHS>::area),
                 size = (std::is_scalar<LHS>::value ? internal::traits<RHS>::size : internal::traits<LHS>::size);
+            static constexpr bool isTemporary = true;
         };
     } /* internal */
 
@@ -25,12 +26,6 @@ namespace StealthTileMap {
     class BinaryOp {
         public:
             typedef typename internal::traits<BinaryOp>::ScalarType ScalarType;
-            typedef typename internal::traits<BinaryOp>::ScalarTypeLHS ScalarTypeLHS;
-            typedef typename internal::traits<BinaryOp>::ScalarTypeRHS ScalarTypeRHS;
-            // Dimensions
-            static constexpr int length = internal::traits<BinaryOp>::length, width = internal::traits<BinaryOp>::width,
-                height = internal::traits<BinaryOp>::height, area = internal::traits<BinaryOp>::area,
-                size = internal::traits<BinaryOp>::size;
 
             constexpr BinaryOp(const LHS& lhs, const RHS& rhs) noexcept
                 : lhs(lhs), rhs(rhs) { }
@@ -45,7 +40,8 @@ namespace StealthTileMap {
                 }
             }
 
-            constexpr TileMap<ScalarType, length, width, height> eval() {
+            constexpr TileMap<ScalarType, internal::traits<BinaryOp>::length,
+                internal::traits<BinaryOp>::width, internal::traits<BinaryOp>::height> eval() {
                 return (*this);
             }
         private:
