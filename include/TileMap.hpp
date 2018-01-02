@@ -5,16 +5,13 @@
 #include "./Ops/UnaryOperations.hpp"
 #include "./Ops/RuntimeOperations.hpp"
 #include "./Ops/TileMapViewOperations.hpp"
+#include <stealthutil>
 #include <vector>
 #include <iostream>
 #include <thread>
 
 namespace StealthTileMap {
     constexpr int NUM_THREADS = 8;
-
-    constexpr int ceilDivide(int numerator, int denominator) {
-        return 1 + ((numerator - 1) / denominator);
-    }
 
     namespace internal {
         template <typename type, int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
