@@ -21,7 +21,7 @@ namespace StealthTileMap {
             int areaAtCompileTime, int sizeAtCompileTime>
         struct traits<TileMap<type, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime>> {
             typedef type ScalarType;
-            static constexpr int length = widthAtCompileTime, width = lengthAtCompileTime, height = heightAtCompileTime,
+            static constexpr int width = widthAtCompileTime, length = lengthAtCompileTime, height = heightAtCompileTime,
                 area = areaAtCompileTime, size = sizeAtCompileTime;
             static constexpr bool isTemporary = false;
         };
@@ -151,8 +151,8 @@ namespace StealthTileMap {
             template <typename OtherTileMap>
             constexpr void copyMultithreaded(const OtherTileMap& other) {
                 // Make sure dimensions are compatible
-                static_assert(internal::traits<OtherTileMap>::length == length() && internal::traits<OtherTileMap>::width == width(),
-                    "Cannot copy incompatible TileMaps");
+                static_assert(internal::traits<OtherTileMap>::length == length() && internal::traits<OtherTileMap>::width
+                    == width() && internal::traits<OtherTileMap>::height == height(), "Cannot copy incompatible TileMaps");
                 // Create threads
                 for (int i = 0; i < NUM_THREADS; ++i) {
                     copyThreads[i] = std::thread{&TileMap::copyPortion<OtherTileMap>, this, &other, i};
@@ -262,8 +262,8 @@ namespace StealthTileMap {
             template <typename OtherTileMap>
             constexpr void copyMultithreaded(const OtherTileMap& other) {
                 // Make sure dimensions are compatible
-                static_assert(internal::traits<OtherTileMap>::length == length() && internal::traits<OtherTileMap>::width == width(),
-                    "Cannot copy incompatible TileMaps");
+                static_assert(internal::traits<OtherTileMap>::length == length() && internal::traits<OtherTileMap>::width
+                    == width() && internal::traits<OtherTileMap>::height == height(), "Cannot copy incompatible TileMaps");
                 // Create threads
                 for (int i = 0; i < NUM_THREADS; ++i) {
                     copyThreads[i] = std::thread{&TileMap::copyPortion<OtherTileMap>, this, &other, i};
