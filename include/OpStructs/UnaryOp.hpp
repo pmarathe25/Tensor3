@@ -1,6 +1,7 @@
 #ifndef UNARY_OP_H
 #define UNARY_OP_H
 #include "../ForwardDeclarations.hpp"
+#include "../TileMapBase.hpp"
 
 namespace StealthTileMap {
     namespace internal {
@@ -18,7 +19,7 @@ namespace StealthTileMap {
     } /* internal */
 
     template <typename LHS, UnaryOperation<typename internal::traits<LHS>::ScalarType> op>
-    class UnaryOp {
+    class UnaryOp : public TileMapBase<UnaryOp<LHS, op>> {
         public:
             typedef typename internal::traits<UnaryOp>::ScalarType ScalarType;
 
@@ -35,11 +36,6 @@ namespace StealthTileMap {
 
             constexpr ScalarType operator()(int x) const {
                 return op(lhs(x));
-            }
-
-            constexpr TileMap<ScalarType, internal::traits<UnaryOp>::width,
-                internal::traits<UnaryOp>::length, internal::traits<UnaryOp>::height> eval() {
-                return (*this);
             }
         private:
             const LHS& lhs;

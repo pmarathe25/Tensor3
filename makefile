@@ -8,7 +8,7 @@ TESTOBJS = $(addprefix $(BUILDDIR)/, test.o)
 # Headers
 INCLUDEPATH = include
 INCLUDE = -I$(INCLUDEPATH)
-HEADERS = $(addprefix $(INCLUDEPATH)/, TileMap.hpp ForwardDeclarations.hpp \
+HEADERS = $(addprefix $(INCLUDEPATH)/, TileMapBase.hpp TileMap.hpp ForwardDeclarations.hpp \
 	OpStructs/BinaryOp.hpp OpStructs/RuntimeOp.hpp OpStructs/UnaryOp.hpp OpStructs/TileMapView.hpp\
 	Ops/BinaryOperations.hpp Ops/InternalOperations.hpp Ops/RuntimeOperations.hpp Ops/TileMapViewOperations.hpp Ops/UnaryOperations.hpp)
 # Compiler settings

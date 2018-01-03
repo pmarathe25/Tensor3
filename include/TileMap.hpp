@@ -1,6 +1,7 @@
 #ifndef STEALTH_TILEMAP_H
 #define STEALTH_TILEMAP_H
 #include "./ForwardDeclarations.hpp"
+#include "./TileMapBase.hpp"
 #include "./Ops/BinaryOperations.hpp"
 #include "./Ops/UnaryOperations.hpp"
 #include "./Ops/RuntimeOperations.hpp"
@@ -26,7 +27,7 @@ namespace StealthTileMap {
 
     template <typename type, int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
         int areaAtCompileTime, int sizeAtCompileTime>
-    class TileMap {
+    class TileMap : public TileMapBase<TileMap<type, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime>> {
         public:
             typedef type ScalarType;
 
@@ -63,19 +64,19 @@ namespace StealthTileMap {
 
             // Accessors
             constexpr ScalarType& operator()(int x, int y, int z) {
-                return tiles[area() * z + width() * y + x];
+                return tiles[this -> area() * z + this -> width() * y + x];
             }
 
             constexpr const ScalarType& operator()(int x, int y, int z) const {
-                return tiles[area() * z + width() * y + x];
+                return tiles[this -> area() * z + this -> width() * y + x];
             }
 
             constexpr ScalarType& operator()(int x, int y) {
-                return tiles[width() * y + x];
+                return tiles[this -> width() * y + x];
             }
 
             constexpr const ScalarType& operator()(int x, int y) const {
-                return tiles[width() * y + x];
+                return tiles[this -> width() * y + x];
             }
 
             constexpr ScalarType& operator()(int x) {
@@ -94,27 +95,6 @@ namespace StealthTileMap {
                 return tiles.data();
             }
 
-            // Dimensions
-            static constexpr int width() noexcept {
-                return widthAtCompileTime;
-            }
-
-            static constexpr int length() noexcept {
-                return lengthAtCompileTime;
-            }
-
-            static constexpr int height() noexcept {
-                return heightAtCompileTime;
-            }
-
-            static constexpr int area() noexcept {
-                return areaAtCompileTime;
-            }
-
-            static constexpr int size() noexcept {
-                return sizeAtCompileTime;
-            }
-
             constexpr typename std::vector<ScalarType>::iterator begin() noexcept {
                 return tiles.begin();
             }
@@ -130,6 +110,10 @@ namespace StealthTileMap {
             constexpr typename std::vector<ScalarType>::const_iterator cend() const noexcept {
                 return tiles.cend();
             }
+
+            constexpr TileMap& eval() {
+                return (*this);
+            }
         private:
             std::vector<ScalarType> tiles;
             std::array<std::thread, NUM_THREADS> copyThreads;
@@ -137,9 +121,9 @@ namespace StealthTileMap {
             template <typename OtherTileMap>
             constexpr void copyPortion(const OtherTileMap* other, int id) {
                 // Copy elements for a single portion of the TileMap.
-                constexpr int portionSize = ceilDivide(size(), NUM_THREADS);
+                constexpr int portionSize = ceilDivide(this -> size(), NUM_THREADS);
                 const int start = id * portionSize;
-                const int end = std::min(start + portionSize, size());
+                const int end = std::min(start + portionSize, this -> size());
                 for (int i = start; i < end; ++i) {
                     tiles[i] = other -> operator()(i);
                 }
@@ -148,8 +132,8 @@ namespace StealthTileMap {
             template <typename OtherTileMap>
             constexpr void copyMultithreaded(const OtherTileMap& other) {
                 // Make sure dimensions are compatible
-                static_assert(internal::traits<OtherTileMap>::length == length() && internal::traits<OtherTileMap>::width
-                    == width() && internal::traits<OtherTileMap>::height == height(), "Cannot copy incompatible TileMaps");
+                static_assert(internal::traits<OtherTileMap>::length == this -> length() && internal::traits<OtherTileMap>::width
+                    == this -> width() && internal::traits<OtherTileMap>::height == this -> height(), "Cannot copy incompatible TileMaps");
                 // Create threads
                 for (int i = 0; i < NUM_THREADS; ++i) {
                     copyThreads[i] = std::thread{&TileMap::copyPortion<OtherTileMap>, this, &other, i};
@@ -164,7 +148,8 @@ namespace StealthTileMap {
     // Specialization for boolean maps
     template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, int areaAtCompileTime,
         int sizeAtCompileTime>
-    class TileMap<bool, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime> {
+    class TileMap<bool, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime>
+        : public TileMapBase<TileMap<bool, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime>> {
         public:
             constexpr TileMap() : tiles(sizeAtCompileTime) { }
 
@@ -193,36 +178,15 @@ namespace StealthTileMap {
 
             // Accessors
             constexpr bool operator()(int x, int y, int z) const {
-                return tiles[area() * z + width() * y + x];
+                return tiles[this -> area() * z + this -> width() * y + x];
             }
 
             constexpr bool operator()(int x, int y) const {
-                return tiles[width() * y + x];
+                return tiles[this -> width() * y + x];
             }
 
             constexpr bool operator()(int x) const {
                 return tiles[x];
-            }
-
-            // Dimensions
-            static constexpr int width() noexcept {
-                return widthAtCompileTime;
-            }
-
-            static constexpr int length() noexcept {
-                return lengthAtCompileTime;
-            }
-
-            static constexpr int height() noexcept {
-                return heightAtCompileTime;
-            }
-
-            static constexpr int area() noexcept {
-                return areaAtCompileTime;
-            }
-
-            static constexpr int size() noexcept {
-                return sizeAtCompileTime;
             }
 
             constexpr typename std::vector<bool>::iterator begin() noexcept {
@@ -241,6 +205,9 @@ namespace StealthTileMap {
                 return tiles.cend();
             }
 
+            constexpr TileMap& eval() {
+                return (*this);
+            }
         private:
             std::vector<bool> tiles;
             std::array<std::thread, NUM_THREADS> copyThreads;
@@ -248,9 +215,9 @@ namespace StealthTileMap {
             template <typename OtherTileMap>
             constexpr void copyPortion(const OtherTileMap* other, int id) {
                 // Copy elements for a single portion of the TileMap.
-                constexpr int portionSize = ceilDivide(size(), NUM_THREADS);
+                constexpr int portionSize = ceilDivide(this -> size(), NUM_THREADS);
                 const int start = id * portionSize;
-                const int end = std::min(start + portionSize, size());
+                const int end = std::min(start + portionSize, this -> size());
                 for (int i = start; i < end; ++i) {
                     tiles[i] = other -> operator()(i);
                 }
@@ -259,8 +226,8 @@ namespace StealthTileMap {
             template <typename OtherTileMap>
             constexpr void copyMultithreaded(const OtherTileMap& other) {
                 // Make sure dimensions are compatible
-                static_assert(internal::traits<OtherTileMap>::length == length() && internal::traits<OtherTileMap>::width
-                    == width() && internal::traits<OtherTileMap>::height == height(), "Cannot copy incompatible TileMaps");
+                static_assert(internal::traits<OtherTileMap>::length == this -> length() && internal::traits<OtherTileMap>::width
+                    == this -> width() && internal::traits<OtherTileMap>::height == this -> height(), "Cannot copy incompatible TileMaps");
                 // Create threads
                 for (int i = 0; i < NUM_THREADS; ++i) {
                     copyThreads[i] = std::thread{&TileMap::copyPortion<OtherTileMap>, this, &other, i};

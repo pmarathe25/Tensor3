@@ -1,6 +1,7 @@
 #ifndef BINARY_OP_H
 #define BINARY_OP_H
 #include "../ForwardDeclarations.hpp"
+#include "../TileMapBase.hpp"
 #include <type_traits>
 
 namespace StealthTileMap {
@@ -23,7 +24,7 @@ namespace StealthTileMap {
 
     template <typename LHS, typename RHS, BinaryOperation<typename internal::traits<LHS>::ScalarType,
         typename internal::traits<RHS>::ScalarType> op>
-    class BinaryOp {
+    class BinaryOp : public TileMapBase<BinaryOp<LHS, RHS, op>> {
         public:
             typedef typename internal::traits<BinaryOp>::ScalarType ScalarType;
 
@@ -58,11 +59,6 @@ namespace StealthTileMap {
                 } else {
                     return op(lhs(x), rhs(x));
                 }
-            }
-
-            constexpr TileMap<ScalarType, internal::traits<BinaryOp>::width,
-                internal::traits<BinaryOp>::length, internal::traits<BinaryOp>::height> eval() {
-                return (*this);
             }
         private:
             const LHS& lhs;

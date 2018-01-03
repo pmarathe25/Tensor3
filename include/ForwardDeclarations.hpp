@@ -10,6 +10,10 @@ namespace StealthTileMap {
         };
     } /* internal */
 
+    // TileMapBase
+    template <typename Derived>
+    class TileMapBase;
+
     // TileMap
     template <typename type, int widthAtCompileTime, int lengthAtCompileTime = 1, int heightAtCompileTime = 1,
         int areaAtCompileTime = widthAtCompileTime * lengthAtCompileTime, int sizeAtCompileTime

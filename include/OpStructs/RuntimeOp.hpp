@@ -1,6 +1,7 @@
 #ifndef RUNTIME_OP_H
 #define RUNTIME_OP_H
 #include "../ForwardDeclarations.hpp"
+#include "../TileMapBase.hpp"
 
 namespace StealthTileMap {
     namespace internal {
@@ -18,7 +19,7 @@ namespace StealthTileMap {
     } /* internal */
 
     template <typename LHS, typename RuntimeOperation>
-    class RuntimeOp {
+    class RuntimeOp : public TileMapBase<RuntimeOp<LHS, RuntimeOperation>> {
         public:
             typedef typename internal::traits<RuntimeOp>::ScalarType ScalarType;
 
@@ -35,11 +36,6 @@ namespace StealthTileMap {
 
             constexpr ScalarType operator()(int x) const {
                 return op(lhs(x));
-            }
-
-            constexpr TileMap<ScalarType, internal::traits<RuntimeOp>::width,
-                internal::traits<RuntimeOp>::length, internal::traits<RuntimeOp>::height> eval() {
-                return (*this);
             }
         private:
             const LHS& lhs;
