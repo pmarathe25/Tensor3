@@ -87,6 +87,10 @@ namespace StealthTileMap {
                 return tiles[x];
             }
 
+            constexpr const ScalarType& operator[](int x) const {
+                return tiles[x];
+            }
+
             constexpr const ScalarType* data() const noexcept {
                 return tiles.data();
             }
@@ -125,15 +129,14 @@ namespace StealthTileMap {
                 const int start = id * portionSize;
                 const int end = std::min(start + portionSize, this -> size());
                 for (int i = start; i < end; ++i) {
-                    tiles[i] = other -> operator()(i);
+                    tiles[i] = other -> operator[](i);
                 }
             }
 
             template <typename OtherTileMap>
             constexpr void copyMultithreaded(const OtherTileMap& other) {
                 // Make sure dimensions are compatible
-                static_assert(internal::traits<OtherTileMap>::length == this -> length() && internal::traits<OtherTileMap>::width
-                    == this -> width() && internal::traits<OtherTileMap>::height == this -> height(), "Cannot copy incompatible TileMaps");
+                static_assert(other.size() == this -> size(), "Cannot copy incompatible TileMaps");
                 // Create threads
                 for (int i = 0; i < NUM_THREADS; ++i) {
                     copyThreads[i] = std::thread{&TileMap::copyPortion<OtherTileMap>, this, &other, i};
@@ -189,6 +192,10 @@ namespace StealthTileMap {
                 return tiles[x];
             }
 
+            constexpr bool operator[](int x) const {
+                return tiles[x];
+            }
+
             constexpr typename std::vector<bool>::iterator begin() noexcept {
                 return tiles.begin();
             }
@@ -219,15 +226,14 @@ namespace StealthTileMap {
                 const int start = id * portionSize;
                 const int end = std::min(start + portionSize, this -> size());
                 for (int i = start; i < end; ++i) {
-                    tiles[i] = other -> operator()(i);
+                    tiles[i] = other -> operator[](i);
                 }
             }
 
             template <typename OtherTileMap>
             constexpr void copyMultithreaded(const OtherTileMap& other) {
                 // Make sure dimensions are compatible
-                static_assert(internal::traits<OtherTileMap>::length == this -> length() && internal::traits<OtherTileMap>::width
-                    == this -> width() && internal::traits<OtherTileMap>::height == this -> height(), "Cannot copy incompatible TileMaps");
+                static_assert(other.size() == this -> size(), "Cannot copy incompatible TileMaps");
                 // Create threads
                 for (int i = 0; i < NUM_THREADS; ++i) {
                     copyThreads[i] = std::thread{&TileMap::copyPortion<OtherTileMap>, this, &other, i};

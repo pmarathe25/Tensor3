@@ -26,4 +26,9 @@ int main() {
 
     StealthTileMap::display(test, "Original");
     StealthTileMap::display(testView, "TestView");
+
+    // Creating TileMap from array
+    std::array<float, 4> init{{0, 1, 2, 3}};
+    StealthTileMap::TileMapF<2, 2> testInit{init};
+    StealthTileMap::display(testInit, "Initializer List Test");
 }

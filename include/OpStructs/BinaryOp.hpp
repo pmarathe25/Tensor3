@@ -60,6 +60,10 @@ namespace StealthTileMap {
                     return op(lhs(x), rhs(x));
                 }
             }
+
+            constexpr ScalarType operator[](int x) const {
+                return this -> operator()(x);
+            }
         private:
             const LHS& lhs;
             const RHS& rhs;

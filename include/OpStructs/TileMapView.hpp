@@ -59,6 +59,10 @@ namespace StealthTileMap {
                 return (*this)(x, y);
             }
 
+            constexpr const ScalarType& operator[](int x) const {
+                return this -> operator()(x);
+            }
+
             constexpr const ScalarType* data() const noexcept {
                 return &(this -> operator()(0));
             }
@@ -95,6 +99,10 @@ namespace StealthTileMap {
                 int y = x / this -> width();
                 x %= this -> width();
                 return (*this)(x, y);
+            }
+
+            constexpr ScalarType operator[](int x) const {
+                return this -> operator()(x);
             }
         private:
             const TileMapType& tileMap;
