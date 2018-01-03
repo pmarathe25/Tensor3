@@ -240,12 +240,16 @@ namespace StealthTileMap {
     };
 
     template <typename T>
-    constexpr std::string to_string(const T& i) {
-        return std::to_string(i);
+    constexpr std::string internal_to_string(const T& i) {
+        if constexpr (std::is_scalar<T>::value) {
+            return std::to_string(i);
+        } else {
+            return to_string(i);
+        }
     }
 
     template <>
-    inline std::string to_string(const std::string& tile) {
+    inline std::string internal_to_string(const std::string& tile) {
         return tile;
     }
 
@@ -256,7 +260,7 @@ namespace StealthTileMap {
             std::cout << "Layer " << k << '\n';
             for (int j = 0; j < tileMap.length(); ++j) {
                 for (int i = 0; i < tileMap.width(); ++i) {
-                    std::cout << to_string(tileMap(i, j, k)) << " ";
+                    std::cout << internal_to_string(tileMap(i, j, k)) << " ";
                 }
                 std::cout << '\n';
             }
