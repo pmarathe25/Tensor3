@@ -14,7 +14,7 @@ namespace StealthTileMap {
                 height = internal::traits<LHS>::height,
                 area = internal::traits<LHS>::area,
                 size = internal::traits<LHS>::size;
-            static constexpr bool isTemporary = true;
+            static constexpr bool isWritable = false;
         };
     } /* internal */
 

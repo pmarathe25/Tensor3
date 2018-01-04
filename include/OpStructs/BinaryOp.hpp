@@ -18,7 +18,7 @@ namespace StealthTileMap {
                 height = (std::is_scalar<LHS>::value ? internal::traits<RHS>::height : internal::traits<LHS>::height),
                 area = (std::is_scalar<LHS>::value ? internal::traits<RHS>::area : internal::traits<LHS>::area),
                 size = (std::is_scalar<LHS>::value ? internal::traits<RHS>::size : internal::traits<LHS>::size);
-            static constexpr bool isTemporary = true;
+            static constexpr bool isWritable = false;
         };
     } /* internal */
 

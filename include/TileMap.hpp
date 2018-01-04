@@ -21,7 +21,7 @@ namespace StealthTileMap {
             typedef type ScalarType;
             static constexpr int width = widthAtCompileTime, length = lengthAtCompileTime, height = heightAtCompileTime,
                 area = areaAtCompileTime, size = sizeAtCompileTime;
-            static constexpr bool isTemporary = false;
+            static constexpr bool isWritable = true;
         };
     } /* internal */
 
@@ -31,7 +31,7 @@ namespace StealthTileMap {
         public:
             typedef type ScalarType;
 
-            static constexpr bool isTemporary = false;
+            static constexpr bool isWritable = false;
 
             constexpr TileMap() noexcept : tiles(sizeAtCompileTime) { }
 

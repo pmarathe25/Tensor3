@@ -38,7 +38,7 @@ namespace StealthTileMap {
 
     // View of a section of a TileMap or OpStruct
     template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
-        typename TileMapType, bool isTemporary = internal::traits<TileMapType>::isTemporary>
+        typename TileMapType, bool isWritable = internal::traits<TileMapType>::isWritable>
     class TileMapView;
 } /* StealthTileMap */
 

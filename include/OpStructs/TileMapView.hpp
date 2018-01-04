@@ -14,13 +14,14 @@ namespace StealthTileMap {
                 height = heightAtCompileTime,
                 area = length * width,
                 size = area * height;
-            static constexpr bool isTemporary = temp;
+            static constexpr bool isWritable = temp;
         };
     } /* internal */
 
+    // Writable view
     template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename TileMapType>
-    class TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, false>
-        : public TileMapBase<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, false>> {
+    class TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, true>
+        : public TileMapBase<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, true>> {
         public:
             typedef typename internal::traits<TileMapView>::ScalarType ScalarType;
 
@@ -77,8 +78,8 @@ namespace StealthTileMap {
 
     // A view of a temporary object. Cannot be modified.
     template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename TileMapType>
-    class TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, true>
-        : public TileMapBase<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, true>> {
+    class TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, false>
+        : public TileMapBase<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, false>> {
         public:
             typedef typename internal::traits<TileMapView>::ScalarType ScalarType;
 
