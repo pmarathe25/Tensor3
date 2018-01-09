@@ -4,73 +4,73 @@
 #include <type_traits>
 
 namespace StealthTileMap::internal::ops {
-    template <typename LHS, typename RHS>
-    constexpr typename std::common_type<LHS, RHS>::type add(const LHS& lhs, const RHS& rhs) {
+    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
+    constexpr auto add(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
         return lhs + rhs;
     }
 
-    template <typename LHS, typename RHS>
-    constexpr typename std::common_type<LHS, RHS>::type subtract(const LHS& lhs, const RHS& rhs) {
+    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
+    constexpr auto subtract(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
         return lhs - rhs;
     }
 
-    template <typename LHS, typename RHS>
-    constexpr typename std::common_type<LHS, RHS>::type multiply(const LHS& lhs, const RHS& rhs) {
+    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
+    constexpr auto multiply(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
         return lhs * rhs;
     }
 
-    template <typename LHS, typename RHS>
-    constexpr typename std::common_type<LHS, RHS>::type divide(const LHS& lhs, const RHS& rhs) {
+    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
+    constexpr auto divide(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
         return lhs / rhs;
     }
 
-    template <typename LHS, typename RHS>
-    constexpr typename std::common_type<LHS, RHS>::type eq(const LHS& lhs, const RHS& rhs) {
+    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
+    constexpr auto eq(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
         return lhs == rhs;
     }
 
-    template <typename LHS, typename RHS>
-    constexpr typename std::common_type<LHS, RHS>::type less(const LHS& lhs, const RHS& rhs) {
+    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
+    constexpr auto less(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
         return lhs < rhs;
     }
 
-    template <typename LHS, typename RHS>
-    constexpr typename std::common_type<LHS, RHS>::type lessEq(const LHS& lhs, const RHS& rhs) {
+    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
+    constexpr auto lessEq(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
         return lhs <= rhs;
     }
 
-    template <typename LHS, typename RHS>
-    constexpr typename std::common_type<LHS, RHS>::type greater(const LHS& lhs, const RHS& rhs) {
+    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
+    constexpr auto greater(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
         return lhs > rhs;
     }
 
-    template <typename LHS, typename RHS>
-    constexpr typename std::common_type<LHS, RHS>::type greaterEq(const LHS& lhs, const RHS& rhs) {
+    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
+    constexpr auto greaterEq(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
         return lhs >= rhs;
     }
 
-    template <typename LHS, typename RHS>
-    constexpr typename std::common_type<LHS, RHS>::type andOp(const LHS& lhs, const RHS& rhs) {
+    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
+    constexpr auto andOp(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
         return lhs && rhs;
     }
 
-    template <typename LHS, typename RHS>
-    constexpr typename std::common_type<LHS, RHS>::type orOp(const LHS& lhs, const RHS& rhs) {
+    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
+    constexpr auto orOp(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
         return lhs || rhs;
     }
 
-    template <typename LHS, typename RHS>
-    constexpr typename std::common_type<LHS, RHS>::type min(const LHS& lhs, const RHS& rhs) {
+    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
+    constexpr auto min(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
         return std::min(lhs, rhs);
     }
 
-    template <typename LHS, typename RHS>
-    constexpr typename std::common_type<LHS, RHS>::type max(const LHS& lhs, const RHS& rhs) {
+    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
+    constexpr auto max(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
         return std::max(lhs, rhs);
     }
 
-    template <typename LHS>
-    constexpr LHS notOp(const LHS& lhs) {
+    template <typename ScalarTypeLHS>
+    constexpr auto notOp(const ScalarTypeLHS& lhs) {
         return !lhs;
     }
 

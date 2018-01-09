@@ -1,5 +1,9 @@
 #include "TileMap/TileMap.hpp"
 
+float doubleVal(const float& other) {
+    return other * 2.0f;
+}
+
 int main() {
     StealthTileMap::TileMapF<5, 5, 2> test{};
     StealthTileMap::TileMapF<5, 5, 2> test2{};
@@ -26,6 +30,10 @@ int main() {
 
     StealthTileMap::display(test, "Original");
     StealthTileMap::display(testView, "TestView");
+    StealthTileMap::display(test && test2, "Test && Test2");
+    StealthTileMap::display(test || test2, "Test || Test2");
+    StealthTileMap::display(!test, "!Test");
+    StealthTileMap::display(StealthTileMap::transform<float, float, doubleVal>(test), "Doubled Test");
 
     // Creating TileMap from array
     std::array<float, 4> init{{0, 1, 2, 3}};

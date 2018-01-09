@@ -21,15 +21,15 @@ namespace StealthTileMap {
     class TileMap;
 
     // Binary Op
-    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    using BinaryOperation = typename std::common_type<ScalarTypeLHS, ScalarTypeRHS>::type (*)(const ScalarTypeLHS&, const ScalarTypeRHS&);
-    template <typename LHS, typename RHS, BinaryOperation<typename internal::traits<LHS>::ScalarType, typename internal::traits<RHS>::ScalarType> op>
+    template <typename ReturnType, typename ScalarTypeLHS, typename ScalarTypeRHS>
+    using BinaryOperation = ReturnType (*)(const ScalarTypeLHS&, const ScalarTypeRHS&);
+    template <typename ReturnType, typename LHS, typename RHS, BinaryOperation<ReturnType, typename internal::traits<LHS>::ScalarType, typename internal::traits<RHS>::ScalarType> op>
     class BinaryOp;
 
     // Unary Op
-    template <typename ScalarTypeLHS>
-    using UnaryOperation = ScalarTypeLHS (*)(const ScalarTypeLHS&);
-    template <typename LHS, UnaryOperation<typename internal::traits<LHS>::ScalarType> op>
+    template <typename ReturnType, typename ScalarTypeLHS>
+    using UnaryOperation = ReturnType (*)(const ScalarTypeLHS&);
+    template <typename ReturnType, typename LHS, UnaryOperation<ReturnType, typename internal::traits<LHS>::ScalarType> op>
     class UnaryOp;
 
     // Runtime Op

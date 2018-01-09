@@ -6,12 +6,12 @@
 
 namespace StealthTileMap {
     namespace internal {
-        template <typename LHS, typename RHS, BinaryOperation<typename internal::traits<LHS>::ScalarType,
-            typename internal::traits<RHS>::ScalarType> op>
-        struct traits<BinaryOp<LHS, RHS, op>> {
+        template <typename ReturnType, typename LHS, typename RHS, BinaryOperation<ReturnType,
+            typename internal::traits<LHS>::ScalarType, typename internal::traits<RHS>::ScalarType> op>
+        struct traits<BinaryOp<ReturnType, LHS, RHS, op>> {
             typedef typename internal::traits<LHS>::ScalarType ScalarTypeLHS;
             typedef typename internal::traits<RHS>::ScalarType ScalarTypeRHS;
-            typedef typename std::common_type<ScalarTypeLHS, ScalarTypeRHS>::type ScalarType;
+            typedef ReturnType ScalarType;
             // Dimensions
             static constexpr int length = (std::is_scalar<LHS>::value ? internal::traits<RHS>::length : internal::traits<LHS>::length),
                 width = (std::is_scalar<LHS>::value ? internal::traits<RHS>::width : internal::traits<LHS>::width),
@@ -22,9 +22,9 @@ namespace StealthTileMap {
         };
     } /* internal */
 
-    template <typename LHS, typename RHS, BinaryOperation<typename internal::traits<LHS>::ScalarType,
-        typename internal::traits<RHS>::ScalarType> op>
-    class BinaryOp : public TileMapBase<BinaryOp<LHS, RHS, op>> {
+    template <typename ReturnType, typename LHS, typename RHS, BinaryOperation<ReturnType,
+        typename internal::traits<LHS>::ScalarType, typename internal::traits<RHS>::ScalarType> op>
+    class BinaryOp : public TileMapBase<BinaryOp<ReturnType, LHS, RHS, op>> {
         public:
             typedef typename internal::traits<BinaryOp>::ScalarType ScalarType;
 

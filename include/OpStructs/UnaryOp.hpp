@@ -5,9 +5,9 @@
 
 namespace StealthTileMap {
     namespace internal {
-        template <typename LHS, UnaryOperation<typename internal::traits<LHS>::ScalarType> op>
-        struct traits<UnaryOp<LHS, op>> {
-            typedef typename internal::traits<LHS>::ScalarType ScalarType;
+        template <typename ReturnType, typename LHS, UnaryOperation<ReturnType, typename internal::traits<LHS>::ScalarType> op>
+        struct traits<UnaryOp<ReturnType, LHS, op>> {
+            typedef ReturnType ScalarType;
             // Dimensions
             static constexpr int length = internal::traits<LHS>::length,
                 width = internal::traits<LHS>::width,
@@ -18,8 +18,8 @@ namespace StealthTileMap {
         };
     } /* internal */
 
-    template <typename LHS, UnaryOperation<typename internal::traits<LHS>::ScalarType> op>
-    class UnaryOp : public TileMapBase<UnaryOp<LHS, op>> {
+    template <typename ReturnType, typename LHS, UnaryOperation<ReturnType, typename internal::traits<LHS>::ScalarType> op>
+    class UnaryOp : public TileMapBase<UnaryOp<ReturnType, LHS, op>> {
         public:
             typedef typename internal::traits<UnaryOp>::ScalarType ScalarType;
 
