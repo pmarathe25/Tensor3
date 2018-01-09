@@ -9,7 +9,7 @@ namespace StealthTileMap {
     constexpr auto layer(LHS&& lhs, int layerNum = 0) {
         typedef typename std::remove_reference<LHS>::type LHSBaseType;
         return TileMapView<internal::traits<LHSBaseType>::width, internal::traits<LHSBaseType>::length, 1, LHSBaseType>
-            (std::forward<LHS>(lhs), 0, 0, layerNum);
+            {std::forward<LHS>(lhs), 0, 0, layerNum};
     }
 
     template <int width, int length, int height, typename LHS>
