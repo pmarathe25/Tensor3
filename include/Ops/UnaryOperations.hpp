@@ -1,6 +1,7 @@
 #ifndef UNARY_OPS_H
 #define UNARY_OPS_H
-#define doUnaryOp(op) typedef typename internal::traits<LHS>::ScalarType ScalarTypeLHS; \
+#define doUnaryOp(op) \
+    typedef typename internal::traits<LHS>::ScalarType ScalarTypeLHS; \
     typedef decltype(&op<ScalarTypeLHS>) FuncType; \
     typedef typename std::invoke_result<FuncType, ScalarTypeLHS>::type ReturnType; \
     /* If the type is smaller than a pointer, return a copy rather than a reference */ \
