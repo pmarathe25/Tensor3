@@ -1,15 +1,12 @@
 #ifndef UNARY_OPS_H
 #define UNARY_OPS_H
 #define doUnaryOp(op) \
-    typedef typename internal::traits<LHS>::ScalarType ScalarTypeLHS; \
+    /* If the type is smaller than a pointer, return a copy rather than a reference */ \
+    typedef typename std::conditional<sizeof(typename internal::traits<LHS>::ScalarType) <= sizeof(void*), \
+        typename internal::traits<LHS>::ScalarType, const typename internal::traits<LHS>::ScalarType&>::type ScalarTypeLHS; \
     typedef decltype(&op<ScalarTypeLHS>) FuncType; \
     typedef typename std::invoke_result<FuncType, ScalarTypeLHS>::type ReturnType; \
-    /* If the type is smaller than a pointer, return a copy rather than a reference */ \
-    if constexpr (sizeof(ScalarTypeLHS) <= sizeof(void*)) { \
-        return UnaryOp<ReturnType, ScalarTypeLHS, op, LHS>{lhs}; \
-    } else { \
-        return UnaryOp<ReturnType, const ScalarTypeLHS&, op, LHS>{lhs}; \
-    }
+    return UnaryOp<ReturnType, ScalarTypeLHS, op, LHS>{lhs};
 #include "../OpStructs/UnaryOp.hpp"
 
 namespace StealthTileMap {

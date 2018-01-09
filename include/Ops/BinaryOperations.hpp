@@ -2,20 +2,14 @@
 #define BINARY_OPS_H
 #define doBinaryOp(op) \
     checkTileMapCompatibility<LHS, RHS>(); \
-    typedef typename internal::traits<LHS>::ScalarType ScalarTypeLHS; \
-    typedef typename internal::traits<RHS>::ScalarType ScalarTypeRHS; \
+    /* If the type is smaller than a pointer, return a copy rather than a reference */ \
+    typedef typename std::conditional<sizeof(typename internal::traits<LHS>::ScalarType) <= sizeof(void*), \
+        typename internal::traits<LHS>::ScalarType, const typename internal::traits<LHS>::ScalarType&>::type ScalarTypeLHS; \
+    typedef typename std::conditional<sizeof(typename internal::traits<RHS>::ScalarType) <= sizeof(void*), \
+        typename internal::traits<RHS>::ScalarType, const typename internal::traits<RHS>::ScalarType&>::type ScalarTypeRHS; \
     typedef decltype(&op<ScalarTypeLHS, ScalarTypeRHS>) FuncType; \
     typedef typename std::invoke_result<FuncType, ScalarTypeLHS, ScalarTypeRHS>::type ReturnType; \
-    /* If the type is smaller than a pointer, return a copy rather than a reference */ \
-    if constexpr (sizeof(ScalarTypeLHS) <= sizeof(void*) && sizeof(ScalarTypeRHS) <= sizeof(void*)) { \
-        return BinaryOp<ReturnType, ScalarTypeLHS, ScalarTypeRHS, op, LHS, RHS>{lhs, rhs}; \
-    } else if constexpr (sizeof(ScalarTypeLHS) <= sizeof(void*)) { \
-        return BinaryOp<ReturnType, ScalarTypeLHS, const ScalarTypeRHS&, op, LHS, RHS>{lhs, rhs}; \
-    } else if constexpr (sizeof(ScalarTypeRHS) <= sizeof(void*)) { \
-        return BinaryOp<ReturnType, const ScalarTypeLHS&, ScalarTypeRHS, op, LHS, RHS>{lhs, rhs}; \
-    } else { \
-        return BinaryOp<ReturnType, const ScalarTypeLHS&, const ScalarTypeRHS&, op, LHS, RHS>{lhs, rhs}; \
-    }
+    return BinaryOp<ReturnType, ScalarTypeLHS, ScalarTypeRHS, op, LHS, RHS>{lhs, rhs};
 #include "../OpStructs/BinaryOp.hpp"
 #include "./InternalOperations.hpp"
 
