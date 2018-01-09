@@ -1,7 +1,7 @@
 #include "TileMap/TileMap.hpp"
 
-constexpr float doubleVal(float other) {
-    return other * 2.0f;
+constexpr int halfVal(float other) {
+    return other / 2.0f;
 }
 
 int main() {
@@ -33,7 +33,7 @@ int main() {
     StealthTileMap::display(test && test2, "Test && Test2");
     StealthTileMap::display(test || test2, "Test || Test2");
     StealthTileMap::display(!test, "!Test");
-    StealthTileMap::display(StealthTileMap::transform<float, float, doubleVal>(test), "Doubled Test");
+    StealthTileMap::display(StealthTileMap::transform<int, float, halfVal>(test), "Halved Int Test");
 
     // Creating TileMap from array
     std::array<float, 4> init{{0, 1, 2, 3}};
