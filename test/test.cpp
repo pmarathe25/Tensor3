@@ -6,7 +6,7 @@ constexpr int halfVal(float other) {
 
 int main() {
     StealthTileMap::TileMapF<5, 5, 2> test{};
-    StealthTileMap::TileMapF<5, 5, 2> test2{};
+    const StealthTileMap::TileMapF<5, 5, 2> test2{};
 
     test(0, 0) = 1.5f;
     test(0, 1) = 1.5f;
@@ -16,12 +16,13 @@ int main() {
     test(1, 1, 1) = 3.1f;
 
     // test2(0, 0, 1) = 3.0f;
-    // StealthTileMap::TileMapF<5, 5, 2> test3 = (test + test2) + test;
-    // StealthTileMap::display(test3);
+    StealthTileMap::TileMapF<5, 5, 2> test3 = (test + test2) + test;
+    StealthTileMap::display(test3);
 
-    // auto testLayer = StealthTileMap::layer(test, 0);
-    // StealthTileMap::display(testLayer);
-    // StealthTileMap::display(StealthTileMap::layer(test + test2, 1));
+    auto testLayer = StealthTileMap::layer(test, 0);
+    StealthTileMap::display(testLayer);
+    StealthTileMap::display(StealthTileMap::layer(test + test2, 1));
+    StealthTileMap::display(StealthTileMap::layer(test2, 1));
 
     // Changing a value in the view actually changes the TileMap
     StealthTileMap::block<2, 2>(test)(0, 0, 1) = 2.4f;
@@ -38,5 +39,5 @@ int main() {
     // Creating TileMap from array
     std::array<float, 4> init{{0, 1, 2, 3}};
     StealthTileMap::TileMapF<2, 2> testInit{init};
-    StealthTileMap::display(testInit, "Initializer List Test");
+    StealthTileMap::display(testInit, "Array Initialization Test");
 }

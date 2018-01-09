@@ -6,11 +6,9 @@
 
 namespace StealthTileMap {
     namespace internal {
-        template <typename ReturnType, typename LHS, typename RHS, BinaryOperation<ReturnType,
-            typename internal::traits<LHS>::ScalarType, typename internal::traits<RHS>::ScalarType> op>
-        struct traits<BinaryOp<ReturnType, LHS, RHS, op>> {
-            typedef typename internal::traits<LHS>::ScalarType ScalarTypeLHS;
-            typedef typename internal::traits<RHS>::ScalarType ScalarTypeRHS;
+        template <typename ReturnType, typename ScalarTypeLHS, typename ScalarTypeRHS, BinaryOperation<ReturnType,
+            ScalarTypeLHS, ScalarTypeRHS> op, typename LHS, typename RHS>
+        struct traits<BinaryOp<ReturnType, ScalarTypeLHS, ScalarTypeRHS, op, LHS, RHS>> {
             typedef ReturnType ScalarType;
             // Dimensions
             static constexpr int length = (std::is_scalar<LHS>::value ? internal::traits<RHS>::length : internal::traits<LHS>::length),
@@ -18,13 +16,14 @@ namespace StealthTileMap {
                 height = (std::is_scalar<LHS>::value ? internal::traits<RHS>::height : internal::traits<LHS>::height),
                 area = (std::is_scalar<LHS>::value ? internal::traits<RHS>::area : internal::traits<LHS>::area),
                 size = (std::is_scalar<LHS>::value ? internal::traits<RHS>::size : internal::traits<LHS>::size);
-            static constexpr bool isWritable = false;
+            typedef std::false_type containsData;
+            typedef std::false_type isWritable;
         };
     } /* internal */
 
-    template <typename ReturnType, typename LHS, typename RHS, BinaryOperation<ReturnType,
-        typename internal::traits<LHS>::ScalarType, typename internal::traits<RHS>::ScalarType> op>
-    class BinaryOp : public TileMapBase<BinaryOp<ReturnType, LHS, RHS, op>> {
+    template <typename ReturnType, typename ScalarTypeLHS, typename ScalarTypeRHS, BinaryOperation<ReturnType,
+        ScalarTypeLHS, ScalarTypeRHS> op, typename LHS, typename RHS>
+    class BinaryOp : public TileMapBase<BinaryOp<ReturnType, ScalarTypeLHS, ScalarTypeRHS, op, LHS, RHS>> {
         public:
             typedef typename internal::traits<BinaryOp>::ScalarType ScalarType;
 

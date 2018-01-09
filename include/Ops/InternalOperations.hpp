@@ -5,72 +5,72 @@
 
 namespace StealthTileMap::internal::ops {
     template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto add(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
+    constexpr auto add(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
         return lhs + rhs;
     }
 
     template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto subtract(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
+    constexpr auto subtract(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
         return lhs - rhs;
     }
 
     template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto multiply(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
+    constexpr auto multiply(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
         return lhs * rhs;
     }
 
     template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto divide(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
+    constexpr auto divide(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
         return lhs / rhs;
     }
 
     template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto eq(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
+    constexpr auto eq(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
         return lhs == rhs;
     }
 
     template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto less(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
+    constexpr auto less(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
         return lhs < rhs;
     }
 
     template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto lessEq(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
+    constexpr auto lessEq(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
         return lhs <= rhs;
     }
 
     template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto greater(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
+    constexpr auto greater(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
         return lhs > rhs;
     }
 
     template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto greaterEq(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
+    constexpr auto greaterEq(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
         return lhs >= rhs;
     }
 
     template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto andOp(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
+    constexpr auto andOp(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
         return lhs && rhs;
     }
 
     template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto orOp(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
+    constexpr auto orOp(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
         return lhs || rhs;
     }
 
     template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto min(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
+    constexpr auto min(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
         return std::min(lhs, rhs);
     }
 
     template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto max(const ScalarTypeLHS& lhs, const ScalarTypeRHS& rhs) {
+    constexpr auto max(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
         return std::max(lhs, rhs);
     }
 
     template <typename ScalarTypeLHS>
-    constexpr auto notOp(const ScalarTypeLHS& lhs) {
+    constexpr auto notOp(ScalarTypeLHS lhs) {
         return !lhs;
     }
 

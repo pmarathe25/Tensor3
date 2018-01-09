@@ -22,8 +22,8 @@ namespace StealthTileMap {
 
     // Binary Op
     template <typename ReturnType, typename ScalarTypeLHS, typename ScalarTypeRHS>
-    using BinaryOperation = ReturnType (*)(const ScalarTypeLHS&, const ScalarTypeRHS&);
-    template <typename ReturnType, typename LHS, typename RHS, BinaryOperation<ReturnType, typename internal::traits<LHS>::ScalarType, typename internal::traits<RHS>::ScalarType> op>
+    using BinaryOperation = ReturnType (*)(ScalarTypeLHS, ScalarTypeRHS);
+    template <typename ReturnType, typename ScalarTypeLHS, typename ScalarTypeRHS, BinaryOperation<ReturnType, ScalarTypeLHS, ScalarTypeRHS> op, typename LHS, typename RHS>
     class BinaryOp;
 
     // Unary Op
@@ -37,8 +37,9 @@ namespace StealthTileMap {
     class RuntimeOp;
 
     // View of a section of a TileMap or OpStruct
-    template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
-        typename TileMapType, bool isWritable = internal::traits<TileMapType>::isWritable>
+    template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename TileMapType,
+        typename containsData = typename internal::traits<TileMapType>::containsData,
+        typename isWritable = typename std::conjunction<containsData, typename internal::traits<TileMapType>::isWritable>::type>
     class TileMapView;
 } /* StealthTileMap */
 

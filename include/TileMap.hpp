@@ -21,7 +21,18 @@ namespace StealthTileMap {
             typedef type ScalarType;
             static constexpr int width = widthAtCompileTime, length = lengthAtCompileTime, height = heightAtCompileTime,
                 area = areaAtCompileTime, size = sizeAtCompileTime;
-            static constexpr bool isWritable = true;
+            typedef std::true_type containsData;
+            typedef std::true_type isWritable;
+        };
+
+        template <typename type, int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
+            int areaAtCompileTime, int sizeAtCompileTime>
+        struct traits<const TileMap<type, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime>> {
+            typedef type ScalarType;
+            static constexpr int width = widthAtCompileTime, length = lengthAtCompileTime, height = heightAtCompileTime,
+                area = areaAtCompileTime, size = sizeAtCompileTime;
+            typedef std::true_type containsData;
+            typedef std::false_type isWritable;
         };
     } /* internal */
 
@@ -31,7 +42,7 @@ namespace StealthTileMap {
         public:
             typedef type ScalarType;
 
-            static constexpr bool isWritable = false;
+            static constexpr bool containsData = false;
 
             constexpr TileMap() noexcept : tiles(sizeAtCompileTime) { }
 

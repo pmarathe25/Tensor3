@@ -6,7 +6,16 @@
     typedef typename internal::traits<RHS>::ScalarType ScalarTypeRHS; \
     typedef decltype(&op<ScalarTypeLHS, ScalarTypeRHS>) FuncType; \
     typedef typename std::invoke_result<FuncType, ScalarTypeLHS, ScalarTypeRHS>::type ReturnType; \
-    return BinaryOp<ReturnType, LHS, RHS, op>{lhs, rhs};
+    /* If the type is smaller than a pointer, return a copy rather than a reference */ \
+    if constexpr (sizeof(ScalarTypeLHS) <= sizeof(void*) && sizeof(ScalarTypeRHS) <= sizeof(void*)) { \
+        return BinaryOp<ReturnType, ScalarTypeLHS, ScalarTypeRHS, op, LHS, RHS>{lhs, rhs}; \
+    } else if constexpr (sizeof(ScalarTypeLHS) <= sizeof(void*)) { \
+        return BinaryOp<ReturnType, ScalarTypeLHS, const ScalarTypeRHS&, op, LHS, RHS>{lhs, rhs}; \
+    } else if constexpr (sizeof(ScalarTypeRHS) <= sizeof(void*)) { \
+        return BinaryOp<ReturnType, const ScalarTypeLHS&, ScalarTypeRHS, op, LHS, RHS>{lhs, rhs}; \
+    } else { \
+        return BinaryOp<ReturnType, const ScalarTypeLHS&, const ScalarTypeRHS&, op, LHS, RHS>{lhs, rhs}; \
+    }
 #include "../OpStructs/BinaryOp.hpp"
 #include "./InternalOperations.hpp"
 

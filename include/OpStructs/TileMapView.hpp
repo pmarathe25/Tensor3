@@ -5,8 +5,8 @@
 
 namespace StealthTileMap {
     namespace internal {
-        template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename TileMapType, bool temp>
-        struct traits<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, temp>> {
+        template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename TileMapType, typename dat, typename writable>
+        struct traits<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, dat, writable>> {
             typedef typename internal::traits<TileMapType>::ScalarType ScalarType;
             // Dimensions
             static constexpr int length = lengthAtCompileTime,
@@ -14,14 +14,15 @@ namespace StealthTileMap {
                 height = heightAtCompileTime,
                 area = length * width,
                 size = area * height;
-            static constexpr bool isWritable = temp;
+            typedef dat containsData;
+            typedef writable isWritable;
         };
     } /* internal */
 
     // Writable view
     template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename TileMapType>
-    class TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, true>
-        : public TileMapBase<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, true>> {
+    class TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, std::true_type, std::true_type>
+        : public TileMapBase<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, std::true_type, std::true_type>> {
         public:
             typedef typename internal::traits<TileMapView>::ScalarType ScalarType;
 
@@ -76,10 +77,48 @@ namespace StealthTileMap {
             int minX, minY, minZ;
     };
 
+    // Const view
+    template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename TileMapType>
+    class TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, std::true_type, std::false_type>
+        : public TileMapBase<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, std::true_type, std::false_type>> {
+        public:
+            typedef typename internal::traits<TileMapView>::ScalarType ScalarType;
+
+            constexpr TileMapView(const TileMapType& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
+                : tileMap{tileMap}, minX{minX}, minY{minY}, minZ{minZ} { }
+
+            constexpr const ScalarType& operator()(int x, int y, int z) const {
+                return tileMap(x + minX, y + minY, z + minZ);
+            }
+
+            constexpr const ScalarType& operator()(int x, int y) const {
+                int z = y / this -> length();
+                y %= this -> length();
+                return (*this)(x, y, z);
+            }
+
+            constexpr const ScalarType& operator()(int x) const {
+                int y = x / this -> width();
+                x %= this -> width();
+                return (*this)(x, y);
+            }
+
+            constexpr const ScalarType& operator[](int x) const {
+                return this -> operator()(x);
+            }
+
+            constexpr const ScalarType* data() const noexcept {
+                return &(this -> operator()(0));
+            }
+        private:
+            const TileMapType& tileMap;
+            int minX, minY, minZ;
+    };
+
     // A view of a temporary object. Cannot be modified.
     template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename TileMapType>
-    class TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, false>
-        : public TileMapBase<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, false>> {
+    class TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, std::false_type>
+        : public TileMapBase<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, std::false_type>> {
         public:
             typedef typename internal::traits<TileMapView>::ScalarType ScalarType;
 
