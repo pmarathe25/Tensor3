@@ -28,8 +28,8 @@ namespace StealthTileMap {
 
     // Unary Op
     template <typename ReturnType, typename ScalarTypeLHS>
-    using UnaryOperation = ReturnType (*)(const ScalarTypeLHS&);
-    template <typename ReturnType, typename LHS, UnaryOperation<ReturnType, typename internal::traits<LHS>::ScalarType> op>
+    using UnaryOperation = ReturnType (*)(ScalarTypeLHS);
+    template <typename ReturnType, typename ScalarTypeLHS, UnaryOperation<ReturnType, ScalarTypeLHS> op, typename LHS>
     class UnaryOp;
 
     // Runtime Op

@@ -1,6 +1,6 @@
 #include "TileMap/TileMap.hpp"
 
-float doubleVal(const float& other) {
+constexpr float doubleVal(float other) {
     return other * 2.0f;
 }
 
