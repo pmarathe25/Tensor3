@@ -15,7 +15,7 @@ namespace StealthTileMap {
         doUnaryOp(internal::ops::notOp);
     }
 
-    template <typename ReturnType, typename ScalarTypeLHS, UnaryOperation<ReturnType, ScalarTypeLHS> op, typename LHS>
+    template <typename ScalarTypeLHS, typename ReturnType, UnaryOperation<ReturnType, ScalarTypeLHS> op, typename LHS>
     constexpr auto transform(const LHS& lhs) noexcept {
         return UnaryOp<ReturnType, ScalarTypeLHS, op, LHS>{lhs};
     }
