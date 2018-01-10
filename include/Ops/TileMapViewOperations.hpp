@@ -12,13 +12,6 @@ namespace StealthTileMap {
             {std::forward<LHS&&>(lhs), 0, 0, layerNum};
     }
 
-    template <int width, int length = 1, int height = 1, typename LHS>
-    constexpr auto reshape(LHS&& lhs) {
-        typedef typename std::remove_reference<LHS>::type LHSRawType;
-        static_assert(width * length * height == internal::traits<LHSRawType>::size, "Cannot reshape into incompatible dimensions");
-        return TileMapView<width, length, height, LHSRawType>{std::forward<LHS&&>(lhs), 0, 0, 0};
-    }
-
     template <int width, int length, int height, typename LHS>
     constexpr auto block(LHS&& lhs, int minX = 0, int minY = 0, int minZ = 0) {
         typedef typename std::remove_reference<LHS>::type LHSRawType;

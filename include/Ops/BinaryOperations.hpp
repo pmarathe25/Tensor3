@@ -16,9 +16,7 @@
 namespace StealthTileMap {
     template <typename LHS, typename RHS>
     constexpr void checkTileMapCompatibility() noexcept {
-        static_assert(internal::traits<LHS>::length == internal::traits<RHS>::length
-            && internal::traits<LHS>::width == internal::traits<RHS>::width
-            && internal::traits<LHS>::height == internal::traits<RHS>::height
+        static_assert(internal::traits<LHS>::size == internal::traits<RHS>::size
             || (internal::traits<LHS>::size == 1 || internal::traits<RHS>::size == 1),
             "Cannot operate on incompatible arguments");
     }

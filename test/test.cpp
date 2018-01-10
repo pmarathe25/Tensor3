@@ -28,7 +28,7 @@ int main() {
     StealthTileMap::block<2, 2>(test)(0, 0, 1) = 2.4f;
     // Construct a separate TileMap from the view.
     auto testView = StealthTileMap::block<2, 2>(test, 0, 1).eval();
-    auto testReshape = StealthTileMap::reshape<2, 4>(testView).eval();
+    auto testReshape = StealthTileMap::reshape<2, 4>(testView);
 
     StealthTileMap::display(test, "Original");
     StealthTileMap::display(testView, "TestView");
