@@ -135,27 +135,12 @@ namespace StealthTileMap {
             std::array<std::thread, NUM_THREADS> copyThreads;
 
             template <typename OtherTileMap>
-            constexpr void copyPortion(const OtherTileMap* other, int id) {
-                // Copy elements for a single portion of the TileMap.
-                constexpr int portionSize = ceilDivide(this -> size(), NUM_THREADS);
-                const int start = id * portionSize;
-                const int end = std::min(start + portionSize, this -> size());
-                for (int i = start; i < end; ++i) {
-                    tiles[i] = other -> operator[](i);
-                }
-            }
-
-            template <typename OtherTileMap>
             constexpr void copyMultithreaded(const OtherTileMap& other) {
                 // Make sure dimensions are compatible
                 static_assert(other.size() == this -> size(), "Cannot copy incompatible TileMaps");
                 // Create threads
-                for (int i = 0; i < NUM_THREADS; ++i) {
-                    copyThreads[i] = std::thread{&TileMap::copyPortion<OtherTileMap>, this, &other, i};
-                }
-                // Wait for all threads to finish
-                for (auto& thread : copyThreads) {
-                    thread.join();
+                for (int i = 0; i < this -> size(); ++i) {
+                    tiles[i] = other[i];
                 }
             }
     };

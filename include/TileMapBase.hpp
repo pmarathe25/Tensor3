@@ -71,7 +71,6 @@ namespace StealthTileMap {
                 os << '\n';
             }
         }
-        os << '\n';
         return os;
     }
 } /* StealthTileMap */
