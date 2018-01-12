@@ -1,6 +1,7 @@
 #ifndef TILE_MAP_BASE_H
 #define TILE_MAP_BASE_H
 #include "./ForwardDeclarations.hpp"
+#include <ostream>
 
 namespace StealthTileMap {
     template <typename Derived>
@@ -44,6 +45,35 @@ namespace StealthTileMap {
                 return *(static_cast<const Derived*>(this));
             }
     };
+
+    template <typename T>
+    constexpr std::string internal_to_string(const T& i) {
+        if constexpr (std::is_scalar<T>::value) {
+            return std::to_string(i);
+        } else {
+            return to_string(i);
+        }
+    }
+
+    template <>
+    inline std::string internal_to_string(const std::string& tile) {
+        return tile;
+    }
+
+    template <typename Derived>
+    std::ostream& operator<<(std::ostream& os, const TileMapBase<Derived>& tileMap) {
+        for (int k = 0; k < tileMap.height(); ++k) {
+            os << "Layer " << k << '\n';
+            for (int j = 0; j < tileMap.length(); ++j) {
+                for (int i = 0; i < tileMap.width(); ++i) {
+                    os << internal_to_string(tileMap(i, j, k)) << " ";
+                }
+                os << '\n';
+            }
+        }
+        os << '\n';
+        return os;
+    }
 } /* StealthTileMap */
 
 #endif /* end of include guard: TILE_MAP_BASE_H */

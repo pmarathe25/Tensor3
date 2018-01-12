@@ -8,7 +8,6 @@
 #include "./Ops/TileMapViewOperations.hpp"
 #include <stealthutil>
 #include <vector>
-#include <iostream>
 #include <thread>
 
 namespace StealthTileMap {
@@ -102,11 +101,13 @@ namespace StealthTileMap {
                 return tiles[x];
             }
 
-            constexpr const ScalarType* data() const noexcept {
+            constexpr const ScalarType* data() const {
+                static_assert(!std::is_same<ScalarType, bool>::value, "Cannot access data() member of boolean TileMap");
                 return tiles.data();
             }
 
-            constexpr ScalarType* data() noexcept {
+            constexpr ScalarType* data() {
+                static_assert(!std::is_same<ScalarType, bool>::value, "Cannot access data() member of boolean TileMap");
                 return tiles.data();
             }
 
@@ -159,138 +160,12 @@ namespace StealthTileMap {
             }
     };
 
-    // Specialization for boolean maps
-    template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, int areaAtCompileTime,
-        int sizeAtCompileTime>
-    class TileMap<bool, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime>
-        : public TileMapBase<TileMap<bool, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime>> {
-        public:
-            constexpr TileMap() : tiles(sizeAtCompileTime) { }
-
-            // Copy
-            template <typename OtherTileMap>
-            constexpr TileMap(const OtherTileMap& other) : tiles(sizeAtCompileTime) {
-                copyMultithreaded(other);
-            }
-
-            constexpr TileMap(const TileMap& other) {
-                tiles = other.tiles;
-            }
-
-            // Move
-            constexpr TileMap(TileMap&& other) noexcept = default;
-
-            // Assignment
-            constexpr void operator=(const TileMap& other) noexcept {
-                tiles = other.tiles;
-            }
-
-            template <typename OtherTileMap>
-            constexpr void operator=(const OtherTileMap& other) noexcept {
-                copyMultithreaded(other);
-            }
-
-            // Accessors
-            constexpr bool operator()(int x, int y, int z) const {
-                return tiles[this -> area() * z + this -> width() * y + x];
-            }
-
-            constexpr bool operator()(int x, int y) const {
-                return tiles[this -> width() * y + x];
-            }
-
-            constexpr bool operator()(int x) const {
-                return tiles[x];
-            }
-
-            constexpr bool operator[](int x) const {
-                return tiles[x];
-            }
-
-            constexpr typename std::vector<bool>::iterator begin() noexcept {
-                return tiles.begin();
-            }
-
-            constexpr typename std::vector<bool>::const_iterator cbegin() const noexcept {
-                return tiles.cbegin();
-            }
-
-            constexpr typename std::vector<bool>::iterator end() noexcept {
-                return tiles.end();
-            }
-
-            constexpr typename std::vector<bool>::const_iterator cend() const noexcept {
-                return tiles.cend();
-            }
-
-            constexpr TileMap& eval() {
-                return (*this);
-            }
-        private:
-            std::vector<bool> tiles;
-            std::array<std::thread, NUM_THREADS> copyThreads;
-
-            template <typename OtherTileMap>
-            constexpr void copyPortion(const OtherTileMap* other, int id) {
-                // Copy elements for a single portion of the TileMap.
-                constexpr int portionSize = ceilDivide(this -> size(), NUM_THREADS);
-                const int start = id * portionSize;
-                const int end = std::min(start + portionSize, this -> size());
-                for (int i = start; i < end; ++i) {
-                    tiles[i] = other -> operator[](i);
-                }
-            }
-
-            template <typename OtherTileMap>
-            constexpr void copyMultithreaded(const OtherTileMap& other) {
-                // Make sure dimensions are compatible
-                static_assert(other.size() == this -> size(), "Cannot copy incompatible TileMaps");
-                // Create threads
-                for (int i = 0; i < NUM_THREADS; ++i) {
-                    copyThreads[i] = std::thread{&TileMap::copyPortion<OtherTileMap>, this, &other, i};
-                }
-                // Wait for all threads to finish
-                for (auto& thread : copyThreads) {
-                    thread.join();
-                }
-            }
-    };
-
     template <int width, int length = 1, int height = 1, typename LHS>
     constexpr auto reshape(LHS&& lhs) {
         typedef typename std::remove_reference<LHS>::type LHSRawType;
         typedef typename internal::traits<LHSRawType>::ScalarType ScalarType;
         static_assert(width * length * height == internal::traits<LHSRawType>::size, "Cannot reshape into incompatible dimensions");
         return TileMap<ScalarType, width, length, height>{std::forward<LHS&&>(lhs)};
-    }
-
-    template <typename T>
-    constexpr std::string internal_to_string(const T& i) {
-        if constexpr (std::is_scalar<T>::value) {
-            return std::to_string(i);
-        } else {
-            return to_string(i);
-        }
-    }
-
-    template <>
-    inline std::string internal_to_string(const std::string& tile) {
-        return tile;
-    }
-
-    template <typename TileMapType>
-    constexpr void display(const TileMapType& tileMap, const std::string& title = "") {
-        std::cout << title << (title != "" ? '\n' : '\0');
-        for (int k = 0; k < tileMap.height(); ++k) {
-            std::cout << "Layer " << k << '\n';
-            for (int j = 0; j < tileMap.length(); ++j) {
-                for (int i = 0; i < tileMap.width(); ++i) {
-                    std::cout << internal_to_string(tileMap(i, j, k)) << " ";
-                }
-                std::cout << '\n';
-            }
-        }
-        std::cout << '\n';
     }
 
     template <int widthAtCompileTime, int lengthAtCompileTime = 1, int heightAtCompileTime = 1>
