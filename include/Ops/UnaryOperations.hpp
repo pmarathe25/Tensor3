@@ -1,11 +1,10 @@
-#ifndef RUNTIME_OPS_H
-#define RUNTIME_OPS_H
+#ifndef UNARY_OPS_H
+#define UNARY_OPS_H
 #include "../OpStructs/UnaryOp.hpp"
 #include "./InternalOperations.hpp"
 
 namespace StealthTileMap {
-
-    template <typename LHS, typename UnaryOperation>
+    template <typename UnaryOperation, typename LHS>
     constexpr auto apply(const UnaryOperation& op, const LHS& lhs) noexcept {
         return UnaryOp{op, lhs};
     }

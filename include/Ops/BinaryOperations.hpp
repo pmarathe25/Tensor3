@@ -11,6 +11,12 @@ namespace StealthTileMap {
             "Cannot operate on incompatible arguments");
     }
 
+    template <typename BinaryOperation, typename LHS, typename RHS>
+    constexpr auto apply(const BinaryOperation& op, const LHS& lhs, const RHS& rhs) noexcept {
+        checkTileMapCompatibility<LHS, RHS>();
+        return BinaryOp{op, lhs, rhs};
+    }
+
     template <typename LHS, typename RHS>
     constexpr auto operator+(const LHS& lhs, const RHS& rhs) noexcept {
         checkTileMapCompatibility<LHS, RHS>();

@@ -1,6 +1,10 @@
 #include "TileMap/TileMap.hpp"
 #include <iostream>
 
+float doDoubleAdd(float a, float b) {
+    return a * 2.0f + b;
+}
+
 int main() {
     StealthTileMap::TileMapF<5, 5, 2> test{};
     const StealthTileMap::TileMapF<5, 5, 2> test2{};
@@ -29,13 +33,16 @@ int main() {
     auto testView = StealthTileMap::block<2, 2>(test, 0, 1).eval();
     auto testReshape = StealthTileMap::reshape<2, 4>(testView);
 
-    std::cout << "Original\n" << test << '\n';
+    std::cout << "Test\n" << test << '\n';
     std::cout << "TestView\n" << testView << '\n';
+    std::cout << "Test2\n" << test2 << '\n';
+    std::cout << "Test3\n" << test3 << '\n';
     std::cout << "TestReshape\n" << testReshape << '\n';
     std::cout << "Test && Test2\n" << (test && test2) << '\n';
     std::cout << "Test || Test2\n" << (test || test2) << '\n';
     std::cout << "!Test\n" << !test << '\n';
     std::cout << "Doubled Int Test\n" << StealthTileMap::apply([](float in) -> int {return in * 2;}, test) << '\n';
+    std::cout << "Doubled Add Test\n" << StealthTileMap::apply(doDoubleAdd, test, test3) << '\n';
 
     // Creating TileMap from array
     std::array<float, 4> init{{0, 1, 2, 3}};
