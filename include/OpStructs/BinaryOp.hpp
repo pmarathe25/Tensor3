@@ -6,10 +6,10 @@
 
 namespace StealthTileMap {
     namespace internal {
-        template <typename ReturnType, typename ScalarTypeLHS, typename ScalarTypeRHS, BinaryOperation<ReturnType,
-            ScalarTypeLHS, ScalarTypeRHS> op, typename LHS, typename RHS>
-        struct traits<BinaryOp<ReturnType, ScalarTypeLHS, ScalarTypeRHS, op, LHS, RHS>> {
-            typedef ReturnType ScalarType;
+        template <typename BinaryOperation, typename LHS, typename RHS>
+        struct traits<BinaryOp<BinaryOperation, LHS, RHS>> {
+            typedef typename std::invoke_result<BinaryOperation, typename optimal_scalar_type<LHS>::type,
+                typename optimal_scalar_type<RHS>::type>::type ScalarType;
             // Dimensions
             static constexpr int length = (std::is_scalar<LHS>::value ? internal::traits<RHS>::length : internal::traits<LHS>::length),
                 width = (std::is_scalar<LHS>::value ? internal::traits<RHS>::width : internal::traits<LHS>::width),
@@ -21,14 +21,13 @@ namespace StealthTileMap {
         };
     } /* internal */
 
-    template <typename ReturnType, typename ScalarTypeLHS, typename ScalarTypeRHS, BinaryOperation<ReturnType,
-        ScalarTypeLHS, ScalarTypeRHS> op, typename LHS, typename RHS>
-    class BinaryOp : public TileMapBase<BinaryOp<ReturnType, ScalarTypeLHS, ScalarTypeRHS, op, LHS, RHS>> {
+    template <typename BinaryOperation, typename LHS, typename RHS>
+    class BinaryOp : public TileMapBase<BinaryOp<BinaryOperation, LHS, RHS>> {
         public:
             typedef typename internal::traits<BinaryOp>::ScalarType ScalarType;
 
-            constexpr BinaryOp(const LHS& lhs, const RHS& rhs) noexcept
-                : lhs(lhs), rhs(rhs) { }
+            constexpr BinaryOp(const BinaryOperation& op, const LHS& lhs, const RHS& rhs) noexcept
+                : op{op}, lhs{lhs}, rhs{rhs} { }
 
             constexpr ScalarType operator()(int x, int y, int z) const {
                 if constexpr (std::is_scalar<RHS>::value) {
@@ -66,6 +65,7 @@ namespace StealthTileMap {
         private:
             const LHS& lhs;
             const RHS& rhs;
+            const BinaryOperation& op;
     };
 } /* StealthTileMap */
 

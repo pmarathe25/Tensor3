@@ -4,75 +4,105 @@
 #include <type_traits>
 
 namespace StealthTileMap::internal::ops {
-    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto add(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
-        return lhs + rhs;
-    }
+    // Internal Binary Operations
+    template <typename LHS, typename RHS>
+    struct add {
+        constexpr auto operator()(typename optimal_scalar_type<LHS>::type lhs, typename optimal_scalar_type<RHS>::type rhs) const noexcept {
+            return lhs + rhs;
+        }
+    };
 
-    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto subtract(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
-        return lhs - rhs;
-    }
+    template <typename LHS, typename RHS>
+    struct subtract {
+        constexpr auto operator()(typename optimal_scalar_type<LHS>::type lhs, typename optimal_scalar_type<RHS>::type rhs) const noexcept {
+            return lhs - rhs;
+        }
+    };
 
-    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto multiply(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
-        return lhs * rhs;
-    }
+    template <typename LHS, typename RHS>
+    struct multiply {
+        constexpr auto operator()(typename optimal_scalar_type<LHS>::type lhs, typename optimal_scalar_type<RHS>::type rhs) const noexcept {
+            return lhs * rhs;
+        }
+    };
 
-    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto divide(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
-        return lhs / rhs;
-    }
+    template <typename LHS, typename RHS>
+    struct divide {
+        constexpr auto operator()(typename optimal_scalar_type<LHS>::type lhs, typename optimal_scalar_type<RHS>::type rhs) const noexcept {
+            return lhs / rhs;
+        }
+    };
 
-    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto eq(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
-        return lhs == rhs;
-    }
+    template <typename LHS, typename RHS>
+    struct eq {
+        constexpr auto operator()(typename optimal_scalar_type<LHS>::type lhs, typename optimal_scalar_type<RHS>::type rhs) const noexcept {
+            return lhs == rhs;
+        }
+    };
 
-    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto less(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
-        return lhs < rhs;
-    }
+    template <typename LHS, typename RHS>
+    struct less {
+        constexpr auto operator()(typename optimal_scalar_type<LHS>::type lhs, typename optimal_scalar_type<RHS>::type rhs) const noexcept {
+            return lhs < rhs;
+        }
+    };
 
-    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto lessEq(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
-        return lhs <= rhs;
-    }
+    template <typename LHS, typename RHS>
+    struct lessEq {
+        constexpr auto operator()(typename optimal_scalar_type<LHS>::type lhs, typename optimal_scalar_type<RHS>::type rhs) const noexcept {
+            return lhs <= rhs;
+        }
+    };
 
-    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto greater(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
-        return lhs > rhs;
-    }
+    template <typename LHS, typename RHS>
+    struct greater {
+        constexpr auto operator()(typename optimal_scalar_type<LHS>::type lhs, typename optimal_scalar_type<RHS>::type rhs) const noexcept {
+            return lhs > rhs;
+        }
+    };
 
-    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto greaterEq(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
-        return lhs >= rhs;
-    }
+    template <typename LHS, typename RHS>
+    struct greaterEq {
+        constexpr auto operator()(typename optimal_scalar_type<LHS>::type lhs, typename optimal_scalar_type<RHS>::type rhs) const noexcept {
+            return lhs >= rhs;
+        }
+    };
 
-    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto andOp(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
-        return lhs && rhs;
-    }
+    template <typename LHS, typename RHS>
+    struct andOp {
+        constexpr auto operator()(typename optimal_scalar_type<LHS>::type lhs, typename optimal_scalar_type<RHS>::type rhs) const noexcept {
+            return lhs && rhs;
+        }
+    };
 
-    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto orOp(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
-        return lhs || rhs;
-    }
+    template <typename LHS, typename RHS>
+    struct orOp {
+        constexpr auto operator()(typename optimal_scalar_type<LHS>::type lhs, typename optimal_scalar_type<RHS>::type rhs) const noexcept {
+            return lhs || rhs;
+        }
+    };
 
-    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto min(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
-        return std::min(lhs, rhs);
-    }
+    template <typename LHS, typename RHS>
+    struct min {
+        constexpr auto operator()(typename optimal_scalar_type<LHS>::type lhs, typename optimal_scalar_type<RHS>::type rhs) const noexcept {
+            return std::min(lhs, rhs);
+        }
+    };
 
-    template <typename ScalarTypeLHS, typename ScalarTypeRHS>
-    constexpr auto max(ScalarTypeLHS lhs, ScalarTypeRHS rhs) {
-        return std::max(lhs, rhs);
-    }
+    template <typename LHS, typename RHS>
+    struct max {
+        constexpr auto operator()(typename optimal_scalar_type<LHS>::type lhs, typename optimal_scalar_type<RHS>::type rhs) const noexcept {
+            return std::max(lhs, rhs);
+        }
+    };
 
-    template <typename ScalarTypeLHS>
-    constexpr auto notOp(ScalarTypeLHS lhs) {
-        return !lhs;
-    }
+    // Internal Unary Operations
+    template <typename LHS>
+    struct notOp {
+        constexpr auto operator()(typename optimal_scalar_type<LHS>::type lhs) const noexcept {
+            return !lhs;
+        }
+    };
 
 } /* StealthTileMap::internal::ops */
 

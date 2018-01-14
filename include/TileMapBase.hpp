@@ -46,6 +46,14 @@ namespace StealthTileMap {
             }
     };
 
+    // Utility Functions
+    template <typename TileMapType>
+    struct optimal_scalar_type {
+        typedef typename std::conditional<sizeof(typename internal::traits<TileMapType>::ScalarType) <= sizeof(void*),
+            typename internal::traits<TileMapType>::ScalarType, const typename internal::traits<TileMapType>::ScalarType&>::type type;
+    };
+
+    // Display Functions
     template <typename T>
     constexpr std::string internal_to_string(const T& i) {
         if constexpr (std::is_scalar<T>::value) {

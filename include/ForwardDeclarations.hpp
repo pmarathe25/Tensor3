@@ -21,20 +21,13 @@ namespace StealthTileMap {
     class TileMap;
 
     // Binary Op
-    template <typename ReturnType, typename ScalarTypeLHS, typename ScalarTypeRHS>
-    using BinaryOperation = ReturnType (*)(ScalarTypeLHS, ScalarTypeRHS);
-    template <typename ReturnType, typename ScalarTypeLHS, typename ScalarTypeRHS, BinaryOperation<ReturnType, ScalarTypeLHS, ScalarTypeRHS> op, typename LHS, typename RHS>
+
+    template <typename BinaryOperation, typename LHS, typename RHS>
     class BinaryOp;
 
     // Unary Op
-    template <typename ReturnType, typename ScalarTypeLHS>
-    using UnaryOperation = ReturnType (*)(ScalarTypeLHS);
-    template <typename ReturnType, typename ScalarTypeLHS, UnaryOperation<ReturnType, ScalarTypeLHS> op, typename LHS>
+    template <typename UnaryOperation, typename LHS>
     class UnaryOp;
-
-    // Runtime Op
-    template <typename LHS, typename RuntimeOperation>
-    class RuntimeOp;
 
     // View of a section of a TileMap or OpStruct
     template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename TileMapType,
