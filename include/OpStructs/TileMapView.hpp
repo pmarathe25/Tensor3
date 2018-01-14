@@ -65,6 +65,10 @@ namespace StealthTileMap {
                 return this -> operator()(x);
             }
 
+            constexpr ScalarType& operator[](int x) {
+                return this -> operator()(x);
+            }
+
             constexpr const ScalarType* data() const noexcept {
                 return &(this -> operator()(0));
             }

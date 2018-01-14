@@ -48,7 +48,7 @@ namespace StealthTileMap {
             // Copy
             template <typename OtherTileMap>
             constexpr TileMap(const OtherTileMap& other) noexcept : tiles(sizeAtCompileTime) {
-                copyMultithreaded(other);
+                copy(other);
             }
 
             constexpr TileMap(const TileMap& other) noexcept {
@@ -68,7 +68,7 @@ namespace StealthTileMap {
 
             template <typename OtherTileMap>
             constexpr TileMap& operator=(const OtherTileMap& other) noexcept {
-                copyMultithreaded(other);
+                copy(other);
                 return *this;
             }
 
@@ -98,6 +98,10 @@ namespace StealthTileMap {
             }
 
             constexpr const ScalarType& operator[](int x) const {
+                return tiles[x];
+            }
+
+            constexpr ScalarType& operator[](int x) {
                 return tiles[x];
             }
 
@@ -135,7 +139,7 @@ namespace StealthTileMap {
             std::array<std::thread, NUM_THREADS> copyThreads;
 
             template <typename OtherTileMap>
-            constexpr void copyMultithreaded(const OtherTileMap& other) {
+            constexpr void copy(const OtherTileMap& other) {
                 // Make sure dimensions are compatible
                 static_assert(other.size() == this -> size(), "Cannot copy incompatible TileMaps");
                 // Create threads
