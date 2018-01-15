@@ -27,20 +27,20 @@ namespace StealthTileMap {
             constexpr UnaryOp(const UnaryOperation& op, const LHS& lhs) noexcept
                 : op{op}, lhs{lhs} { }
 
-            constexpr ScalarType operator()(int x, int y, int z) const {
+            constexpr auto operator()(int x, int y, int z) const {
                 return op(lhs(x, y, z));
             }
 
-            constexpr ScalarType operator()(int x, int y) const {
+            constexpr auto operator()(int x, int y) const {
                 return op(lhs(x, y));
             }
 
-            constexpr ScalarType operator()(int x) const {
+            constexpr auto operator()(int x) const {
                 return op(lhs(x));
             }
 
-            constexpr ScalarType operator[](int x) const {
-                return this -> operator()(x);
+            constexpr auto operator[](int x) const {
+                return op(lhs[x]);
             }
         private:
             const LHS& lhs;
