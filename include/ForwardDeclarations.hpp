@@ -7,7 +7,7 @@ namespace StealthTileMap {
     namespace internal {
         template <typename T> struct traits {
             typedef T ScalarType;
-            static constexpr size_t length = 1, width = 1, height = 1, size = 1;
+            static constexpr std::size_t length = 1, width = 1, height = 1, size = 1;
         };
     } /* internal */
 
@@ -16,8 +16,8 @@ namespace StealthTileMap {
     class TileMapBase;
 
     // TileMap
-    template <typename type, size_t widthAtCompileTime, size_t lengthAtCompileTime = 1, size_t heightAtCompileTime = 1,
-        size_t areaAtCompileTime = widthAtCompileTime * lengthAtCompileTime, size_t sizeAtCompileTime
+    template <typename type, std::size_t widthAtCompileTime, std::size_t lengthAtCompileTime = 1, std::size_t heightAtCompileTime = 1,
+        std::size_t areaAtCompileTime = widthAtCompileTime * lengthAtCompileTime, std::size_t sizeAtCompileTime
         = widthAtCompileTime * lengthAtCompileTime * heightAtCompileTime>
     class TileMap;
 
@@ -31,7 +31,7 @@ namespace StealthTileMap {
     class UnaryOp;
 
     // View of a section of a TileMap or OpStruct
-    template <size_t widthAtCompileTime, size_t lengthAtCompileTime, size_t heightAtCompileTime, typename TileMapType,
+    template <std::size_t widthAtCompileTime, std::size_t lengthAtCompileTime, std::size_t heightAtCompileTime, typename TileMapType,
         typename containsData = typename internal::traits<TileMapType>::containsData,
         typename isWritable = typename std::conjunction<containsData, typename internal::traits<TileMapType>::isWritable>::type>
     class TileMapView;
