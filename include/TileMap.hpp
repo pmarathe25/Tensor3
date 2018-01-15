@@ -8,7 +8,6 @@
 #include "./Ops/TileMapViewOperations.hpp"
 #include <stealthutil>
 #include <vector>
-#include <thread>
 
 namespace StealthTileMap {
     constexpr int NUM_THREADS = 8;
@@ -40,14 +39,21 @@ namespace StealthTileMap {
     class TileMap : public TileMapBase<TileMap<type, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime>> {
         public:
             typedef type ScalarType;
-
             static constexpr bool containsData = false;
 
             constexpr TileMap() noexcept : tiles(sizeAtCompileTime) { }
 
+            constexpr TileMap(const std::initializer_list<ScalarType>& other) noexcept : tiles(sizeAtCompileTime) {
+                if (other.size() > sizeAtCompileTime) {
+                    throw std::invalid_argument("Cannot initialize TileMap from incompatible initializer list");
+                }
+                tiles = std::move(other);
+            }
+
             // Copy
             template <typename OtherTileMap>
             constexpr TileMap(const OtherTileMap& other) noexcept : tiles(sizeAtCompileTime) {
+                static_assert(other.size() == this -> size(), "Cannot copy incompatible TileMaps");
                 copy(other);
             }
 
@@ -55,12 +61,25 @@ namespace StealthTileMap {
                 tiles = other.tiles;
             }
 
-            // Move
+            // Move Constructor
             constexpr TileMap(TileMap&& other) noexcept = default;
 
-            // Assignment
+            template <typename OtherType, int width, int length, int height>
+            constexpr TileMap(TileMap<OtherType, width, length, height>&& other) {
+                static_assert(other.size() == this -> size(), "Cannot copy incompatible TileMaps");
+                tiles = std::move(other.elements());
+            }
+
+            // Move Assignment
             constexpr TileMap& operator=(TileMap&& other) noexcept = default;
 
+            template <typename OtherType, int width, int length, int height>
+            constexpr TileMap& operator=(TileMap<OtherType, width, length, height>&& other) {
+                static_assert(other.size() == this -> size(), "Cannot copy incompatible TileMaps");
+                tiles = std::move(other.elements());
+            }
+
+            // Copy Assignment
             constexpr TileMap& operator=(const TileMap& other) noexcept {
                 tiles = other.tiles;
                 return *this;
@@ -68,6 +87,7 @@ namespace StealthTileMap {
 
             template <typename OtherTileMap>
             constexpr TileMap& operator=(const OtherTileMap& other) noexcept {
+                static_assert(other.size() == this -> size(), "Cannot copy incompatible TileMaps");
                 copy(other);
                 return *this;
             }
@@ -115,6 +135,14 @@ namespace StealthTileMap {
                 return tiles.data();
             }
 
+            constexpr const auto& elements() const noexcept {
+                return tiles;
+            }
+
+            constexpr auto& elements() noexcept {
+                return tiles;
+            }
+
             constexpr auto begin() noexcept {
                 return tiles.begin();
             }
@@ -136,13 +164,9 @@ namespace StealthTileMap {
             }
         private:
             std::vector<ScalarType> tiles;
-            std::array<std::thread, NUM_THREADS> copyThreads;
 
             template <typename OtherTileMap>
             constexpr void copy(const OtherTileMap& other) {
-                // Make sure dimensions are compatible
-                static_assert(other.size() == this -> size(), "Cannot copy incompatible TileMaps");
-                // Create threads
                 for (int i = 0; i < this -> size(); ++i) {
                     tiles[i] = other[i];
                 }
