@@ -24,6 +24,7 @@ int main() {
 
     auto testLayer = StealthTileMap::layer(test, 0);
     std::cout << testLayer << '\n';
+    std::cout << (test + test2)(0, 0, 1) << '\n';
     std::cout << StealthTileMap::layer(test + test2, 1) << '\n';
     std::cout << StealthTileMap::layer(test2, 1) << '\n';
 

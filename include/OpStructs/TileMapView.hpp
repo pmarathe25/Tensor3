@@ -38,35 +38,35 @@ namespace StealthTileMap {
             }
 
             constexpr ScalarType& operator()(int x, int y) {
-                int z = y / this -> length();
-                y %= this -> length();
-                return (*this)(x, y, z);
+                return tileMap(x + minX, y + minY);
             }
 
             constexpr const ScalarType& operator()(int x, int y) const {
-                int z = y / this -> length();
-                y %= this -> length();
-                return (*this)(x, y, z);
+                return tileMap(x + minX, y + minY);
             }
 
             constexpr ScalarType& operator()(int x) {
-                int y = x / this -> width();
-                x %= this -> width();
-                return (*this)(x, y);
+                return tileMap(x + minX);
             }
 
             constexpr const ScalarType& operator()(int x) const {
-                int y = x / this -> width();
-                x %= this -> width();
-                return (*this)(x, y);
+                return tileMap(x + minX);
             }
 
             constexpr const ScalarType& operator[](int x) const {
-                return this -> operator()(x);
+                int y = x / this -> width();
+                int z = y / this -> length();
+                x %= this -> width();
+                y %= this -> length();
+                return this -> operator()(x, y, z);
             }
 
             constexpr ScalarType& operator[](int x) {
-                return this -> operator()(x);
+                int y = x / this -> width();
+                int z = y / this -> length();
+                x %= this -> width();
+                y %= this -> length();
+                return this -> operator()(x, y, z);
             }
 
             constexpr const ScalarType* data() const noexcept {
@@ -96,19 +96,19 @@ namespace StealthTileMap {
             }
 
             constexpr const ScalarType& operator()(int x, int y) const {
-                int z = y / this -> length();
-                y %= this -> length();
-                return (*this)(x, y, z);
+                return tileMap(x + minX, y + minY);
             }
 
             constexpr const ScalarType& operator()(int x) const {
-                int y = x / this -> width();
-                x %= this -> width();
-                return (*this)(x, y);
+                return tileMap(x + minX);
             }
 
             constexpr const ScalarType& operator[](int x) const {
-                return this -> operator()(x);
+                int y = x / this -> width();
+                int z = y / this -> length();
+                x %= this -> width();
+                y %= this -> length();
+                return this -> operator()(x, y, z);
             }
 
             constexpr const ScalarType* data() const noexcept {
@@ -134,19 +134,19 @@ namespace StealthTileMap {
             }
 
             constexpr ScalarType operator()(int x, int y) const {
-                int z = y / this -> length();
-                y %= this -> length();
-                return (*this)(x, y, z);
+                return tileMap(x + minX, y + minY);
             }
 
             constexpr ScalarType operator()(int x) const {
-                int y = x / this -> width();
-                x %= this -> width();
-                return (*this)(x, y);
+                return tileMap(x + minX);
             }
 
             constexpr ScalarType operator[](int x) const {
-                return this -> operator()(x);
+                int y = x / this -> width();
+                int z = y / this -> length();
+                x %= this -> width();
+                y %= this -> length();
+                return this -> operator()(x, y, z);
             }
         private:
             const TileMapType& tileMap;
