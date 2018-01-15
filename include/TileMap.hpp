@@ -10,32 +10,30 @@
 #include <vector>
 
 namespace StealthTileMap {
-    constexpr int NUM_THREADS = 8;
-
     namespace internal {
-        template <typename type, int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
-            int areaAtCompileTime, int sizeAtCompileTime>
+        template <typename type, size_t widthAtCompileTime, size_t lengthAtCompileTime, size_t heightAtCompileTime,
+            size_t areaAtCompileTime, size_t sizeAtCompileTime>
         struct traits<TileMap<type, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime>> {
             typedef type ScalarType;
-            static constexpr int width = widthAtCompileTime, length = lengthAtCompileTime, height = heightAtCompileTime,
+            static constexpr size_t width = widthAtCompileTime, length = lengthAtCompileTime, height = heightAtCompileTime,
                 area = areaAtCompileTime, size = sizeAtCompileTime;
             typedef std::true_type containsData;
             typedef std::true_type isWritable;
         };
 
-        template <typename type, int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
-            int areaAtCompileTime, int sizeAtCompileTime>
+        template <typename type, size_t widthAtCompileTime, size_t lengthAtCompileTime, size_t heightAtCompileTime,
+            size_t areaAtCompileTime, size_t sizeAtCompileTime>
         struct traits<const TileMap<type, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime>> {
             typedef type ScalarType;
-            static constexpr int width = widthAtCompileTime, length = lengthAtCompileTime, height = heightAtCompileTime,
+            static constexpr size_t width = widthAtCompileTime, length = lengthAtCompileTime, height = heightAtCompileTime,
                 area = areaAtCompileTime, size = sizeAtCompileTime;
             typedef std::true_type containsData;
             typedef std::false_type isWritable;
         };
     } /* internal */
 
-    template <typename type, int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
-        int areaAtCompileTime, int sizeAtCompileTime>
+    template <typename type, size_t widthAtCompileTime, size_t lengthAtCompileTime, size_t heightAtCompileTime,
+        size_t areaAtCompileTime, size_t sizeAtCompileTime>
     class TileMap : public TileMapBase<TileMap<type, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime>> {
         public:
             typedef type ScalarType;
@@ -64,7 +62,7 @@ namespace StealthTileMap {
             // Move Constructor
             constexpr TileMap(TileMap&& other) noexcept = default;
 
-            template <typename OtherType, int width, int length, int height>
+            template <typename OtherType, size_t width, size_t length, size_t height>
             constexpr TileMap(TileMap<OtherType, width, length, height>&& other) {
                 static_assert(other.size() == this -> size(), "Cannot copy incompatible TileMaps");
                 tiles = std::move(other.elements());
@@ -73,7 +71,7 @@ namespace StealthTileMap {
             // Move Assignment
             constexpr TileMap& operator=(TileMap&& other) noexcept = default;
 
-            template <typename OtherType, int width, int length, int height>
+            template <typename OtherType, size_t width, size_t length, size_t height>
             constexpr TileMap& operator=(TileMap<OtherType, width, length, height>&& other) {
                 static_assert(other.size() == this -> size(), "Cannot copy incompatible TileMaps");
                 tiles = std::move(other.elements());
@@ -94,35 +92,35 @@ namespace StealthTileMap {
             }
 
             // Accessors
-            constexpr auto& operator()(int x, int y, int z) {
+            constexpr auto& operator()(size_t x, size_t y, size_t z) {
                 return tiles[this -> area() * z + this -> width() * y + x];
             }
 
-            constexpr const auto& operator()(int x, int y, int z) const {
+            constexpr const auto& operator()(size_t x, size_t y, size_t z) const {
                 return tiles[this -> area() * z + this -> width() * y + x];
             }
 
-            constexpr auto& operator()(int x, int y) {
+            constexpr auto& operator()(size_t x, size_t y) {
                 return tiles[this -> width() * y + x];
             }
 
-            constexpr const auto& operator()(int x, int y) const {
+            constexpr const auto& operator()(size_t x, size_t y) const {
                 return tiles[this -> width() * y + x];
             }
 
-            constexpr auto& operator()(int x) {
+            constexpr auto& operator()(size_t x) {
                 return tiles[x];
             }
 
-            constexpr const auto& operator()(int x) const {
+            constexpr const auto& operator()(size_t x) const {
                 return tiles[x];
             }
 
-            constexpr const auto& operator[](int x) const {
+            constexpr const auto& operator[](size_t x) const {
                 return tiles[x];
             }
 
-            constexpr auto& operator[](int x) {
+            constexpr auto& operator[](size_t x) {
                 return tiles[x];
             }
 
@@ -168,13 +166,13 @@ namespace StealthTileMap {
 
             template <typename OtherTileMap>
             constexpr void copy(const OtherTileMap& other) {
-                for (int i = 0; i < this -> size(); ++i) {
+                for (size_t i = 0; i < this -> size(); ++i) {
                     tiles[i] = other[i];
                 }
             }
     };
 
-    template <int width, int length = 1, int height = 1, typename LHS>
+    template <size_t width, size_t length = 1, size_t height = 1, typename LHS>
     constexpr auto reshape(LHS&& lhs) {
         typedef typename std::remove_reference<LHS>::type LHSRawType;
         typedef typename internal::traits<LHSRawType>::ScalarType ScalarType;
@@ -182,10 +180,13 @@ namespace StealthTileMap {
         return TileMap<ScalarType, width, length, height>{std::forward<LHS&&>(lhs)};
     }
 
-    template <int widthAtCompileTime, int lengthAtCompileTime = 1, int heightAtCompileTime = 1>
+    template <size_t widthAtCompileTime, size_t lengthAtCompileTime = 1, size_t heightAtCompileTime = 1>
+    using TileMapI = TileMap<int, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime>;
+
+    template <size_t widthAtCompileTime, size_t lengthAtCompileTime = 1, size_t heightAtCompileTime = 1>
     using TileMapF = TileMap<float, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime>;
 
-    template <int widthAtCompileTime, int lengthAtCompileTime = 1, int heightAtCompileTime = 1>
+    template <size_t widthAtCompileTime, size_t lengthAtCompileTime = 1, size_t heightAtCompileTime = 1>
     using TileMapD = TileMap<double, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime>;
 } /* StealthTileMap */
 

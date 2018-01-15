@@ -6,27 +6,27 @@
 
 namespace StealthTileMap {
     template <typename LHS>
-    constexpr auto layer(LHS&& lhs, int layerNum = 0) {
+    constexpr auto layer(LHS&& lhs, size_t layerNum = 0) {
         typedef typename std::remove_reference<LHS>::type LHSRawType;
         return TileMapView<internal::traits<LHSRawType>::width, internal::traits<LHSRawType>::length, 1, LHSRawType>
             {std::forward<LHS&&>(lhs), 0, 0, layerNum};
     }
 
-    template <int width, int length, int height, typename LHS>
-    constexpr auto block(LHS&& lhs, int minX = 0, int minY = 0, int minZ = 0) {
+    template <size_t width, size_t length, size_t height, typename LHS>
+    constexpr auto block(LHS&& lhs, size_t minX = 0, size_t minY = 0, size_t minZ = 0) {
         typedef typename std::remove_reference<LHS>::type LHSRawType;
         return TileMapView<width, length, height, LHSRawType>{std::forward<LHS&&>(lhs), minX, minY, minZ};
     }
 
-    template <int width, int length, typename LHS>
-    constexpr auto block(LHS&& lhs, int minX = 0, int minY = 0) {
+    template <size_t width, size_t length, typename LHS>
+    constexpr auto block(LHS&& lhs, size_t minX = 0, size_t minY = 0) {
         typedef typename std::remove_reference<LHS>::type LHSRawType;
         return TileMapView<width, length, internal::traits<LHSRawType>::height, LHSRawType>
             {std::forward<LHS&&>(lhs), minX, minY, 0};
     }
 
-    template <int width, typename LHS>
-    constexpr auto block(LHS&& lhs, int minX = 0) {
+    template <size_t width, typename LHS>
+    constexpr auto block(LHS&& lhs, size_t minX = 0) {
         typedef typename std::remove_reference<LHS>::type LHSRawType;
         return TileMapView<width, internal::traits<LHSRawType>::length, internal::traits<LHSRawType>::height, LHSRawType>
             {std::forward<LHS&&>(lhs), minX, 0, 0};
