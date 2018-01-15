@@ -5,9 +5,9 @@
 
 namespace StealthTileMap {
     namespace internal {
-        template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename TileMapType, typename dat, typename writable>
-        struct traits<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, dat, writable>> {
-            typedef typename internal::traits<TileMapType>::ScalarType ScalarType;
+        template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename InternalTileMap, typename dat, typename writable>
+        struct traits<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, dat, writable>> {
+            typedef typename internal::traits<InternalTileMap>::ScalarType ScalarType;
             // Dimensions
             static constexpr int length = lengthAtCompileTime,
                 width = widthAtCompileTime,
@@ -20,13 +20,13 @@ namespace StealthTileMap {
     } /* internal */
 
     // Writable view
-    template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename TileMapType>
-    class TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, std::true_type, std::true_type>
-        : public TileMapBase<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, std::true_type, std::true_type>> {
+    template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename InternalTileMap>
+    class TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::true_type, std::true_type>
+        : public TileMapBase<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::true_type, std::true_type>> {
         public:
             typedef typename internal::traits<TileMapView>::ScalarType ScalarType;
 
-            constexpr TileMapView(TileMapType& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
+            constexpr TileMapView(InternalTileMap& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
                 : tileMap{tileMap}, minX{minX}, minY{minY}, minZ{minZ},
                 offset1D{minX + minY * widthAtCompileTime + minZ * widthAtCompileTime * lengthAtCompileTime},
                 offset2D{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
@@ -79,19 +79,19 @@ namespace StealthTileMap {
                 return &(this -> operator[](0));
             }
         private:
-            TileMapType& tileMap;
+            InternalTileMap& tileMap;
             const int minX, minY, minZ;
             const int offset1D, offset2D;
     };
 
     // Const view
-    template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename TileMapType>
-    class TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, std::true_type, std::false_type>
-        : public TileMapBase<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, std::true_type, std::false_type>> {
+    template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename InternalTileMap>
+    class TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::true_type, std::false_type>
+        : public TileMapBase<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::true_type, std::false_type>> {
         public:
             typedef typename internal::traits<TileMapView>::ScalarType ScalarType;
 
-            constexpr TileMapView(const TileMapType& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
+            constexpr TileMapView(const InternalTileMap& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
                 : tileMap{tileMap}, minX{minX}, minY{minY}, minZ{minZ},
                 offset1D{minX + minY * widthAtCompileTime + minZ * widthAtCompileTime * lengthAtCompileTime},
                 offset2D{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
@@ -120,19 +120,19 @@ namespace StealthTileMap {
                 return &(this -> operator[](0));
             }
         private:
-            const TileMapType& tileMap;
+            const InternalTileMap& tileMap;
             const int minX, minY, minZ;
             const int offset1D, offset2D;
     };
 
     // A view of a temporary object. Cannot be modified.
-    template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename TileMapType>
-    class TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, std::false_type>
-        : public TileMapBase<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, TileMapType, std::false_type>> {
+    template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename InternalTileMap>
+    class TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::false_type>
+        : public TileMapBase<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::false_type>> {
         public:
             typedef typename internal::traits<TileMapView>::ScalarType ScalarType;
 
-            constexpr TileMapView(const TileMapType& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
+            constexpr TileMapView(const InternalTileMap& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
                 : tileMap{tileMap}, minX{minX}, minY{minY}, minZ{minZ},
                 offset1D{minX + minY * widthAtCompileTime + minZ * widthAtCompileTime * lengthAtCompileTime},
                 offset2D{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
@@ -157,7 +157,7 @@ namespace StealthTileMap {
                 return this -> operator()(x, y, z);
             }
         private:
-            const TileMapType& tileMap;
+            const InternalTileMap& tileMap;
             const int minX, minY, minZ;
             const int offset1D, offset2D;
     };
