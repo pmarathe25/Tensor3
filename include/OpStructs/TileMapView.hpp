@@ -5,11 +5,11 @@
 
 namespace StealthTileMap {
     namespace internal {
-        template <unsigned widthAtCompileTime, unsigned lengthAtCompileTime, unsigned heightAtCompileTime, typename InternalTileMap, typename dat, typename writable>
+        template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename InternalTileMap, typename dat, typename writable>
         struct traits<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, dat, writable>> {
             typedef typename internal::traits<InternalTileMap>::ScalarType ScalarType;
             // Dimensions
-            static constexpr unsigned length = lengthAtCompileTime,
+            static constexpr int length = lengthAtCompileTime,
                 width = widthAtCompileTime,
                 height = heightAtCompileTime,
                 area = length * width,
@@ -20,52 +20,52 @@ namespace StealthTileMap {
     } /* internal */
 
     // Writable view
-    template <unsigned widthAtCompileTime, unsigned lengthAtCompileTime, unsigned heightAtCompileTime, typename InternalTileMap>
+    template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename InternalTileMap>
     class TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::true_type, std::true_type>
         : public TileMapBase<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::true_type, std::true_type>> {
         public:
             typedef typename internal::traits<TileMapView>::ScalarType ScalarType;
 
-            constexpr TileMapView(InternalTileMap& tileMap, unsigned minX = 0, unsigned minY = 0, unsigned minZ = 0) noexcept
+            constexpr TileMapView(InternalTileMap& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
                 : tileMap{tileMap}, minX{minX}, minY{minY}, minZ{minZ},
                 offset1D{minX + minY * widthAtCompileTime + minZ * widthAtCompileTime * lengthAtCompileTime},
                 offset2D{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
 
-            constexpr auto& operator()(unsigned x, unsigned y, unsigned z) {
+            constexpr auto& operator()(int x, int y, int z) {
                 return tileMap(x + minX, y + minY, z + minZ);
             }
 
-            constexpr const auto& operator()(unsigned x, unsigned y, unsigned z) const {
+            constexpr const auto& operator()(int x, int y, int z) const {
                 return tileMap(x + minX, y + minY, z + minZ);
             }
 
-            constexpr auto& operator()(unsigned x, unsigned y) {
+            constexpr auto& operator()(int x, int y) {
                 return tileMap(x + offset2D, y + minY);
             }
 
-            constexpr const auto& operator()(unsigned x, unsigned y) const {
+            constexpr const auto& operator()(int x, int y) const {
                 return tileMap(x + offset2D, y + minY);
             }
 
-            constexpr auto& operator()(unsigned x) {
+            constexpr auto& operator()(int x) {
                 return tileMap(x + offset1D);
             }
 
-            constexpr const auto& operator()(unsigned x) const {
+            constexpr const auto& operator()(int x) const {
                 return tileMap(x + offset1D);
             }
 
-            constexpr const auto& operator[](unsigned x) const {
-                unsigned y = x / this -> width();
-                unsigned z = y / this -> length();
+            constexpr const auto& operator[](int x) const {
+                int y = x / this -> width();
+                int z = y / this -> length();
                 x %= this -> width();
                 y %= this -> length();
                 return this -> operator()(x, y, z);
             }
 
-            constexpr auto& operator[](unsigned x) {
-                unsigned y = x / this -> width();
-                unsigned z = y / this -> length();
+            constexpr auto& operator[](int x) {
+                int y = x / this -> width();
+                int z = y / this -> length();
                 x %= this -> width();
                 y %= this -> length();
                 return this -> operator()(x, y, z);
@@ -80,37 +80,37 @@ namespace StealthTileMap {
             }
         private:
             InternalTileMap& tileMap;
-            const unsigned minX, minY, minZ;
-            const unsigned offset1D, offset2D;
+            const int minX, minY, minZ;
+            const int offset1D, offset2D;
     };
 
     // Const view
-    template <unsigned widthAtCompileTime, unsigned lengthAtCompileTime, unsigned heightAtCompileTime, typename InternalTileMap>
+    template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename InternalTileMap>
     class TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::true_type, std::false_type>
         : public TileMapBase<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::true_type, std::false_type>> {
         public:
             typedef typename internal::traits<TileMapView>::ScalarType ScalarType;
 
-            constexpr TileMapView(const InternalTileMap& tileMap, unsigned minX = 0, unsigned minY = 0, unsigned minZ = 0) noexcept
+            constexpr TileMapView(const InternalTileMap& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
                 : tileMap{tileMap}, minX{minX}, minY{minY}, minZ{minZ},
                 offset1D{minX + minY * widthAtCompileTime + minZ * widthAtCompileTime * lengthAtCompileTime},
                 offset2D{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
 
-            constexpr const auto& operator()(unsigned x, unsigned y, unsigned z) const {
+            constexpr const auto& operator()(int x, int y, int z) const {
                 return tileMap(x + minX, y + minY, z + minZ);
             }
 
-            constexpr const auto& operator()(unsigned x, unsigned y) const {
+            constexpr const auto& operator()(int x, int y) const {
                 return tileMap(x + offset2D, y + minY);
             }
 
-            constexpr const auto& operator()(unsigned x) const {
+            constexpr const auto& operator()(int x) const {
                 return tileMap(x + offset1D);
             }
 
-            constexpr const auto& operator[](unsigned x) const {
-                unsigned y = x / this -> width();
-                unsigned z = y / this -> length();
+            constexpr const auto& operator[](int x) const {
+                int y = x / this -> width();
+                int z = y / this -> length();
                 x %= this -> width();
                 y %= this -> length();
                 return this -> operator()(x, y, z);
@@ -121,45 +121,45 @@ namespace StealthTileMap {
             }
         private:
             const InternalTileMap& tileMap;
-            const unsigned minX, minY, minZ;
-            const unsigned offset1D, offset2D;
+            const int minX, minY, minZ;
+            const int offset1D, offset2D;
     };
 
     // A view of a temporary object. Cannot be modified.
-    template <unsigned widthAtCompileTime, unsigned lengthAtCompileTime, unsigned heightAtCompileTime, typename InternalTileMap>
+    template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename InternalTileMap>
     class TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::false_type>
         : public TileMapBase<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::false_type>> {
         public:
             typedef typename internal::traits<TileMapView>::ScalarType ScalarType;
 
-            constexpr TileMapView(const InternalTileMap& tileMap, unsigned minX = 0, unsigned minY = 0, unsigned minZ = 0) noexcept
+            constexpr TileMapView(const InternalTileMap& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
                 : tileMap{tileMap}, minX{minX}, minY{minY}, minZ{minZ},
                 offset1D{minX + minY * widthAtCompileTime + minZ * widthAtCompileTime * lengthAtCompileTime},
                 offset2D{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
 
-            constexpr auto operator()(unsigned x, unsigned y, unsigned z) const {
+            constexpr auto operator()(int x, int y, int z) const {
                 return tileMap(x + minX, y + minY, z + minZ);
             }
 
-            constexpr auto operator()(unsigned x, unsigned y) const {
+            constexpr auto operator()(int x, int y) const {
                 return tileMap(x + offset2D, y + minY);
             }
 
-            constexpr auto operator()(unsigned x) const {
+            constexpr auto operator()(int x) const {
                 return tileMap(x + offset1D);
             }
 
-            constexpr auto operator[](unsigned x) const {
-                unsigned y = x / this -> width();
-                unsigned z = y / this -> length();
+            constexpr auto operator[](int x) const {
+                int y = x / this -> width();
+                int z = y / this -> length();
                 x %= this -> width();
                 y %= this -> length();
                 return this -> operator()(x, y, z);
             }
         private:
             const InternalTileMap& tileMap;
-            const unsigned minX, minY, minZ;
-            const unsigned offset1D, offset2D;
+            const int minX, minY, minZ;
+            const int offset1D, offset2D;
     };
 
 } /* StealthTileMap */

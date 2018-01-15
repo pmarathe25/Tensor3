@@ -9,39 +9,39 @@ namespace StealthTileMap {
         public:
             typedef typename internal::traits<Derived>::ScalarType ScalarType;
             // Dimensions
-            static constexpr unsigned width() noexcept {
+            static constexpr int width() noexcept {
                 return internal::traits<Derived>::width;
             }
 
-            static constexpr unsigned length() noexcept {
+            static constexpr int length() noexcept {
                 return internal::traits<Derived>::length;
             }
 
-            static constexpr unsigned height() noexcept {
+            static constexpr int height() noexcept {
                 return internal::traits<Derived>::height;
             }
 
-            static constexpr unsigned area() noexcept {
+            static constexpr int area() noexcept {
                 return internal::traits<Derived>::area;
             }
 
-            static constexpr unsigned size() noexcept {
+            static constexpr int size() noexcept {
                 return internal::traits<Derived>::size;
             }
 
-            constexpr auto operator()(unsigned x, unsigned y, unsigned z) const {
+            constexpr auto operator()(int x, int y, int z) const {
                 return static_cast<const Derived*>(this) -> operator()(x, y, z);
             }
 
-            constexpr auto operator()(unsigned x, unsigned y) const {
+            constexpr auto operator()(int x, int y) const {
                 return static_cast<const Derived*>(this) -> operator()(x, y);
             }
 
-            constexpr auto operator()(unsigned x) const {
+            constexpr auto operator()(int x) const {
                 return static_cast<const Derived*>(this) -> operator()(x);
             }
 
-            constexpr auto operator[](unsigned x) const {
+            constexpr auto operator[](int x) const {
                 return static_cast<const Derived*>(this) -> operator[](x);
             }
 
@@ -74,10 +74,10 @@ namespace StealthTileMap {
 
     template <typename Derived>
     std::ostream& operator<<(std::ostream& os, const TileMapBase<Derived>& tileMap) {
-        for (unsigned k = 0; k < tileMap.height(); ++k) {
+        for (int k = 0; k < tileMap.height(); ++k) {
             os << "Layer " << k << '\n';
-            for (unsigned j = 0; j < tileMap.length(); ++j) {
-                for (unsigned i = 0; i < tileMap.width(); ++i) {
+            for (int j = 0; j < tileMap.length(); ++j) {
+                for (int i = 0; i < tileMap.width(); ++i) {
                     os << internal_to_string(tileMap(i, j, k)) << " ";
                 }
                 os << '\n';

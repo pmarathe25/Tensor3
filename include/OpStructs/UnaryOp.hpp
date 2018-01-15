@@ -9,7 +9,7 @@ namespace StealthTileMap {
         struct traits<UnaryOp<UnaryOperation, LHS>> {
             typedef typename std::invoke_result<UnaryOperation, typename optimal_scalar_type<LHS>::type>::type ScalarType;
             // Dimensions
-            static constexpr unsigned length = internal::traits<LHS>::length,
+            static constexpr int length = internal::traits<LHS>::length,
                 width = internal::traits<LHS>::width,
                 height = internal::traits<LHS>::height,
                 area = internal::traits<LHS>::area,
@@ -27,19 +27,19 @@ namespace StealthTileMap {
             constexpr UnaryOp(const UnaryOperation& op, const LHS& lhs) noexcept
                 : op{op}, lhs{lhs} { }
 
-            constexpr auto operator()(unsigned x, unsigned y, unsigned z) const {
+            constexpr auto operator()(int x, int y, int z) const {
                 return op(lhs(x, y, z));
             }
 
-            constexpr auto operator()(unsigned x, unsigned y) const {
+            constexpr auto operator()(int x, int y) const {
                 return op(lhs(x, y));
             }
 
-            constexpr auto operator()(unsigned x) const {
+            constexpr auto operator()(int x) const {
                 return op(lhs(x));
             }
 
-            constexpr auto operator[](unsigned x) const {
+            constexpr auto operator[](int x) const {
                 return op(lhs[x]);
             }
         private:
