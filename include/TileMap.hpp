@@ -77,6 +77,7 @@ namespace StealthTileMap {
             constexpr TileMap& operator=(TileMap<OtherType, width, length, height>&& other) {
                 static_assert(other.size() == this -> size(), "Cannot copy incompatible TileMaps");
                 tiles = std::move(other.elements());
+                return (*this);
             }
 
             // Copy Assignment
