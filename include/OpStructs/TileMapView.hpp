@@ -31,31 +31,31 @@ namespace StealthTileMap {
                 offset1D{minX + minY * widthAtCompileTime + minZ * widthAtCompileTime * lengthAtCompileTime},
                 offset2D{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
 
-            constexpr ScalarType& operator()(int x, int y, int z) {
+            constexpr auto& operator()(int x, int y, int z) {
                 return tileMap(x + minX, y + minY, z + minZ);
             }
 
-            constexpr const ScalarType& operator()(int x, int y, int z) const {
+            constexpr const auto& operator()(int x, int y, int z) const {
                 return tileMap(x + minX, y + minY, z + minZ);
             }
 
-            constexpr ScalarType& operator()(int x, int y) {
+            constexpr auto& operator()(int x, int y) {
                 return tileMap(x + offset2D, y + minY);
             }
 
-            constexpr const ScalarType& operator()(int x, int y) const {
+            constexpr const auto& operator()(int x, int y) const {
                 return tileMap(x + offset2D, y + minY);
             }
 
-            constexpr ScalarType& operator()(int x) {
+            constexpr auto& operator()(int x) {
                 return tileMap(x + offset1D);
             }
 
-            constexpr const ScalarType& operator()(int x) const {
+            constexpr const auto& operator()(int x) const {
                 return tileMap(x + offset1D);
             }
 
-            constexpr const ScalarType& operator[](int x) const {
+            constexpr const auto& operator[](int x) const {
                 int y = x / this -> width();
                 int z = y / this -> length();
                 x %= this -> width();
@@ -63,7 +63,7 @@ namespace StealthTileMap {
                 return this -> operator()(x, y, z);
             }
 
-            constexpr ScalarType& operator[](int x) {
+            constexpr auto& operator[](int x) {
                 int y = x / this -> width();
                 int z = y / this -> length();
                 x %= this -> width();
@@ -71,11 +71,11 @@ namespace StealthTileMap {
                 return this -> operator()(x, y, z);
             }
 
-            constexpr const ScalarType* data() const noexcept {
+            constexpr const auto* data() const noexcept {
                 return &(this -> operator[](0));
             }
 
-            constexpr ScalarType* data() noexcept {
+            constexpr auto* data() noexcept {
                 return &(this -> operator[](0));
             }
         private:
@@ -96,19 +96,19 @@ namespace StealthTileMap {
                 offset1D{minX + minY * widthAtCompileTime + minZ * widthAtCompileTime * lengthAtCompileTime},
                 offset2D{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
 
-            constexpr const ScalarType& operator()(int x, int y, int z) const {
+            constexpr const auto& operator()(int x, int y, int z) const {
                 return tileMap(x + minX, y + minY, z + minZ);
             }
 
-            constexpr const ScalarType& operator()(int x, int y) const {
+            constexpr const auto& operator()(int x, int y) const {
                 return tileMap(x + offset2D, y + minY);
             }
 
-            constexpr const ScalarType& operator()(int x) const {
+            constexpr const auto& operator()(int x) const {
                 return tileMap(x + offset1D);
             }
 
-            constexpr const ScalarType& operator[](int x) const {
+            constexpr const auto& operator[](int x) const {
                 int y = x / this -> width();
                 int z = y / this -> length();
                 x %= this -> width();
@@ -116,7 +116,7 @@ namespace StealthTileMap {
                 return this -> operator()(x, y, z);
             }
 
-            constexpr const ScalarType* data() const noexcept {
+            constexpr const auto* data() const noexcept {
                 return &(this -> operator[](0));
             }
         private:
@@ -137,19 +137,19 @@ namespace StealthTileMap {
                 offset1D{minX + minY * widthAtCompileTime + minZ * widthAtCompileTime * lengthAtCompileTime},
                 offset2D{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
 
-            constexpr ScalarType operator()(int x, int y, int z) const {
+            constexpr auto operator()(int x, int y, int z) const {
                 return tileMap(x + minX, y + minY, z + minZ);
             }
 
-            constexpr ScalarType operator()(int x, int y) const {
+            constexpr auto operator()(int x, int y) const {
                 return tileMap(x + offset2D, y + minY);
             }
 
-            constexpr ScalarType operator()(int x) const {
+            constexpr auto operator()(int x) const {
                 return tileMap(x + offset1D);
             }
 
-            constexpr ScalarType operator[](int x) const {
+            constexpr auto operator[](int x) const {
                 int y = x / this -> width();
                 int z = y / this -> length();
                 x %= this -> width();

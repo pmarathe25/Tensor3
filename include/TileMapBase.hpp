@@ -42,7 +42,7 @@ namespace StealthTileMap {
             }
 
             constexpr auto operator[](int x) const {
-                return static_cast<const Derived*>(this) -> operator()(x);
+                return static_cast<const Derived*>(this) -> operator[](x);
             }
 
             constexpr TileMap<ScalarType, width(), length(), height()> eval() const {

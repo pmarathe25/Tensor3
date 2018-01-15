@@ -35,15 +35,15 @@ int main() {
     std::cout << "TestView at 1, 1: " << testView(1, 1) << '\n';
     std::cout << "TestView\n" << testView << '\n';
 
-    // std::cout << "Test\n" << test << '\n';
-    // std::cout << "Test2\n" << test2 << '\n';
-    // std::cout << "Test3\n" << test3 << '\n';
-    // std::cout << "TestReshape\n" << testReshape << '\n';
-    // std::cout << "Test && Test2\n" << (test && test2) << '\n';
-    // std::cout << "Test || Test2\n" << (test || test2) << '\n';
-    // std::cout << "!Test\n" << !test << '\n';
-    // std::cout << "Doubled Int Test\n" << StealthTileMap::apply([](float in) -> int {return in * 2;}, test) << '\n';
-    // std::cout << "Doubled Add Test\n" << StealthTileMap::apply(doDoubleAdd, test, test3) << '\n';
+    std::cout << "Test\n" << test << '\n';
+    std::cout << "Test2\n" << test2 << '\n';
+    std::cout << "Test3\n" << test3 << '\n';
+    std::cout << "TestReshape\n" << testReshape << '\n';
+    std::cout << "Test && Test2\n" << (test && test2) << '\n';
+    std::cout << "Test || Test2\n" << (test || test2) << '\n';
+    std::cout << "!Test\n" << !test << '\n';
+    std::cout << "Doubled Int Test\n" << StealthTileMap::apply([](float in) -> int {return in * 2;}, test) << '\n';
+    std::cout << "Doubled Add Test\n" << StealthTileMap::apply(doDoubleAdd, test, test3) << '\n';
 
     // Creating TileMap from array
     std::array<float, 4> init{{0, 1, 2, 3}};

@@ -73,61 +73,61 @@ namespace StealthTileMap {
             }
 
             // Accessors
-            constexpr ScalarType& operator()(int x, int y, int z) {
+            constexpr auto& operator()(int x, int y, int z) {
                 return tiles[this -> area() * z + this -> width() * y + x];
             }
 
-            constexpr const ScalarType& operator()(int x, int y, int z) const {
+            constexpr const auto& operator()(int x, int y, int z) const {
                 return tiles[this -> area() * z + this -> width() * y + x];
             }
 
-            constexpr ScalarType& operator()(int x, int y) {
+            constexpr auto& operator()(int x, int y) {
                 return tiles[this -> width() * y + x];
             }
 
-            constexpr const ScalarType& operator()(int x, int y) const {
+            constexpr const auto& operator()(int x, int y) const {
                 return tiles[this -> width() * y + x];
             }
 
-            constexpr ScalarType& operator()(int x) {
+            constexpr auto& operator()(int x) {
                 return tiles[x];
             }
 
-            constexpr const ScalarType& operator()(int x) const {
+            constexpr const auto& operator()(int x) const {
                 return tiles[x];
             }
 
-            constexpr const ScalarType& operator[](int x) const {
+            constexpr const auto& operator[](int x) const {
                 return tiles[x];
             }
 
-            constexpr ScalarType& operator[](int x) {
+            constexpr auto& operator[](int x) {
                 return tiles[x];
             }
 
-            constexpr const ScalarType* data() const {
+            constexpr const auto* data() const {
                 static_assert(!std::is_same<ScalarType, bool>::value, "Cannot access data() member of boolean TileMap");
                 return tiles.data();
             }
 
-            constexpr ScalarType* data() {
+            constexpr auto* data() {
                 static_assert(!std::is_same<ScalarType, bool>::value, "Cannot access data() member of boolean TileMap");
                 return tiles.data();
             }
 
-            constexpr typename std::vector<ScalarType>::iterator begin() noexcept {
+            constexpr auto begin() noexcept {
                 return tiles.begin();
             }
 
-            constexpr typename std::vector<ScalarType>::const_iterator cbegin() const noexcept {
+            constexpr auto cbegin() const noexcept {
                 return tiles.cbegin();
             }
 
-            constexpr typename std::vector<ScalarType>::iterator end() noexcept {
+            constexpr auto end() noexcept {
                 return tiles.end();
             }
 
-            constexpr typename std::vector<ScalarType>::const_iterator cend() const noexcept {
+            constexpr auto cend() const noexcept {
                 return tiles.cend();
             }
 
