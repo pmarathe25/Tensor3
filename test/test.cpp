@@ -9,6 +9,11 @@ int main() {
     StealthTileMap::TileMapF<5, 5, 2> test{};
     const StealthTileMap::TileMapF<5, 5, 2> test2 = 1.0f;
     StealthTileMap::TileMapF<5, 5, 2> test3 = test + test2;
+    StealthTileMap::TileMapF<5, 5, 2> test4 = 1.2f;
+
+    test4 += 2.0f;
+
+    std::cout << "Test4\n" << test4 << '\n';
 
     test(0, 0) = 1.5f;
     test(0, 1) = 1.5f;

@@ -156,6 +156,26 @@ namespace StealthTileMap {
                 return tiles.cend();
             }
 
+            template <typename OtherTileMap>
+            constexpr TileMap& operator+=(const OtherTileMap& other) {
+                (*this) = ((*this) + other).eval();
+            }
+
+            template <typename OtherTileMap>
+            constexpr TileMap& operator*=(const OtherTileMap& other) {
+                (*this) = ((*this) * other).eval();
+            }
+
+            template <typename OtherTileMap>
+            constexpr TileMap& operator-=(const OtherTileMap& other) {
+                (*this) = ((*this) - other).eval();
+            }
+
+            template <typename OtherTileMap>
+            constexpr TileMap& operator/=(const OtherTileMap& other) {
+                (*this) = ((*this) / other).eval();
+            }
+
             constexpr TileMap& eval() {
                 return (*this);
             }
