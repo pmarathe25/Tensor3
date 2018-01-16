@@ -158,22 +158,26 @@ namespace StealthTileMap {
 
             template <typename OtherTileMap>
             constexpr TileMap& operator+=(const OtherTileMap& other) {
-                (*this) = ((*this) + other).eval();
+                (*this) = (*this) + other;
+                return (*this);
             }
 
             template <typename OtherTileMap>
             constexpr TileMap& operator*=(const OtherTileMap& other) {
-                (*this) = ((*this) * other).eval();
+                (*this) = (*this) * other;
+                return (*this);
             }
 
             template <typename OtherTileMap>
             constexpr TileMap& operator-=(const OtherTileMap& other) {
-                (*this) = ((*this) - other).eval();
+                (*this) = (*this) - other;
+                return (*this);
             }
 
             template <typename OtherTileMap>
             constexpr TileMap& operator/=(const OtherTileMap& other) {
-                (*this) = ((*this) / other).eval();
+                (*this) = (*this) / other;
+                return (*this);
             }
 
             constexpr TileMap& eval() {
