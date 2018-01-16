@@ -51,7 +51,6 @@ namespace StealthTileMap {
             // Copy
             template <typename OtherTileMap>
             constexpr TileMap(const OtherTileMap& other) noexcept : tiles(sizeAtCompileTime) {
-                static_assert(other.size() == this -> size(), "Cannot copy incompatible TileMaps");
                 copy(other);
             }
 
@@ -64,7 +63,7 @@ namespace StealthTileMap {
 
             template <typename OtherType, int width, int length, int height>
             constexpr TileMap(TileMap<OtherType, width, length, height>&& other) {
-                static_assert(other.size() == this -> size(), "Cannot copy incompatible TileMaps");
+                static_assert(other.size() == this -> size(), "Cannot move incompatible TileMaps");
                 tiles = std::move(other.elements());
             }
 
@@ -73,7 +72,7 @@ namespace StealthTileMap {
 
             template <typename OtherType, int width, int length, int height>
             constexpr TileMap& operator=(TileMap<OtherType, width, length, height>&& other) {
-                static_assert(other.size() == this -> size(), "Cannot copy incompatible TileMaps");
+                static_assert(other.size() == this -> size(), "Cannot move incompatible TileMaps");
                 tiles = std::move(other.elements());
                 return *this;
             }
@@ -86,7 +85,6 @@ namespace StealthTileMap {
 
             template <typename OtherTileMap>
             constexpr TileMap& operator=(const OtherTileMap& other) noexcept {
-                static_assert(other.size() == this -> size(), "Cannot copy incompatible TileMaps");
                 copy(other);
                 return *this;
             }
@@ -166,8 +164,10 @@ namespace StealthTileMap {
 
             template <typename OtherTileMap>
             constexpr void copy(const OtherTileMap& other) {
+                if constexpr (!std::is_scalar<OtherTileMap>::value) static_assert(other.size() == this -> size(), "Cannot copy incompatible TileMaps");
                 for (int i = 0; i < this -> size(); ++i) {
-                    tiles[i] = other[i];
+                    if constexpr (std::is_scalar<OtherTileMap>::value) tiles[i] = other;
+                    else tiles[i] = other[i];
                 }
             }
     };

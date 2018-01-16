@@ -7,7 +7,7 @@ float doDoubleAdd(float a, float b) {
 
 int main() {
     StealthTileMap::TileMapF<5, 5, 2> test{};
-    const StealthTileMap::TileMapF<5, 5, 2> test2{};
+    const StealthTileMap::TileMapF<5, 5, 2> test2 = 1.0f;
     StealthTileMap::TileMapF<5, 5, 2> test3 = test + test2;
 
     test(0, 0) = 1.5f;
