@@ -48,6 +48,12 @@ namespace StealthTileMap {
     }
 
     template <typename LHS, typename RHS>
+    constexpr auto operator!=(const LHS& lhs, const RHS& rhs) noexcept {
+        checkTileMapCompatibility<LHS, RHS>();
+        return BinaryOp{internal::ops::neq<LHS, RHS>{}, lhs, rhs};
+    }
+
+    template <typename LHS, typename RHS>
     constexpr auto operator<(const LHS& lhs, const RHS& rhs) noexcept {
         checkTileMapCompatibility<LHS, RHS>();
         return BinaryOp{internal::ops::less<LHS, RHS>{}, lhs, rhs};

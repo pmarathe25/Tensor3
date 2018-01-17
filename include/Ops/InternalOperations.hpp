@@ -41,6 +41,13 @@ namespace StealthTileMap::internal::ops {
     };
 
     template <typename LHS, typename RHS>
+    struct neq {
+        constexpr auto operator()(typename optimal_scalar_type<LHS>::type lhs, typename optimal_scalar_type<RHS>::type rhs) const noexcept {
+            return lhs != rhs;
+        }
+    };
+
+    template <typename LHS, typename RHS>
     struct less {
         constexpr auto operator()(typename optimal_scalar_type<LHS>::type lhs, typename optimal_scalar_type<RHS>::type rhs) const noexcept {
             return lhs < rhs;
