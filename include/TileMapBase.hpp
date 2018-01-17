@@ -50,26 +50,28 @@ namespace StealthTileMap {
             }
     };
 
-    // Utility Functions
-    template <typename TileMapType>
-    struct optimal_scalar_type {
-        typedef typename std::conditional<sizeof(typename internal::traits<TileMapType>::ScalarType) <= sizeof(void*),
+    namespace {
+        // Utility Functions
+        template <typename TileMapType>
+        struct optimal_scalar_type {
+            typedef typename std::conditional<sizeof(typename internal::traits<TileMapType>::ScalarType) <= sizeof(void*),
             typename internal::traits<TileMapType>::ScalarType, const typename internal::traits<TileMapType>::ScalarType&>::type type;
-    };
+        };
 
-    // Display Functions
-    template <typename T>
-    constexpr std::string internal_to_string(const T& i) {
-        if constexpr (std::is_scalar<T>::value) {
-            return std::to_string(i);
-        } else {
-            return to_string(i);
+        // Display Functions
+        template <typename T>
+        constexpr std::string internal_to_string(const T& i) {
+            if constexpr (std::is_scalar<T>::value) {
+                return std::to_string(i);
+            } else {
+                return to_string(i);
+            }
         }
-    }
 
-    template <>
-    inline std::string internal_to_string(const std::string& tile) {
-        return tile;
+        template <>
+        inline std::string internal_to_string(const std::string& tile) {
+            return tile;
+        }
     }
 
     template <typename Derived>
