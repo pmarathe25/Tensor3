@@ -13,10 +13,10 @@ HEADERS = $(addprefix $(INCLUDEPATH)/, TileMapBase.hpp TileMap.hpp ForwardDeclar
 	Ops/BinaryOperations.hpp Ops/InternalOperations.hpp Ops/UnaryOperations.hpp Ops/TileMapViewOperations.hpp Ops/UnaryOperations.hpp)
 # Compiler settings
 CXX = g++
-CFLAGS = -fPIC -c -std=c++17 $(INCLUDE) -O3 -Wpedantic -march=native -flto
-LFLAGS = -shared -flto -march=native
-TESTLFLAGS = -pthread -flto -march=native
-EXECLFLAGS = -flto -march=native
+CFLAGS = -fPIC -c -std=c++17 $(INCLUDE) -flto -O3 -Wpedantic -march=native
+LFLAGS = -shared -flto -O3 -march=native
+TESTLFLAGS = -pthread -flto -O3 -march=native
+EXECLFLAGS = -flto -O3 -march=native
 
 all: $(TESTOBJS)
 
