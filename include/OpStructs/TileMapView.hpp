@@ -118,7 +118,7 @@ namespace StealthTileMap {
                 : tileMap{tileMap}, minX{minX}, minY{minY}, minZ{minZ},
                 offset{minX + minY * widthAtCompileTime + minZ * widthAtCompileTime * lengthAtCompileTime},
                 offsetY{minY * widthAtCompileTime},
-                offsetXY{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
+                offsetXZ{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
 
             constexpr auto& operator()(int x, int y, int z) {
                 return tileMap(x + minX, y + minY, z + minZ);
@@ -129,11 +129,11 @@ namespace StealthTileMap {
             }
 
             constexpr auto& operator()(int x, int y) {
-                return tileMap(x + offsetXY, y + minY);
+                return tileMap(x + offsetXZ, y + minY);
             }
 
             constexpr const auto& operator()(int x, int y) const {
-                return tileMap(x + offsetXY, y + minY);
+                return tileMap(x + offsetXZ, y + minY);
             }
 
             constexpr auto& operator()(int x) {
@@ -162,7 +162,7 @@ namespace StealthTileMap {
         private:
             InternalTileMap& tileMap;
             const int minX, minY, minZ;
-            const int offset, offsetY, offsetXY;
+            const int offset, offsetY, offsetXZ;
     };
 
     // Const view
@@ -176,14 +176,14 @@ namespace StealthTileMap {
                 : tileMap{tileMap}, minX{minX}, minY{minY}, minZ{minZ},
                 offset{minX + minY * widthAtCompileTime + minZ * widthAtCompileTime * lengthAtCompileTime},
                 offsetY{minY * widthAtCompileTime},
-                offsetXY{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
+                offsetXZ{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
 
             constexpr const auto& operator()(int x, int y, int z) const {
                 return tileMap(x + minX, y + minY, z + minZ);
             }
 
             constexpr const auto& operator()(int x, int y) const {
-                return tileMap(x + offsetXY, y + minY);
+                return tileMap(x + offsetXZ, y + minY);
             }
 
             constexpr const auto& operator()(int x) const {
@@ -200,7 +200,7 @@ namespace StealthTileMap {
         private:
             const InternalTileMap& tileMap;
             const int minX, minY, minZ;
-            const int offset, offsetY, offsetXY;
+            const int offset, offsetY, offsetXZ;
     };
 
     // A view of a temporary object. Cannot be modified.
@@ -214,14 +214,14 @@ namespace StealthTileMap {
                 : tileMap{tileMap}, minX{minX}, minY{minY}, minZ{minZ},
                 offset{minX + minY * widthAtCompileTime + minZ * widthAtCompileTime * lengthAtCompileTime},
                 offsetY{minY * widthAtCompileTime},
-                offsetXY{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
+                offsetXZ{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
 
             constexpr auto operator()(int x, int y, int z) const {
                 return tileMap(x + minX, y + minY, z + minZ);
             }
 
             constexpr auto operator()(int x, int y) const {
-                return tileMap(x + offsetXY, y + minY);
+                return tileMap(x + offsetXZ, y + minY);
             }
 
             constexpr auto operator()(int x) const {
@@ -234,7 +234,7 @@ namespace StealthTileMap {
         private:
             const InternalTileMap& tileMap;
             const int minX, minY, minZ;
-            const int offset, offsetY, offsetXY;
+            const int offset, offsetY, offsetXZ;
     };
 
 } /* StealthTileMap */
