@@ -8,6 +8,7 @@
 #include "./Ops/TileMapViewOperations.hpp"
 #include <stealthutil>
 #include <vector>
+#include <random>
 
 namespace StealthTileMap {
     namespace internal {
@@ -31,6 +32,8 @@ namespace StealthTileMap {
             typedef std::false_type isWritable;
         };
     } /* internal */
+
+    static inline std::default_random_engine DefaultGenerator{};
 
     template <typename type, int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
         int areaAtCompileTime, int sizeAtCompileTime>
@@ -178,6 +181,26 @@ namespace StealthTileMap {
             constexpr TileMap& operator/=(const OtherTileMap& other) {
                 (*this) = (*this) / other;
                 return (*this);
+            }
+
+            template <typename Distribution, typename Generator = std::default_random_engine>
+            constexpr void randomize(Distribution&& distribution, long seed = stealth::getCurrentTime(),
+                Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) {
+                generator.seed(seed);
+                for (int i = 0; i < this -> size(); ++i) {
+                    tiles[i] = distribution(generator);
+                }
+            }
+
+            template <typename Distribution, typename Generator = std::default_random_engine>
+            constexpr TileMap Random(Distribution&& distribution, long seed = stealth::getCurrentTime(),
+                Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) {
+                generator.seed(seed);
+                TileMap ret;
+                for (int i = 0; i < this -> size(); ++i) {
+                    ret[i] = distribution(generator);
+                }
+                return ret;
             }
 
             constexpr TileMap& eval() {

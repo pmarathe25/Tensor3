@@ -15,12 +15,21 @@ int main() {
 
     std::cout << "Test4\n" << test4 << '\n';
 
-    test(0, 0) = 1.5f;
-    test(0, 1) = 1.5f;
-    test(1, 1) = 1.5f;
-    test(0, 0, 1) = 3.1f;
-    test(0, 1, 1) = 3.1f;
-    test(1, 1, 1) = 3.1f;
+    // test(0, 0) = 1.5f;
+    // test(0, 1) = 1.5f;
+    // test(1, 1) = 1.5f;
+    // test(1, 2) = 1.5f;
+    // test(2, 2) = 1.5f;
+    // test(3, 2) = 1.5f;
+    // test(0, 0) = 1.5f;
+    // test(0, 1) = 1.5f;
+    // test(1, 1) = 1.5f;
+    // test(0, 0, 1) = 3.1f;
+    // test(0, 1, 1) = 3.1f;
+    // test(1, 1, 1) = 3.1f;
+    // test(3, 3, 1) = 3.1f;
+    test.randomize(std::uniform_real_distribution(0.0f, 1.0f));
+    test4 = StealthTileMap::TileMapF<5, 5, 2>::Random(std::uniform_real_distribution(0.0f, 1.0f));
 
     // test2(0, 0, 1) = 3.0f;
     test3 = (test + test2) + test;
@@ -34,11 +43,11 @@ int main() {
     // Changing a value in the view actually changes the TileMap
     StealthTileMap::block<2, 2>(test)(0, 0, 1) = 2.4f;
     // Construct a separate TileMap from the view.
-    auto testView = StealthTileMap::block<2, 2>(test, 0, 0);
-    auto testView2 = StealthTileMap::block<2, 1>(testView, 0, 0);
-    auto testReshape = StealthTileMap::reshape<2, 4>(testView);
+    auto testView = StealthTileMap::block<3, 3>(test, 1, 1);
+    auto testView2 = StealthTileMap::block<2, 2>(testView, 1, 1);
+    // auto testReshape = StealthTileMap::reshape<2, 4>(testView);
 
-    std::cout << "TestView at 1, 1: " << testView(1, 1) << '\n';
+    std::cout << "Test\n" << test << '\n';
     std::cout << "TestView\n" << testView << '\n';
     std::cout << "TestView2\n" << testView2 << '\n';
 
