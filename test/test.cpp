@@ -35,29 +35,31 @@ int main() {
     StealthTileMap::block<2, 2>(test)(0, 0, 1) = 2.4f;
     // Construct a separate TileMap from the view.
     auto testView = StealthTileMap::block<2, 2>(test, 0, 0);
+    auto testView2 = StealthTileMap::block<2, 1>(testView, 0, 0);
     auto testReshape = StealthTileMap::reshape<2, 4>(testView);
 
     std::cout << "TestView at 1, 1: " << testView(1, 1) << '\n';
     std::cout << "TestView\n" << testView << '\n';
+    std::cout << "TestView2\n" << testView2 << '\n';
 
-    std::cout << "Test\n" << test << '\n';
-    std::cout << "Test2\n" << test2 << '\n';
-    std::cout << "Test3\n" << test3 << '\n';
-    std::cout << "TestReshape\n" << testReshape << '\n';
-    std::cout << "Test && Test2\n" << (test && test2) << '\n';
-    std::cout << "Test || Test2\n" << (test || test2) << '\n';
-    std::cout << "!Test\n" << !test << '\n';
-    std::cout << "Doubled Int Test\n" << StealthTileMap::apply([](float in) -> int {return in * 2;}, test) << '\n';
-    std::cout << "Doubled Add Test\n" << StealthTileMap::apply(doDoubleAdd, test, test3) << '\n';
-
-
-    StealthTileMap::TileMapF<2, 2> moveSame{StealthTileMap::TileMapF<2, 2>{{0, 1, 2, 3}}};
-    StealthTileMap::TileMapF<2, 2> moveDiff{StealthTileMap::TileMapF<4>{{4, 5, 6, 7}}};
-    std::cout << "Move TileMaps of same size: " << moveSame << '\n';
-    std::cout << "Move TileMaps of different size: " << moveDiff << '\n';
-
-    // Creating TileMap from array
-    std::array<float, 4> init{{0, 1, 2, 3}};
-    StealthTileMap::TileMapF<2, 2> testInit{init};
-    std::cout << "Array Initialization Test\n" << testInit << '\n';
+    // std::cout << "Test\n" << test << '\n';
+    // std::cout << "Test2\n" << test2 << '\n';
+    // std::cout << "Test3\n" << test3 << '\n';
+    // std::cout << "TestReshape\n" << testReshape << '\n';
+    // std::cout << "Test && Test2\n" << (test && test2) << '\n';
+    // std::cout << "Test || Test2\n" << (test || test2) << '\n';
+    // std::cout << "!Test\n" << !test << '\n';
+    // std::cout << "Doubled Int Test\n" << StealthTileMap::apply([](float in) -> int {return in * 2;}, test) << '\n';
+    // std::cout << "Doubled Add Test\n" << StealthTileMap::apply(doDoubleAdd, test, test3) << '\n';
+    //
+    //
+    // StealthTileMap::TileMapF<2, 2> moveSame{StealthTileMap::TileMapF<2, 2>{{0, 1, 2, 3}}};
+    // StealthTileMap::TileMapF<2, 2> moveDiff{StealthTileMap::TileMapF<4>{{4, 5, 6, 7}}};
+    // std::cout << "Move TileMaps of same size: " << moveSame << '\n';
+    // std::cout << "Move TileMaps of different size: " << moveDiff << '\n';
+    //
+    // // Creating TileMap from array
+    // std::array<float, 4> init{{0, 1, 2, 3}};
+    // StealthTileMap::TileMapF<2, 2> testInit{init};
+    // std::cout << "Array Initialization Test\n" << testInit << '\n';
 }

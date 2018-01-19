@@ -21,23 +21,23 @@ namespace StealthTileMap {
 
     namespace {
         template <typename InternalTileMap, typename TileMapViewType>
-        constexpr auto singleIndexAccess(TileMapViewType& view, int x) -> typename std::invoke_result<TileMapViewType, int>::type {
+        constexpr auto singleIndexAccess(TileMapViewType view, int x) -> typename std::invoke_result<TileMapViewType, int>::type {
             if constexpr (view.width() == internal::traits<InternalTileMap>::width
                 && view.length() == internal::traits<InternalTileMap>::length) {
                 // No need to deduce anything, dimensions are the same
                 return view(x);
             } else if constexpr (view.width() == internal::traits<InternalTileMap>::width) {
-                if constexpr (view.width() == 1) {
-                    // There's only a single column - no need to calculate y
-                    return view(0, x);
-                } else if constexpr(view.length() == 1) {
-                    // Just a single row
+                if constexpr (view.height() == 1) {
+                    // Only 1 layer - all elements are continuous.
                     return view(x);
+                } else if constexpr (view.width() == 1 && view.length() == 1) {
+                    // We're just going up
+                    return view(0, 0, x);
                 } else {
-                    // Need to figure out what y is.
-                    int y = x / view.width();
-                    x %= view.width();
-                    return view(x, y);
+                    // Need to figure out what height is.
+                    int z = x / view.area();
+                    x %= view.area();
+                    return view(x, 0, z);
                 }
             } else {
                 // Otherwise we need to figure out everything.
@@ -45,9 +45,10 @@ namespace StealthTileMap {
                     // Z is the only coordinate needed.
                     return view(0, 0, x);
                 } if constexpr (view.length() == 1) {
-                    // No need to calculate z because z = y.
-                    int y = x / view.width();
-                    return view(x, 0, y);
+                    // No need to calculate y.
+                    int z = x / view.width();
+                    x %= view.width();
+                    return view(x, 0, z);
                 } else if constexpr (view.width() == 1) {
                     // x is always 0
                     int z = x / view.length();
@@ -55,51 +56,8 @@ namespace StealthTileMap {
                     return view(0, y, z);
                 } else {
                     int y = x / view.width();
+                    x %= view.width();
                     int z = y / view.length();
-                    x %= view.width();
-                    y %= view.length();
-                    return view(x, y, z);
-                }
-            }
-        }
-
-        template <typename InternalTileMap, typename TileMapViewType>
-        constexpr auto singleIndexAccess(const TileMapViewType& view, int x) -> typename std::invoke_result<const TileMapViewType, int>::type {
-            if constexpr (view.width() == internal::traits<InternalTileMap>::width
-                && view.length() == internal::traits<InternalTileMap>::length) {
-                // No need to deduce anything, dimensions are the same
-                return view(x);
-            } else if constexpr (view.width() == internal::traits<InternalTileMap>::width) {
-                if constexpr (view.width() == 1) {
-                    // There's only a single column - no need to calculate y
-                    return view(0, x);
-                } else if constexpr(view.length() == 1) {
-                    // Just a single row
-                    return view(x);
-                } else {
-                    // Need to figure out what y is.
-                    int y = x / view.width();
-                    x %= view.width();
-                    return view(x, y);
-                }
-            } else {
-                // Otherwise we need to figure out everything.
-                if constexpr (view.length() == 1 && view.width() == 1) {
-                    // Z is the only coordinate needed.
-                    return view(0, 0, x);
-                } if constexpr (view.length() == 1) {
-                    // No need to calculate z because z = y.
-                    int y = x / view.width();
-                    return view(x, 0, y);
-                } else if constexpr (view.width() == 1) {
-                    // x is always 0
-                    int z = x / view.length();
-                    int y = x % view.length();
-                    return view(0, y, z);
-                } else {
-                    int y = x / view.width();
-                    int z = y / view.length();
-                    x %= view.width();
                     y %= view.length();
                     return view(x, y, z);
                 }
@@ -145,11 +103,11 @@ namespace StealthTileMap {
             }
 
             constexpr const auto& operator[](int x) const {
-                return singleIndexAccess<InternalTileMap>(*this, x);
+                return singleIndexAccess<InternalTileMap, const TileMapView&>(*this, x);
             }
 
             constexpr auto& operator[](int x) {
-                return singleIndexAccess<InternalTileMap>(*this, x);
+                return singleIndexAccess<InternalTileMap, TileMapView&>(*this, x);
             }
 
             constexpr const auto* data() const noexcept {
@@ -191,7 +149,7 @@ namespace StealthTileMap {
             }
 
             constexpr const auto& operator[](int x) const {
-                return singleIndexAccess<InternalTileMap>(*this, x);
+                return singleIndexAccess<InternalTileMap, const TileMapView&>(*this, x);
             }
 
             constexpr const auto* data() const noexcept {
@@ -229,7 +187,7 @@ namespace StealthTileMap {
             }
 
             constexpr auto operator[](int x) const {
-                return singleIndexAccess<InternalTileMap>(*this, x);
+                return singleIndexAccess<InternalTileMap, const TileMapView&>(*this, x);
             }
         private:
             const InternalTileMap& tileMap;
