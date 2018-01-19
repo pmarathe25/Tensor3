@@ -27,8 +27,8 @@ int main() {
     std::cout << test3 << '\n';
 
     auto testLayer = StealthTileMap::layer(test, 0);
-    std::cout << "TileMap View showing a layer\n" << testLayer << '\n';
-    std::cout << "Layer of Summation with empty TileMap\n" << StealthTileMap::layer(test + test2, 1) << '\n';
+    std::cout << "TileMap View showing a layer of Test\n" << testLayer << '\n';
+    std::cout << "Layer of Summation with 1.0 TileMap\n" << StealthTileMap::layer(test + test2, 1) << '\n';
     std::cout << "Layer of empty TileMap\n" << StealthTileMap::layer(test2, 1) << '\n';
 
     // Changing a value in the view actually changes the TileMap
