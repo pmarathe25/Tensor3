@@ -21,7 +21,7 @@ namespace StealthTileMap {
 
     namespace {
         template <typename InternalTileMap, typename TileMapViewType>
-        constexpr auto& singleIndexAccess(TileMapViewType& view, int x) {
+        constexpr auto singleIndexAccess(TileMapViewType& view, int x) -> typename std::invoke_result<TileMapViewType, int>::type {
             if constexpr (view.width() == internal::traits<InternalTileMap>::width
                 && view.length() == internal::traits<InternalTileMap>::length) {
                 // No need to deduce anything, dimensions are the same
@@ -64,7 +64,7 @@ namespace StealthTileMap {
         }
 
         template <typename InternalTileMap, typename TileMapViewType>
-        constexpr const auto& singleIndexAccess(const TileMapViewType& view, int x) {
+        constexpr const auto singleIndexAccess(const TileMapViewType& view, int x) -> typename std::invoke_result<const TileMapViewType, int>::type {
             if constexpr (view.width() == internal::traits<InternalTileMap>::width
                 && view.length() == internal::traits<InternalTileMap>::length) {
                 // No need to deduce anything, dimensions are the same
