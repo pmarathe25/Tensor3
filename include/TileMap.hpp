@@ -192,19 +192,19 @@ namespace StealthTileMap {
                 }
             }
 
+            constexpr TileMap& eval() {
+                return (*this);
+            }
+
             template <typename Distribution, typename Generator = std::default_random_engine>
-            constexpr TileMap Random(Distribution&& distribution, long seed = stealth::getCurrentTime(),
-                Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) {
+            static constexpr TileMap Random(Distribution&& distribution, long seed = stealth::getCurrentTime(),
+            Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) {
                 generator.seed(seed);
                 TileMap ret;
-                for (int i = 0; i < this -> size(); ++i) {
+                for (int i = 0; i < ret.size(); ++i) {
                     ret[i] = distribution(generator);
                 }
                 return ret;
-            }
-
-            constexpr TileMap& eval() {
-                return (*this);
             }
         private:
             std::vector<ScalarType> tiles;

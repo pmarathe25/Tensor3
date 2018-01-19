@@ -48,6 +48,7 @@ int main() {
     // auto testReshape = StealthTileMap::reshape<2, 4>(testView);
 
     std::cout << "Test\n" << test << '\n';
+    std::cout << "Test4\n" << test4 << '\n';
     std::cout << "TestView\n" << testView << '\n';
     std::cout << "TestView2\n" << testView2 << '\n';
 
