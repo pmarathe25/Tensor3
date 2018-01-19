@@ -26,6 +26,14 @@ namespace StealthTileMap {
                 && view.length() == internal::traits<InternalTileMap>::length) {
                 // No need to deduce anything, dimensions are the same
                 return view(x);
+            } else if constexpr (view.length() == internal::traits<InternalTileMap>::length) {
+                if constexpr (view.width() == 1) {
+                    return view(0, x);
+                } else {
+                    int y = x / view.width();
+                    x %= view.width();
+                    return view(x, y);
+                }
             } else if constexpr (view.width() == internal::traits<InternalTileMap>::width) {
                 if constexpr (view.height() == 1) {
                     // Only 1 layer - all elements are continuous.
