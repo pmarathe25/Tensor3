@@ -19,9 +19,9 @@ namespace StealthTileMap {
             typedef std::false_type isWritable;
         };
     } /* internal */
+
     namespace {
         static inline std::mt19937 DefaultGenerator;
-
         static inline std::uniform_real_distribution DefaultDistribution{0.0f, 1.0f};
     }
 
@@ -34,19 +34,11 @@ namespace StealthTileMap {
         public:
             constexpr TileMapRandomGenerator(Distribution&& distribution = std::forward<Distribution&&>(DefaultDistribution),
                 long seed = stealth::getCurrentTime(), Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) noexcept
-                : generator{generator}, distribution{distribution} {
+                : distribution{std::forward<Distribution&&>(distribution)}, generator{std::forward<Generator&&>(generator)} {
                 generator.seed(seed);
             }
 
-            constexpr auto operator()(int x, int y, int z) const noexcept {
-                return distribution(generator);
-            }
-
-            constexpr auto operator()(int x, int y) const noexcept {
-                return distribution(generator);
-            }
-
-            constexpr auto operator()(int x) const noexcept {
+            constexpr auto operator()(int x = 0, int y = 0, int z = 0) const noexcept {
                 return distribution(generator);
             }
 
@@ -55,8 +47,8 @@ namespace StealthTileMap {
             }
 
         private:
-            Generator& generator;
-            Distribution& distribution;
+            Distribution&& distribution;
+            Generator&& generator;
     };
 
 } /* StealthTileMap */
