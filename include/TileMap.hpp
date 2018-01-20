@@ -179,12 +179,13 @@ namespace StealthTileMap {
             }
 
             template <typename Distribution, typename Generator = decltype(DefaultGenerator)>
-            constexpr void randomize(Distribution&& distribution, long seed = stealth::getCurrentTime(),
+            constexpr TileMap& randomize(Distribution&& distribution, long seed = stealth::getCurrentTime(),
                 Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) noexcept {
                 generator.seed(seed);
                 for (int i = 0; i < this -> size(); ++i) {
                     tiles[i] = distribution(generator);
                 }
+                return (*this);
             }
 
             constexpr TileMap& eval() {
