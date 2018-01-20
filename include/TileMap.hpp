@@ -33,7 +33,7 @@ namespace StealthTileMap {
         };
     } /* internal */
 
-    static inline std::default_random_engine DefaultGenerator{};
+    static inline std::mt19937 DefaultGenerator;
 
     template <typename type, int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
         int areaAtCompileTime, int sizeAtCompileTime>
@@ -183,7 +183,7 @@ namespace StealthTileMap {
                 return (*this);
             }
 
-            template <typename Distribution, typename Generator = std::default_random_engine>
+            template <typename Distribution, typename Generator = decltype(DefaultGenerator)>
             constexpr void randomize(Distribution&& distribution, long seed = stealth::getCurrentTime(),
                 Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) {
                 generator.seed(seed);
@@ -196,7 +196,7 @@ namespace StealthTileMap {
                 return (*this);
             }
 
-            template <typename Distribution, typename Generator = std::default_random_engine>
+            template <typename Distribution, typename Generator = decltype(DefaultGenerator)>
             static constexpr TileMap Random(Distribution&& distribution, long seed = stealth::getCurrentTime(),
             Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) {
                 generator.seed(seed);
