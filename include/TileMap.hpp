@@ -180,7 +180,7 @@ namespace StealthTileMap {
 
             template <typename Distribution, typename Generator = decltype(DefaultGenerator)>
             constexpr void randomize(Distribution&& distribution, long seed = stealth::getCurrentTime(),
-                Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) {
+                Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) noexcept {
                 generator.seed(seed);
                 for (int i = 0; i < this -> size(); ++i) {
                     tiles[i] = distribution(generator);
@@ -193,7 +193,7 @@ namespace StealthTileMap {
 
             template <typename Distribution, typename Generator = decltype(DefaultGenerator)>
             static constexpr auto Random(Distribution&& distribution, long seed = stealth::getCurrentTime(),
-                Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) {
+                Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) noexcept {
                 return TileMapRandomGenerator<TileMap::width(), TileMap::length(), TileMap::height(), Distribution>
                     {std::forward<Distribution&&>(distribution), seed, std::forward<Generator&&>(generator)};
             }
