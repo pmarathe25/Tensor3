@@ -178,9 +178,9 @@ namespace StealthTileMap {
                 (*this) = (*this) / std::forward<OtherTileMap&&>(other);
             }
 
-            template <typename Distribution, typename Generator = decltype(DefaultGenerator)>
-            constexpr TileMap& randomize(Distribution&& distribution, long seed = stealth::getCurrentTime(),
-                Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) noexcept {
+            template <typename Distribution = decltype(DefaultDistribution), typename Generator = decltype(DefaultGenerator)>
+            constexpr TileMap& randomize(Distribution&& distribution = std::forward<Distribution&&>(DefaultDistribution),
+                long seed = stealth::getCurrentTime(), Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) noexcept {
                 generator.seed(seed);
                 for (int i = 0; i < this -> size(); ++i) {
                     tiles[i] = distribution(generator);
@@ -192,9 +192,9 @@ namespace StealthTileMap {
                 return (*this);
             }
 
-            template <typename Distribution, typename Generator = decltype(DefaultGenerator)>
-            static constexpr auto Random(Distribution&& distribution, long seed = stealth::getCurrentTime(),
-                Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) noexcept {
+            template <typename Distribution = decltype(DefaultDistribution), typename Generator = decltype(DefaultGenerator)>
+            static constexpr auto Random(Distribution&& distribution = std::forward<Distribution&&>(DefaultDistribution),
+                long seed = stealth::getCurrentTime(), Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) noexcept {
                 return TileMapRandomGenerator<TileMap::width(), TileMap::length(), TileMap::height(), Distribution>
                     {std::forward<Distribution&&>(distribution), seed, std::forward<Generator&&>(generator)};
             }

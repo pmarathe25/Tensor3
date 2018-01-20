@@ -21,16 +21,19 @@ namespace StealthTileMap {
     } /* internal */
     namespace {
         static inline std::mt19937 DefaultGenerator;
+
+        static inline std::uniform_real_distribution DefaultDistribution{0.0f, 1.0f};
     }
 
     // TileMapRandomGenerator number generator
     template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
-        typename Distribution, typename Generator = decltype(DefaultGenerator), int areaAtCompileTime, int sizeAtCompileTime>
+        typename Distribution = decltype(DefaultDistribution), typename Generator = decltype(DefaultGenerator),
+        int areaAtCompileTime, int sizeAtCompileTime>
     class TileMapRandomGenerator : public TileMapBase<TileMapRandomGenerator<widthAtCompileTime,
         lengthAtCompileTime, heightAtCompileTime, Distribution, Generator, areaAtCompileTime, sizeAtCompileTime>>  {
         public:
-            constexpr TileMapRandomGenerator(Distribution&& distribution, long seed = stealth::getCurrentTime(),
-                Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) noexcept
+            constexpr TileMapRandomGenerator(Distribution&& distribution = std::forward<Distribution&&>(DefaultDistribution),
+                long seed = stealth::getCurrentTime(), Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) noexcept
                 : generator{generator}, distribution{distribution} {
                 generator.seed(seed);
             }
