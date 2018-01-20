@@ -6,6 +6,7 @@
 #include "./Ops/UnaryOperations.hpp"
 #include "./Ops/UnaryOperations.hpp"
 #include "./Ops/TileMapViewOperations.hpp"
+#include "./OpStructs/TileMapRandomGenerator.hpp"
 #include <stealthutil>
 #include <vector>
 #include <random>
@@ -33,8 +34,6 @@ namespace StealthTileMap {
         };
     } /* internal */
 
-    static inline std::mt19937 DefaultGenerator;
-
     template <typename type, int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
         int areaAtCompileTime, int sizeAtCompileTime>
     class TileMap : public TileMapBase<TileMap<type, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime>> {
@@ -54,7 +53,7 @@ namespace StealthTileMap {
             // Copy
             template <typename OtherTileMap>
             constexpr TileMap(const OtherTileMap& other) noexcept : tiles(sizeAtCompileTime) {
-                copy(other);
+                const_copy(other);
             }
 
             constexpr TileMap(const TileMap& other) noexcept {
@@ -88,7 +87,7 @@ namespace StealthTileMap {
 
             template <typename OtherTileMap>
             constexpr TileMap& operator=(const OtherTileMap& other) noexcept {
-                copy(other);
+                const_copy(other);
                 return *this;
             }
 
@@ -160,27 +159,23 @@ namespace StealthTileMap {
             }
 
             template <typename OtherTileMap>
-            constexpr TileMap& operator+=(const OtherTileMap& other) {
-                (*this) = (*this) + other;
-                return (*this);
+            constexpr void operator+=(OtherTileMap&& other) {
+                (*this) = (*this) + std::forward<OtherTileMap&&>(other);
             }
 
             template <typename OtherTileMap>
-            constexpr TileMap& operator*=(const OtherTileMap& other) {
-                (*this) = (*this) * other;
-                return (*this);
+            constexpr void operator*=(OtherTileMap&& other) {
+                (*this) = (*this) * std::forward<OtherTileMap&&>(other);
             }
 
             template <typename OtherTileMap>
-            constexpr TileMap& operator-=(const OtherTileMap& other) {
-                (*this) = (*this) - other;
-                return (*this);
+            constexpr void operator-=(OtherTileMap&& other) {
+                (*this) = (*this) - std::forward<OtherTileMap&&>(other);
             }
 
             template <typename OtherTileMap>
-            constexpr TileMap& operator/=(const OtherTileMap& other) {
-                (*this) = (*this) / other;
-                return (*this);
+            constexpr void operator/=(OtherTileMap&& other) {
+                (*this) = (*this) / std::forward<OtherTileMap&&>(other);
             }
 
             template <typename Distribution, typename Generator = decltype(DefaultGenerator)>
@@ -197,21 +192,18 @@ namespace StealthTileMap {
             }
 
             template <typename Distribution, typename Generator = decltype(DefaultGenerator)>
-            static constexpr TileMap Random(Distribution&& distribution, long seed = stealth::getCurrentTime(),
-            Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) {
-                generator.seed(seed);
-                TileMap ret;
-                for (int i = 0; i < ret.size(); ++i) {
-                    ret[i] = distribution(generator);
-                }
-                return ret;
+            static constexpr auto Random(Distribution&& distribution, long seed = stealth::getCurrentTime(),
+                Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) {
+                return TileMapRandomGenerator<TileMap::width(), TileMap::length(), TileMap::height(), Distribution>
+                    {std::forward<Distribution&&>(distribution), seed, std::forward<Generator&&>(generator)};
             }
         private:
             std::vector<ScalarType> tiles;
 
             template <typename OtherTileMap>
-            constexpr void copy(const OtherTileMap& other) {
-                if constexpr (!std::is_scalar<OtherTileMap>::value) static_assert(other.size() == this -> size(), "Cannot copy incompatible TileMaps");
+            constexpr void const_copy(const OtherTileMap& other) {
+                if constexpr (!std::is_scalar<OtherTileMap>::value) static_assert(OtherTileMap::size()
+                    == TileMap::size(), "Cannot const_copy incompatible TileMaps");
                 for (int i = 0; i < this -> size(); ++i) {
                     if constexpr (std::is_scalar<OtherTileMap>::value) tiles[i] = other;
                     else tiles[i] = other[i];
