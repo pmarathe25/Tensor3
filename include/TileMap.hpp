@@ -65,7 +65,7 @@ namespace StealthTileMap {
 
             template <typename OtherType, int width, int length, int height>
             constexpr STEALTH_ALWAYS_INLINE TileMap(TileMap<OtherType, width, length, height>&& other) {
-                static_assert(other.size() == this -> size(), "Cannot move incompatible TileMaps");
+                static_assert(other.size() == TileMap::size(), "Cannot move incompatible TileMaps");
                 tiles = std::move(other.elements());
             }
 
@@ -74,7 +74,7 @@ namespace StealthTileMap {
 
             template <typename OtherType, int width, int length, int height>
             constexpr STEALTH_ALWAYS_INLINE TileMap& operator=(TileMap<OtherType, width, length, height>&& other) {
-                static_assert(other.size() == this -> size(), "Cannot move incompatible TileMaps");
+                static_assert(other.size() == TileMap::size(), "Cannot move incompatible TileMaps");
                 tiles = std::move(other.elements());
                 return *this;
             }
@@ -93,19 +93,19 @@ namespace StealthTileMap {
 
             // Accessors
             constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x, int y, int z) {
-                return tiles[this -> area() * z + this -> width() * y + x];
+                return tiles[TileMap::area() * z + TileMap::width() * y + x];
             }
 
             constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x, int y, int z) const {
-                return tiles[this -> area() * z + this -> width() * y + x];
+                return tiles[TileMap::area() * z + TileMap::width() * y + x];
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x, int y) {
-                return tiles[this -> width() * y + x];
+                return tiles[TileMap::width() * y + x];
             }
 
             constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x, int y) const {
-                return tiles[this -> width() * y + x];
+                return tiles[TileMap::width() * y + x];
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x) {
@@ -182,7 +182,7 @@ namespace StealthTileMap {
             constexpr TileMap& randomize(Distribution&& distribution = std::forward<Distribution&&>(DefaultDistribution),
                 long seed = stealth::getCurrentTime(), Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) noexcept {
                 generator.seed(seed);
-                for (int i = 0; i < this -> size(); ++i) {
+                for (int i = 0; i < TileMap::size(); ++i) {
                     tiles[i] = distribution(generator);
                 }
                 return (*this);
@@ -205,7 +205,7 @@ namespace StealthTileMap {
             constexpr void const_copy(const OtherTileMap& other) {
                 if constexpr (!std::is_scalar<OtherTileMap>::value) static_assert(other.size()
                     == TileMap::size(), "Cannot const_copy incompatible TileMaps");
-                for (int i = 0; i < this -> size(); ++i) {
+                for (int i = 0; i < TileMap::size(); ++i) {
                     if constexpr (std::is_scalar<OtherTileMap>::value) tiles[i] = other;
                     else tiles[i] = other[i];
                 }

@@ -4,6 +4,31 @@
 #include "../TileMapBase.hpp"
 
 namespace StealthTileMap {
+    template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename InternalTileMap>
+    constexpr STEALTH_ALWAYS_INLINE auto optimal_indexing_mode() noexcept {
+        if constexpr (widthAtCompileTime == internal::traits<InternalTileMap>::width
+            && lengthAtCompileTime == internal::traits<InternalTileMap>::length) {
+            // No need to deduce anything, dimensions are the same.
+            return 1;
+        } else if constexpr (lengthAtCompileTime == internal::traits<InternalTileMap>::length) {
+            // Treat as a long 2D TileMap.
+            return 2;
+        } else if constexpr (heightAtCompileTime == 1) {
+            // Optimizations for flat TileMaps.
+            if constexpr (lengthAtCompileTime == 1
+                || widthAtCompileTime == internal::traits<InternalTileMap>::width) {
+                // If we can treat it as a single row, just use 1D accesses.
+                return 1;
+            } else {
+                // Otherwise use 2D accesses.
+                return 2;
+            }
+        } else {
+            // If all else fails, use 3D accesses.
+            return 3;
+        }
+    }
+
     namespace internal {
         template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename InternalTileMap, typename dat, typename writable>
         struct traits<TileMapView<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, dat, writable>> {

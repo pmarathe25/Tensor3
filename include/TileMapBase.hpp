@@ -9,23 +9,23 @@ namespace StealthTileMap {
         public:
             typedef typename internal::traits<Derived>::ScalarType ScalarType;
             // Dimensions
-            static constexpr STEALTH_ALWAYS_INLINE int width() noexcept {
+            static constexpr STEALTH_ALWAYS_INLINE auto width() noexcept {
                 return internal::traits<Derived>::width;
             }
 
-            static constexpr STEALTH_ALWAYS_INLINE int length() noexcept {
+            static constexpr STEALTH_ALWAYS_INLINE auto length() noexcept {
                 return internal::traits<Derived>::length;
             }
 
-            static constexpr STEALTH_ALWAYS_INLINE int height() noexcept {
+            static constexpr STEALTH_ALWAYS_INLINE auto height() noexcept {
                 return internal::traits<Derived>::height;
             }
 
-            static constexpr STEALTH_ALWAYS_INLINE int area() noexcept {
+            static constexpr STEALTH_ALWAYS_INLINE auto area() noexcept {
                 return internal::traits<Derived>::area;
             }
 
-            static constexpr STEALTH_ALWAYS_INLINE int size() noexcept {
+            static constexpr STEALTH_ALWAYS_INLINE auto size() noexcept {
                 return internal::traits<Derived>::size;
             }
 
@@ -45,7 +45,8 @@ namespace StealthTileMap {
                 return static_cast<const Derived*>(this) -> operator[](x);
             }
 
-            constexpr STEALTH_ALWAYS_INLINE TileMap<ScalarType, width(), length(), height()> eval() const {
+            constexpr STEALTH_ALWAYS_INLINE TileMap<ScalarType, TileMapBase::width(),
+                TileMapBase::length(), TileMapBase::height()> eval() const {
                 return *(static_cast<const Derived*>(this));
             }
     };
@@ -55,6 +56,7 @@ namespace StealthTileMap {
         template <typename TileMapType>
         using optimal_scalar_type = typename std::conditional<sizeof(typename internal::traits<TileMapType>::ScalarType) <= sizeof(void*),
             typename internal::traits<TileMapType>::ScalarType, const typename internal::traits<TileMapType>::ScalarType&>::type;
+
 
         // Display Functions
         template <typename T>

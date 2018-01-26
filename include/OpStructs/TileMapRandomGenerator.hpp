@@ -21,8 +21,8 @@ namespace StealthTileMap {
     } /* internal */
 
     namespace {
-        static inline std::mt19937 DefaultGenerator;
-        static inline std::uniform_real_distribution DefaultDistribution{0.0f, 1.0f};
+        static std::mt19937 DefaultGenerator;
+        static std::uniform_real_distribution DefaultDistribution{0.0f, 1.0f};
     }
 
     // TileMapRandomGenerator number generator
