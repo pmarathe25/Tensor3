@@ -203,7 +203,7 @@ namespace StealthTileMap {
 
             template <typename OtherTileMap>
             constexpr void const_copy(const OtherTileMap& other) {
-                if constexpr (!std::is_scalar<OtherTileMap>::value) static_assert(OtherTileMap::size()
+                if constexpr (!std::is_scalar<OtherTileMap>::value) static_assert(other.size()
                     == TileMap::size(), "Cannot const_copy incompatible TileMaps");
                 for (int i = 0; i < this -> size(); ++i) {
                     if constexpr (std::is_scalar<OtherTileMap>::value) tiles[i] = other;
