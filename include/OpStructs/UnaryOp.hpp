@@ -7,7 +7,7 @@ namespace StealthTileMap {
     namespace internal {
         template <typename UnaryOperation, typename LHS>
         struct traits<UnaryOp<UnaryOperation, LHS>> {
-            typedef typename std::invoke_result<UnaryOperation, typename optimal_scalar_type<LHS>::type>::type ScalarType;
+            typedef typename std::invoke_result<UnaryOperation, optimal_scalar_type<LHS>>::type ScalarType;
             // Dimensions
             static constexpr int length = internal::traits<LHS>::length,
                 width = internal::traits<LHS>::width,

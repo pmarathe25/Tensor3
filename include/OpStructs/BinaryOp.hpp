@@ -8,8 +8,8 @@ namespace StealthTileMap {
     namespace internal {
         template <typename BinaryOperation, typename LHS, typename RHS>
         struct traits<BinaryOp<BinaryOperation, LHS, RHS>> {
-            typedef typename std::invoke_result<BinaryOperation, typename optimal_scalar_type<LHS>::type,
-                typename optimal_scalar_type<RHS>::type>::type ScalarType;
+            typedef typename std::invoke_result<BinaryOperation, optimal_scalar_type<LHS>,
+                optimal_scalar_type<RHS>>::type ScalarType;
             // Dimensions
             static constexpr int length = (std::is_scalar<LHS>::value ? internal::traits<RHS>::length : internal::traits<LHS>::length),
                 width = (std::is_scalar<LHS>::value ? internal::traits<RHS>::width : internal::traits<LHS>::width),
