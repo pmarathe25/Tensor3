@@ -32,17 +32,17 @@ namespace StealthTileMap {
     class TileMapRandomGenerator : public TileMapBase<TileMapRandomGenerator<widthAtCompileTime,
         lengthAtCompileTime, heightAtCompileTime, Distribution, Generator, areaAtCompileTime, sizeAtCompileTime>>  {
         public:
-            constexpr TileMapRandomGenerator(Distribution&& distribution = std::forward<Distribution&&>(DefaultDistribution),
+            constexpr STEALTH_ALWAYS_INLINE TileMapRandomGenerator(Distribution&& distribution = std::forward<Distribution&&>(DefaultDistribution),
                 long seed = stealth::getCurrentTime(), Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) noexcept
                 : distribution{std::forward<Distribution&&>(distribution)}, generator{std::forward<Generator&&>(generator)} {
                 generator.seed(seed);
             }
 
-            constexpr auto operator()(int x = 0, int y = 0, int z = 0) const noexcept {
+            constexpr STEALTH_ALWAYS_INLINE auto operator()(int x = 0, int y = 0, int z = 0) const noexcept {
                 return distribution(generator);
             }
 
-            constexpr auto operator[](int index) const noexcept {
+            constexpr STEALTH_ALWAYS_INLINE auto operator[](int index) const noexcept {
                 return distribution(generator);
             }
 

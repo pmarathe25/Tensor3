@@ -41,9 +41,9 @@ namespace StealthTileMap {
             typedef type ScalarType;
             static constexpr bool containsData = false;
 
-            constexpr TileMap() noexcept : tiles(sizeAtCompileTime) { }
+            constexpr STEALTH_ALWAYS_INLINE TileMap() noexcept : tiles(sizeAtCompileTime) { }
 
-            constexpr TileMap(const std::initializer_list<ScalarType>& other) noexcept : tiles(sizeAtCompileTime) {
+            constexpr STEALTH_ALWAYS_INLINE TileMap(const std::initializer_list<ScalarType>& other) noexcept : tiles(sizeAtCompileTime) {
                 if (other.size() > sizeAtCompileTime) {
                     throw std::invalid_argument("Cannot initialize TileMap from incompatible initializer list");
                 }
@@ -52,129 +52,129 @@ namespace StealthTileMap {
 
             // Copy
             template <typename OtherTileMap>
-            constexpr TileMap(const OtherTileMap& other) noexcept : tiles(sizeAtCompileTime) {
+            constexpr STEALTH_ALWAYS_INLINE TileMap(const OtherTileMap& other) noexcept : tiles(sizeAtCompileTime) {
                 const_copy(other);
             }
 
-            constexpr TileMap(const TileMap& other) noexcept {
+            constexpr STEALTH_ALWAYS_INLINE TileMap(const TileMap& other) noexcept {
                 tiles = other.tiles;
             }
 
             // Move Constructor
-            constexpr TileMap(TileMap&& other) noexcept = default;
+            constexpr STEALTH_ALWAYS_INLINE TileMap(TileMap&& other) noexcept = default;
 
             template <typename OtherType, int width, int length, int height>
-            constexpr TileMap(TileMap<OtherType, width, length, height>&& other) {
+            constexpr STEALTH_ALWAYS_INLINE TileMap(TileMap<OtherType, width, length, height>&& other) {
                 static_assert(other.size() == this -> size(), "Cannot move incompatible TileMaps");
                 tiles = std::move(other.elements());
             }
 
             // Move Assignment
-            constexpr TileMap& operator=(TileMap&& other) noexcept = default;
+            constexpr STEALTH_ALWAYS_INLINE TileMap& operator=(TileMap&& other) noexcept = default;
 
             template <typename OtherType, int width, int length, int height>
-            constexpr TileMap& operator=(TileMap<OtherType, width, length, height>&& other) {
+            constexpr STEALTH_ALWAYS_INLINE TileMap& operator=(TileMap<OtherType, width, length, height>&& other) {
                 static_assert(other.size() == this -> size(), "Cannot move incompatible TileMaps");
                 tiles = std::move(other.elements());
                 return *this;
             }
 
             // Copy Assignment
-            constexpr TileMap& operator=(const TileMap& other) noexcept {
+            constexpr STEALTH_ALWAYS_INLINE TileMap& operator=(const TileMap& other) noexcept {
                 tiles = other.tiles;
                 return *this;
             }
 
             template <typename OtherTileMap>
-            constexpr TileMap& operator=(const OtherTileMap& other) noexcept {
+            constexpr STEALTH_ALWAYS_INLINE TileMap& operator=(const OtherTileMap& other) noexcept {
                 const_copy(other);
                 return *this;
             }
 
             // Accessors
-            constexpr auto& operator()(int x, int y, int z) {
+            constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x, int y, int z) {
                 return tiles[this -> area() * z + this -> width() * y + x];
             }
 
-            constexpr const auto& operator()(int x, int y, int z) const {
+            constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x, int y, int z) const {
                 return tiles[this -> area() * z + this -> width() * y + x];
             }
 
-            constexpr auto& operator()(int x, int y) {
+            constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x, int y) {
                 return tiles[this -> width() * y + x];
             }
 
-            constexpr const auto& operator()(int x, int y) const {
+            constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x, int y) const {
                 return tiles[this -> width() * y + x];
             }
 
-            constexpr auto& operator()(int x) {
+            constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x) {
                 return tiles[x];
             }
 
-            constexpr const auto& operator()(int x) const {
+            constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x) const {
                 return tiles[x];
             }
 
-            constexpr const auto& operator[](int x) const {
+            constexpr STEALTH_ALWAYS_INLINE const auto& operator[](int x) const {
                 return tiles[x];
             }
 
-            constexpr auto& operator[](int x) {
+            constexpr STEALTH_ALWAYS_INLINE auto& operator[](int x) {
                 return tiles[x];
             }
 
-            constexpr const auto* data() const {
+            constexpr STEALTH_ALWAYS_INLINE const auto* data() const {
                 static_assert(!std::is_same<ScalarType, bool>::value, "Cannot access data() member of boolean TileMap");
                 return tiles.data();
             }
 
-            constexpr auto* data() {
+            constexpr STEALTH_ALWAYS_INLINE auto* data() {
                 static_assert(!std::is_same<ScalarType, bool>::value, "Cannot access data() member of boolean TileMap");
                 return tiles.data();
             }
 
-            constexpr const auto& elements() const noexcept {
+            constexpr STEALTH_ALWAYS_INLINE const auto& elements() const noexcept {
                 return tiles;
             }
 
-            constexpr auto& elements() noexcept {
+            constexpr STEALTH_ALWAYS_INLINE auto& elements() noexcept {
                 return tiles;
             }
 
-            constexpr auto begin() noexcept {
+            constexpr STEALTH_ALWAYS_INLINE auto begin() noexcept {
                 return tiles.begin();
             }
 
-            constexpr auto cbegin() const noexcept {
+            constexpr STEALTH_ALWAYS_INLINE auto cbegin() const noexcept {
                 return tiles.cbegin();
             }
 
-            constexpr auto end() noexcept {
+            constexpr STEALTH_ALWAYS_INLINE auto end() noexcept {
                 return tiles.end();
             }
 
-            constexpr auto cend() const noexcept {
+            constexpr STEALTH_ALWAYS_INLINE auto cend() const noexcept {
                 return tiles.cend();
             }
 
             template <typename OtherTileMap>
-            constexpr void operator+=(OtherTileMap&& other) {
+            constexpr STEALTH_ALWAYS_INLINE void operator+=(OtherTileMap&& other) {
                 (*this) = (*this) + std::forward<OtherTileMap&&>(other);
             }
 
             template <typename OtherTileMap>
-            constexpr void operator*=(OtherTileMap&& other) {
+            constexpr STEALTH_ALWAYS_INLINE void operator*=(OtherTileMap&& other) {
                 (*this) = (*this) * std::forward<OtherTileMap&&>(other);
             }
 
             template <typename OtherTileMap>
-            constexpr void operator-=(OtherTileMap&& other) {
+            constexpr STEALTH_ALWAYS_INLINE void operator-=(OtherTileMap&& other) {
                 (*this) = (*this) - std::forward<OtherTileMap&&>(other);
             }
 
             template <typename OtherTileMap>
-            constexpr void operator/=(OtherTileMap&& other) {
+            constexpr STEALTH_ALWAYS_INLINE void operator/=(OtherTileMap&& other) {
                 (*this) = (*this) / std::forward<OtherTileMap&&>(other);
             }
 
@@ -188,12 +188,12 @@ namespace StealthTileMap {
                 return (*this);
             }
 
-            constexpr TileMap& eval() {
+            constexpr STEALTH_ALWAYS_INLINE TileMap& eval() {
                 return (*this);
             }
 
             template <typename Distribution = decltype(DefaultDistribution), typename Generator = decltype(DefaultGenerator)>
-            static constexpr auto Random(Distribution&& distribution = std::forward<Distribution&&>(DefaultDistribution),
+            static constexpr STEALTH_ALWAYS_INLINE auto Random(Distribution&& distribution = std::forward<Distribution&&>(DefaultDistribution),
                 long seed = stealth::getCurrentTime(), Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) noexcept {
                 return TileMapRandomGenerator<TileMap::width(), TileMap::length(), TileMap::height(), Distribution, Generator>
                     {std::forward<Distribution&&>(distribution), seed, std::forward<Generator&&>(generator)};
@@ -213,7 +213,7 @@ namespace StealthTileMap {
     };
 
     template <int width, int length = 1, int height = 1, typename LHS>
-    constexpr auto reshape(LHS&& lhs) {
+    constexpr STEALTH_ALWAYS_INLINE auto reshape(LHS&& lhs) {
         typedef typename std::remove_reference<LHS>::type LHSRawType;
         typedef typename internal::traits<LHSRawType>::ScalarType ScalarType;
         static_assert(width * length * height == internal::traits<LHSRawType>::size, "Cannot reshape into incompatible dimensions");

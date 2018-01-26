@@ -2,6 +2,13 @@
 #define FORWARD_DECLARATIONS_H
 #include <type_traits>
 
+// Macros
+#ifdef __GNUC__
+    #define STEALTH_ALWAYS_INLINE __attribute__((always_inline))
+#else
+    #define STEALTH_ALWAYS_INLINE inline
+#endif
+
 namespace StealthTileMap {
     namespace internal {
         template <typename T> struct traits {

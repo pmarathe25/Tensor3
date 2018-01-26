@@ -21,7 +21,7 @@ namespace StealthTileMap {
 
     namespace {
         template <typename InternalTileMap, typename TileMapViewType>
-        constexpr auto singleIndexAccess(TileMapViewType view, int x) -> typename std::invoke_result<TileMapViewType, int>::type {
+        constexpr STEALTH_ALWAYS_INLINE auto singleIndexAccess(TileMapViewType view, int x) -> typename std::invoke_result<TileMapViewType, int>::type {
             if constexpr (view.width() == internal::traits<InternalTileMap>::width
                 && view.length() == internal::traits<InternalTileMap>::length) {
                 // No need to deduce anything, dimensions are the same
@@ -80,49 +80,49 @@ namespace StealthTileMap {
         public:
             typedef typename internal::traits<TileMapView>::ScalarType ScalarType;
 
-            constexpr TileMapView(InternalTileMap& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
+            constexpr STEALTH_ALWAYS_INLINE TileMapView(InternalTileMap& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
                 : tileMap{tileMap}, minX{minX}, minY{minY}, minZ{minZ},
                 offset{minX + minY * widthAtCompileTime + minZ * widthAtCompileTime * lengthAtCompileTime},
                 offsetY{minY * widthAtCompileTime},
                 offsetXZ{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
 
-            constexpr auto& operator()(int x, int y, int z) {
+            constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x, int y, int z) {
                 return tileMap(x + minX, y + minY, z + minZ);
             }
 
-            constexpr const auto& operator()(int x, int y, int z) const {
+            constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x, int y, int z) const {
                 return tileMap(x + minX, y + minY, z + minZ);
             }
 
-            constexpr auto& operator()(int x, int y) {
+            constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x, int y) {
                 return tileMap(x + offsetXZ, y + minY);
             }
 
-            constexpr const auto& operator()(int x, int y) const {
+            constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x, int y) const {
                 return tileMap(x + offsetXZ, y + minY);
             }
 
-            constexpr auto& operator()(int x) {
+            constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x) {
                 return tileMap(x + offset);
             }
 
-            constexpr const auto& operator()(int x) const {
+            constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x) const {
                 return tileMap(x + offset);
             }
 
-            constexpr const auto& operator[](int x) const {
+            constexpr STEALTH_ALWAYS_INLINE const auto& operator[](int x) const {
                 return singleIndexAccess<InternalTileMap, const TileMapView&>(*this, x);
             }
 
-            constexpr auto& operator[](int x) {
+            constexpr STEALTH_ALWAYS_INLINE auto& operator[](int x) {
                 return singleIndexAccess<InternalTileMap, TileMapView&>(*this, x);
             }
 
-            constexpr const auto* data() const noexcept {
+            constexpr STEALTH_ALWAYS_INLINE const auto* data() const noexcept {
                 return &(this -> operator[](0));
             }
 
-            constexpr auto* data() noexcept {
+            constexpr STEALTH_ALWAYS_INLINE auto* data() noexcept {
                 return &(this -> operator[](0));
             }
         private:
@@ -138,29 +138,29 @@ namespace StealthTileMap {
         public:
             typedef typename internal::traits<TileMapView>::ScalarType ScalarType;
 
-            constexpr TileMapView(const InternalTileMap& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
+            constexpr STEALTH_ALWAYS_INLINE TileMapView(const InternalTileMap& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
                 : tileMap{tileMap}, minX{minX}, minY{minY}, minZ{minZ},
                 offset{minX + minY * widthAtCompileTime + minZ * widthAtCompileTime * lengthAtCompileTime},
                 offsetY{minY * widthAtCompileTime},
                 offsetXZ{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
 
-            constexpr const auto& operator()(int x, int y, int z) const {
+            constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x, int y, int z) const {
                 return tileMap(x + minX, y + minY, z + minZ);
             }
 
-            constexpr const auto& operator()(int x, int y) const {
+            constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x, int y) const {
                 return tileMap(x + offsetXZ, y + minY);
             }
 
-            constexpr const auto& operator()(int x) const {
+            constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x) const {
                 return tileMap(x + offset);
             }
 
-            constexpr const auto& operator[](int x) const {
+            constexpr STEALTH_ALWAYS_INLINE const auto& operator[](int x) const {
                 return singleIndexAccess<InternalTileMap, const TileMapView&>(*this, x);
             }
 
-            constexpr const auto* data() const noexcept {
+            constexpr STEALTH_ALWAYS_INLINE const auto* data() const noexcept {
                 return &(this -> operator[](0));
             }
         private:
@@ -176,25 +176,25 @@ namespace StealthTileMap {
         public:
             typedef typename internal::traits<TileMapView>::ScalarType ScalarType;
 
-            constexpr TileMapView(const InternalTileMap& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
+            constexpr STEALTH_ALWAYS_INLINE TileMapView(const InternalTileMap& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
                 : tileMap{tileMap}, minX{minX}, minY{minY}, minZ{minZ},
                 offset{minX + minY * widthAtCompileTime + minZ * widthAtCompileTime * lengthAtCompileTime},
                 offsetY{minY * widthAtCompileTime},
                 offsetXZ{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
 
-            constexpr auto operator()(int x, int y, int z) const {
+            constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z) const {
                 return tileMap(x + minX, y + minY, z + minZ);
             }
 
-            constexpr auto operator()(int x, int y) const {
+            constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y) const {
                 return tileMap(x + offsetXZ, y + minY);
             }
 
-            constexpr auto operator()(int x) const {
+            constexpr STEALTH_ALWAYS_INLINE auto operator()(int x) const {
                 return tileMap(x + offset);
             }
 
-            constexpr auto operator[](int x) const {
+            constexpr STEALTH_ALWAYS_INLINE auto operator[](int x) const {
                 return singleIndexAccess<InternalTileMap, const TileMapView&>(*this, x);
             }
         private:

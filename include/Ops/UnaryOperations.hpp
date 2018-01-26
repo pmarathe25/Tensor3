@@ -5,12 +5,12 @@
 
 namespace StealthTileMap {
     template <typename UnaryOperation, typename LHS>
-    constexpr auto apply(const UnaryOperation& op, const LHS& lhs) noexcept {
+    constexpr STEALTH_ALWAYS_INLINE auto apply(const UnaryOperation& op, const LHS& lhs) noexcept {
         return UnaryOp{op, lhs};
     }
 
     template <typename LHS>
-    constexpr auto operator!(const LHS& lhs) noexcept {
+    constexpr STEALTH_ALWAYS_INLINE auto operator!(const LHS& lhs) noexcept {
         return UnaryOp{internal::ops::notOp<LHS>{}, lhs};
     }
 } /* StealthTileMap */

@@ -26,10 +26,10 @@ namespace StealthTileMap {
         public:
             typedef typename internal::traits<BinaryOp>::ScalarType ScalarType;
 
-            constexpr BinaryOp(const BinaryOperation& op, const LHS& lhs, const RHS& rhs) noexcept
+            constexpr STEALTH_ALWAYS_INLINE BinaryOp(const BinaryOperation& op, const LHS& lhs, const RHS& rhs) noexcept
                 : op{op}, lhs{lhs}, rhs{rhs} { }
 
-            constexpr auto operator()(int x, int y, int z) const {
+            constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z) const {
                 if constexpr (std::is_scalar<RHS>::value) {
                     return op(lhs(x, y, z), rhs);
                 } else if constexpr (std::is_scalar<LHS>::value) {
@@ -39,7 +39,7 @@ namespace StealthTileMap {
                 }
             }
 
-            constexpr auto operator()(int x, int y) const {
+            constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y) const {
                 if constexpr (std::is_scalar<RHS>::value) {
                     return op(lhs(x, y), rhs);
                 } else if constexpr (std::is_scalar<LHS>::value) {
@@ -49,7 +49,7 @@ namespace StealthTileMap {
                 }
             }
 
-            constexpr auto operator()(int x) const {
+            constexpr STEALTH_ALWAYS_INLINE auto operator()(int x) const {
                 if constexpr (std::is_scalar<RHS>::value) {
                     return op(lhs(x), rhs);
                 } else if constexpr (std::is_scalar<LHS>::value) {
@@ -59,7 +59,7 @@ namespace StealthTileMap {
                 }
             }
 
-            constexpr auto operator[](int x) const {
+            constexpr STEALTH_ALWAYS_INLINE auto operator[](int x) const {
                 if constexpr (std::is_scalar<RHS>::value) {
                     return op(lhs[x], rhs);
                 } else if constexpr (std::is_scalar<LHS>::value) {

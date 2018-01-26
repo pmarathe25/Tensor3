@@ -24,22 +24,22 @@ namespace StealthTileMap {
         public:
             typedef typename internal::traits<UnaryOp>::ScalarType ScalarType;
 
-            constexpr UnaryOp(const UnaryOperation& op, const LHS& lhs) noexcept
+            constexpr STEALTH_ALWAYS_INLINE UnaryOp(const UnaryOperation& op, const LHS& lhs) noexcept
                 : op{op}, lhs{lhs} { }
 
-            constexpr auto operator()(int x, int y, int z) const {
+            constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z) const {
                 return op(lhs(x, y, z));
             }
 
-            constexpr auto operator()(int x, int y) const {
+            constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y) const {
                 return op(lhs(x, y));
             }
 
-            constexpr auto operator()(int x) const {
+            constexpr STEALTH_ALWAYS_INLINE auto operator()(int x) const {
                 return op(lhs(x));
             }
 
-            constexpr auto operator[](int x) const {
+            constexpr STEALTH_ALWAYS_INLINE auto operator[](int x) const {
                 return op(lhs[x]);
             }
         private:
