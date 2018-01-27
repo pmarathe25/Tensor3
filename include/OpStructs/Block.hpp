@@ -6,6 +6,22 @@
 #include <iostream>
 
 namespace StealthTileMap {
+    namespace internal {
+        template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename InternalTileMap, typename dat, typename writable>
+        struct traits<Block<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, dat, writable>> {
+            typedef typename internal::traits<InternalTileMap>::ScalarType ScalarType;
+            // Dimensions
+            static constexpr int length = lengthAtCompileTime,
+                width = widthAtCompileTime,
+                height = heightAtCompileTime,
+                area = length * width,
+                size = area * height;
+            typedef dat containsData;
+            typedef writable isWritable;
+            typedef typename internal::traits<InternalTileMap>::UnderlyingTileMapType UnderlyingTileMapType;
+        };
+    } /* internal */
+
     namespace {
         template <typename BlockType, typename InternalTileMap>
         constexpr STEALTH_ALWAYS_INLINE auto optimal_indexing_mode() noexcept {
@@ -31,39 +47,22 @@ namespace StealthTileMap {
                 return 3;
             }
         }
-    }
-
-    namespace internal {
-        template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename InternalTileMap, typename dat, typename writable>
-        struct traits<Block<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, dat, writable>> {
-            typedef typename internal::traits<InternalTileMap>::ScalarType ScalarType;
-            // Dimensions
-            static constexpr int length = lengthAtCompileTime,
-                width = widthAtCompileTime,
-                height = heightAtCompileTime,
-                area = length * width,
-                size = area * height;
-            typedef dat containsData;
-            typedef writable isWritable;
-            typedef typename internal::traits<InternalTileMap>::UnderlyingTileMapType UnderlyingTileMapType;
-        };
-    } /* internal */
-
-    template <int indexingMode, typename BlockType>
-    constexpr auto indexSpecial(int hintX, int hintY, int x, int y, int z, BlockType block)
+        
+        template <int indexingMode, typename BlockType>
+        constexpr auto indexSpecial(int hintX, int hintY, int x, int y, int z, BlockType block)
         -> typename std::invoke_result<BlockType, int>::type {
-        if constexpr (indexingMode == 1) {
-            return block.underlyingTileMap()(hintX + block.offset, hintY + block.minY, x, y, z);
-        } else if constexpr (indexingMode == 2) {
-            hintX = (x + block.minX) + (hintY + block.minY) * block.underlyingTileMap().width();
-            return block.underlyingTileMap()(hintX, hintY + block.minY, x, y, z);
-        } else {
-            hintY = (y + block.minY) + (z + block.minZ) * block.underlyingTileMap().length();
-            hintX = (x + block.minX) + hintY * block.underlyingTileMap().width();
-            return block.underlyingTileMap()(hintX, hintY, x, y, z);
+            if constexpr (indexingMode == 1) {
+                return block.underlyingTileMap()(hintX + block.offset, hintY + block.minY, x, y, z);
+            } else if constexpr (indexingMode == 2) {
+                hintX = (x + block.minX) + (hintY + block.minY) * block.underlyingTileMap().width();
+                return block.underlyingTileMap()(hintX, hintY + block.minY, x, y, z);
+            } else {
+                hintY = (y + block.minY) + (z + block.minZ) * block.underlyingTileMap().length();
+                hintX = (x + block.minX) + hintY * block.underlyingTileMap().width();
+                return block.underlyingTileMap()(hintX, hintY, x, y, z);
+            }
         }
     }
-
 
     // Writable view
     template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename InternalTileMap>
