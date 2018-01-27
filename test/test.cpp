@@ -19,6 +19,7 @@ int main() noexcept {
     const StealthTileMap::TileMapF<5, 5, 2> test2 = 1.0f;
     StealthTileMap::TileMapF<5, 5, 2> test3 = test + test2;
     StealthTileMap::TileMapF<5, 5, 2> test4 = 1.2f;
+    StealthTileMap::TileMapF<2, 2, 2> test5 = 1.7856f;
 
     test4 += 2.0f;
     std::cout << "Test4\n" << test4 << '\n';
@@ -64,6 +65,9 @@ int main() noexcept {
     std::cout << "Test\n" << test << '\n';
     std::cout << "TestView\n" << testView << '\n';
     std::cout << "TestView2\n" << testView2 << '\n';
+    std::cout << "Test5\n" << test5 << '\n';
+    std::cout << "TestView2 + Test5\n" << (testView2 + test5) << '\n';
+
 
     // std::cout << "Test\n" << test << '\n';
     // std::cout << "Test2\n" << test2 << '\n';

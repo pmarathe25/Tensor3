@@ -27,6 +27,10 @@ namespace StealthTileMap {
             constexpr STEALTH_ALWAYS_INLINE UnaryOp(const UnaryOperation& op, const LHS& lhs) noexcept
                 : op{op}, lhs{lhs} { }
 
+            constexpr STEALTH_ALWAYS_INLINE auto operator()(int index, int x, int y, int z) const {
+                return op(lhs(index, x, y, z));
+            }
+
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z) const {
                 return op(lhs(x, y, z));
             }

@@ -4,19 +4,19 @@
 #include "../TileMapBase.hpp"
 
 namespace StealthTileMap {
-    template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename InternalTileMap>
+    template <typename TileMapViewType, typename InternalTileMap>
     constexpr STEALTH_ALWAYS_INLINE auto optimal_indexing_mode() noexcept {
-        if constexpr (widthAtCompileTime == internal::traits<InternalTileMap>::width
-            && lengthAtCompileTime == internal::traits<InternalTileMap>::length) {
+        if constexpr (internal::traits<TileMapViewType>::width == internal::traits<InternalTileMap>::width
+            && internal::traits<TileMapViewType>::length == internal::traits<InternalTileMap>::length) {
             // No need to deduce anything, dimensions are the same.
             return 1;
-        } else if constexpr (lengthAtCompileTime == internal::traits<InternalTileMap>::length) {
+        } else if constexpr (internal::traits<TileMapViewType>::length == internal::traits<InternalTileMap>::length) {
             // Treat as a long 2D TileMap.
             return 2;
-        } else if constexpr (heightAtCompileTime == 1) {
+        } else if constexpr (internal::traits<TileMapViewType>::height == 1) {
             // Optimizations for flat TileMaps.
-            if constexpr (lengthAtCompileTime == 1
-                || widthAtCompileTime == internal::traits<InternalTileMap>::width) {
+            if constexpr (internal::traits<TileMapViewType>::length == 1
+                || internal::traits<TileMapViewType>::width == internal::traits<InternalTileMap>::width) {
                 // If we can treat it as a single row, just use 1D accesses.
                 return 1;
             } else {
@@ -45,54 +45,48 @@ namespace StealthTileMap {
     } /* internal */
 
     namespace {
-        template <typename InternalTileMap, typename TileMapViewType>
-        constexpr STEALTH_ALWAYS_INLINE auto singleIndexAccess(TileMapViewType view, int x) -> typename std::invoke_result<TileMapViewType, int>::type {
-            if constexpr (view.width() == internal::traits<InternalTileMap>::width
-                && view.length() == internal::traits<InternalTileMap>::length) {
+        template <typename TileMapViewType, typename InternalTileMapType>
+        constexpr STEALTH_ALWAYS_INLINE auto singleIndexAccess(int offset, int offsetXZ, int minX, int minY, int minZ, int x, int y, int z) {
+            if constexpr (internal::traits<TileMapViewType>::width == internal::traits<InternalTileMapType>::width
+                && internal::traits<TileMapViewType>::length == internal::traits<InternalTileMapType>::length) {
                 // No need to deduce anything, dimensions are the same
-                return view(x);
-            } else if constexpr (view.length() == internal::traits<InternalTileMap>::length) {
-                if constexpr (view.width() == 1) {
-                    return view(0, x);
+                return x + offset;
+            } else if constexpr (internal::traits<TileMapViewType>::length == internal::traits<InternalTileMapType>::length) {
+                if constexpr (internal::traits<TileMapViewType>::width == 1) {
+                    return offsetXZ + (x + minY) * internal::traits<InternalTileMapType>::width;
                 } else {
-                    int y = x / view.width();
-                    x %= view.width();
-                    return view(x, y);
+                    return x + offsetXZ + (y + minY) * internal::traits<InternalTileMapType>::width;
                 }
-            } else if constexpr (view.width() == internal::traits<InternalTileMap>::width) {
-                if constexpr (view.height() == 1) {
+            } else if constexpr (internal::traits<TileMapViewType>::width == internal::traits<InternalTileMapType>::width) {
+                if constexpr (internal::traits<TileMapViewType>::height == 1) {
                     // Only 1 layer - all elements are continuous.
-                    return view(x);
-                } else if constexpr (view.width() == 1 && view.length() == 1) {
+                    return x + offset;
+                } else if constexpr (internal::traits<TileMapViewType>::width == 1 && internal::traits<TileMapViewType>::length == 1) {
                     // We're just going up
-                    return view(0, 0, x);
+                    return minX + minY * internal::traits<InternalTileMapType>::width
+                        + (x + minZ) * internal::traits<InternalTileMapType>::area;
                 } else {
                     // Need to figure out what height is.
-                    int z = x / view.area();
-                    x %= view.area();
-                    return view(x, 0, z);
+                    return x + minX + minY * internal::traits<InternalTileMapType>::width
+                        + (z + minZ) * internal::traits<InternalTileMapType>::area;
                 }
             } else {
                 // Otherwise we need to figure out everything.
-                if constexpr (view.length() == 1 && view.width() == 1) {
+                if constexpr (internal::traits<TileMapViewType>::length == 1 && internal::traits<TileMapViewType>::width == 1) {
                     // Z is the only coordinate needed.
-                    return view(0, 0, x);
-                } if constexpr (view.length() == 1) {
+                    return minX + minY * internal::traits<InternalTileMapType>::width
+                        + (x + minZ) * internal::traits<InternalTileMapType>::area;
+                } if constexpr (internal::traits<TileMapViewType>::length == 1) {
                     // No need to calculate y.
-                    int z = x / view.width();
-                    x %= view.width();
-                    return view(x, 0, z);
-                } else if constexpr (view.width() == 1) {
+                    return x + minX + minY * internal::traits<InternalTileMapType>::width
+                        + (z + minZ) * internal::traits<InternalTileMapType>::area;
+                } else if constexpr (internal::traits<TileMapViewType>::width == 1) {
                     // x is always 0
-                    int z = x / view.length();
-                    int y = x % view.length();
-                    return view(0, y, z);
+                    return minX + (y + minY) * internal::traits<InternalTileMapType>::width
+                        + (z + minZ) * internal::traits<InternalTileMapType>::area;
                 } else {
-                    int y = x / view.width();
-                    x %= view.width();
-                    int z = y / view.length();
-                    y %= view.length();
-                    return view(x, y, z);
+                    return x + minX + (y + minY) * internal::traits<InternalTileMapType>::width
+                        + (z + minZ) * internal::traits<InternalTileMapType>::area;
                 }
             }
         }
@@ -108,7 +102,6 @@ namespace StealthTileMap {
             constexpr STEALTH_ALWAYS_INLINE TileMapView(InternalTileMap& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
                 : tileMap{tileMap}, minX{minX}, minY{minY}, minZ{minZ},
                 offset{minX + minY * widthAtCompileTime + minZ * widthAtCompileTime * lengthAtCompileTime},
-                offsetY{minY * widthAtCompileTime},
                 offsetXZ{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x, int y, int z) {
@@ -135,25 +128,27 @@ namespace StealthTileMap {
                 return tileMap(x + offset);
             }
 
-            constexpr STEALTH_ALWAYS_INLINE const auto& operator[](int x) const {
-                return singleIndexAccess<InternalTileMap, const TileMapView&>(*this, x);
+            constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int index, int x, int y, int z) const {
+                int newIndex = singleIndexAccess<TileMapView, InternalTileMap>(offset, offsetXZ, minX, minY, minZ, x, y, z);
+                return tileMap(newIndex, x, y, z);
             }
 
-            constexpr STEALTH_ALWAYS_INLINE auto& operator[](int x) {
-                return singleIndexAccess<InternalTileMap, TileMapView&>(*this, x);
+            constexpr STEALTH_ALWAYS_INLINE auto& operator()(int index, int x, int y, int z) {
+                int newIndex = singleIndexAccess<TileMapView, InternalTileMap>(offset, offsetXZ, minX, minY, minZ, x, y, z);
+                return tileMap(newIndex, x, y, z);
             }
 
             constexpr STEALTH_ALWAYS_INLINE const auto* data() const noexcept {
-                return &(this -> operator[](0));
+                return &(this -> operator()(0));
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto* data() noexcept {
-                return &(this -> operator[](0));
+                return &(this -> operator()(0));
             }
         private:
             InternalTileMap& tileMap;
             const int minX, minY, minZ;
-            const int offset, offsetY, offsetXZ;
+            const int offset, offsetXZ;
     };
 
     // Const view
@@ -166,7 +161,6 @@ namespace StealthTileMap {
             constexpr STEALTH_ALWAYS_INLINE TileMapView(const InternalTileMap& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
                 : tileMap{tileMap}, minX{minX}, minY{minY}, minZ{minZ},
                 offset{minX + minY * widthAtCompileTime + minZ * widthAtCompileTime * lengthAtCompileTime},
-                offsetY{minY * widthAtCompileTime},
                 offsetXZ{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
 
             constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x, int y, int z) const {
@@ -181,17 +175,18 @@ namespace StealthTileMap {
                 return tileMap(x + offset);
             }
 
-            constexpr STEALTH_ALWAYS_INLINE const auto& operator[](int x) const {
-                return singleIndexAccess<InternalTileMap, const TileMapView&>(*this, x);
+            constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int index, int x, int y, int z) const {
+                int newIndex = singleIndexAccess<TileMapView, InternalTileMap>(offset, offsetXZ, minX, minY, minZ, x, y, z);
+                return tileMap(newIndex, x, y, z);
             }
 
             constexpr STEALTH_ALWAYS_INLINE const auto* data() const noexcept {
-                return &(this -> operator[](0));
+                return &(this -> operator()(0));
             }
         private:
             const InternalTileMap& tileMap;
             const int minX, minY, minZ;
-            const int offset, offsetY, offsetXZ;
+            const int offset, offsetXZ;
     };
 
     // A view of a temporary object. Cannot be modified.
@@ -204,7 +199,6 @@ namespace StealthTileMap {
             constexpr STEALTH_ALWAYS_INLINE TileMapView(const InternalTileMap& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
                 : tileMap{tileMap}, minX{minX}, minY{minY}, minZ{minZ},
                 offset{minX + minY * widthAtCompileTime + minZ * widthAtCompileTime * lengthAtCompileTime},
-                offsetY{minY * widthAtCompileTime},
                 offsetXZ{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z) const {
@@ -219,13 +213,14 @@ namespace StealthTileMap {
                 return tileMap(x + offset);
             }
 
-            constexpr STEALTH_ALWAYS_INLINE auto operator[](int x) const {
-                return singleIndexAccess<InternalTileMap, const TileMapView&>(*this, x);
+            constexpr STEALTH_ALWAYS_INLINE auto operator()(int index, int x, int y, int z) const {
+                int newIndex = singleIndexAccess<TileMapView, InternalTileMap>(offset, offsetXZ, minX, minY, minZ, x, y, z);
+                return tileMap(newIndex, x, y, z);
             }
         private:
             const InternalTileMap& tileMap;
             const int minX, minY, minZ;
-            const int offset, offsetY, offsetXZ;
+            const int offset, offsetXZ;
     };
 
 } /* StealthTileMap */

@@ -92,6 +92,14 @@ namespace StealthTileMap {
             }
 
             // Accessors
+            constexpr STEALTH_ALWAYS_INLINE auto& operator()(int index, int x, int y, int z) {
+                return tiles[index];
+            }
+
+            constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int index, int x, int y, int z) const {
+                return tiles[index];
+            }
+
             constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x, int y, int z) {
                 return tiles[TileMap::area() * z + TileMap::width() * y + x];
             }
@@ -205,9 +213,19 @@ namespace StealthTileMap {
             constexpr void const_copy(const OtherTileMap& other) {
                 if constexpr (!std::is_scalar<OtherTileMap>::value) static_assert(other.size()
                     == TileMap::size(), "Cannot const_copy incompatible TileMaps");
-                for (int i = 0; i < TileMap::size(); ++i) {
-                    if constexpr (std::is_scalar<OtherTileMap>::value) tiles[i] = other;
-                    else tiles[i] = other[i];
+                // for (int i = 0; i < TileMap::size(); ++i) {
+                //     if constexpr (std::is_scalar<OtherTileMap>::value) tiles[i] = other;
+                //     else tiles[i] = other[i];
+                // }
+                int index = 0;
+                for (int k = 0; k < TileMap::height(); ++k) {
+                    for (int j = 0; j < TileMap::length(); ++j) {
+                        for (int i = 0; i < TileMap::width(); ++i) {
+                            if constexpr (std::is_scalar<OtherTileMap>::value) tiles[index] = other;
+                            else tiles[index] = other(index, i, j, k);
+                            ++index;
+                        }
+                    }
                 }
             }
     };

@@ -29,6 +29,16 @@ namespace StealthTileMap {
             constexpr STEALTH_ALWAYS_INLINE BinaryOp(const BinaryOperation& op, const LHS& lhs, const RHS& rhs) noexcept
                 : op{op}, lhs{lhs}, rhs{rhs} { }
 
+            constexpr STEALTH_ALWAYS_INLINE auto operator()(int index, int x, int y, int z) const {
+                if constexpr (std::is_scalar<RHS>::value) {
+                    return op(lhs(index, x, y, z), rhs);
+                } else if constexpr (std::is_scalar<LHS>::value) {
+                    return op(lhs, rhs(index, x, y, z));
+                } else {
+                    return op(lhs(index, x, y, z), rhs(index, x, y, z));
+                }
+            }
+
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z) const {
                 if constexpr (std::is_scalar<RHS>::value) {
                     return op(lhs(x, y, z), rhs);
