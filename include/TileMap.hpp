@@ -21,6 +21,7 @@ namespace StealthTileMap {
                 area = areaAtCompileTime, size = sizeAtCompileTime;
             typedef std::true_type containsData;
             typedef std::true_type isWritable;
+            typedef TileMap<type, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime> UnderlyingTileMapType;
         };
 
         template <typename type, int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
@@ -31,6 +32,7 @@ namespace StealthTileMap {
                 area = areaAtCompileTime, size = sizeAtCompileTime;
             typedef std::true_type containsData;
             typedef std::false_type isWritable;
+            typedef const TileMap<type, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime> UnderlyingTileMapType;
         };
     } /* internal */
 
@@ -200,11 +202,23 @@ namespace StealthTileMap {
                 return (*this);
             }
 
+            constexpr STEALTH_ALWAYS_INLINE const TileMap& eval() const {
+                return (*this);
+            }
+
             template <typename Distribution = decltype(DefaultDistribution), typename Generator = decltype(DefaultGenerator)>
             static constexpr STEALTH_ALWAYS_INLINE auto Random(Distribution&& distribution = std::forward<Distribution&&>(DefaultDistribution),
                 long seed = stealth::getCurrentTime(), Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) noexcept {
                 return TileMapRandomGenerator<TileMap::width(), TileMap::length(), TileMap::height(), Distribution, Generator>
                     {std::forward<Distribution&&>(distribution), seed, std::forward<Generator&&>(generator)};
+            }
+
+            constexpr STEALTH_ALWAYS_INLINE auto& underlyingTileMap() {
+                return (*this);
+            }
+
+            constexpr STEALTH_ALWAYS_INLINE const auto& underlyingTileMap() const {
+                return (*this);
             }
         private:
             std::vector<ScalarType> tiles;
@@ -213,10 +227,6 @@ namespace StealthTileMap {
             constexpr void const_copy(const OtherTileMap& other) {
                 if constexpr (!std::is_scalar<OtherTileMap>::value) static_assert(other.size()
                     == TileMap::size(), "Cannot const_copy incompatible TileMaps");
-                // for (int i = 0; i < TileMap::size(); ++i) {
-                //     if constexpr (std::is_scalar<OtherTileMap>::value) tiles[i] = other;
-                //     else tiles[i] = other[i];
-                // }
                 int index = 0;
                 for (int k = 0; k < TileMap::height(); ++k) {
                     for (int j = 0; j < TileMap::length(); ++j) {

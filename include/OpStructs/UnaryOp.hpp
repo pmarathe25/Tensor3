@@ -16,6 +16,7 @@ namespace StealthTileMap {
                 size = internal::traits<LHS>::size;
             typedef std::false_type containsData;
             typedef std::false_type isWritable;
+            typedef UnaryOp<UnaryOperation, LHS> UnderlyingTileMapType;
         };
     } /* internal */
 
@@ -46,6 +47,7 @@ namespace StealthTileMap {
             constexpr STEALTH_ALWAYS_INLINE auto operator[](int x) const {
                 return op(lhs[x]);
             }
+
         private:
             const LHS& lhs;
             const UnaryOperation& op;

@@ -18,6 +18,7 @@ namespace StealthTileMap {
                 size = (std::is_scalar<LHS>::value ? internal::traits<RHS>::size : internal::traits<LHS>::size);
             typedef std::false_type containsData;
             typedef std::false_type isWritable;
+            typedef BinaryOp<BinaryOperation, LHS, RHS> UnderlyingTileMapType;
         };
     } /* internal */
 
@@ -78,6 +79,7 @@ namespace StealthTileMap {
                     return op(lhs[x], rhs[x]);
                 }
             }
+            
         private:
             const LHS& lhs;
             const RHS& rhs;

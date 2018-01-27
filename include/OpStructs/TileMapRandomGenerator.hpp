@@ -17,6 +17,8 @@ namespace StealthTileMap {
                 area = areaAtCompileTime, size = sizeAtCompileTime;
             typedef std::false_type containsData;
             typedef std::false_type isWritable;
+            typedef TileMapRandomGenerator<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime,
+                Distribution, Generator, areaAtCompileTime, sizeAtCompileTime> UnderlyingTileMapType;
         };
     } /* internal */
 
@@ -45,7 +47,6 @@ namespace StealthTileMap {
             constexpr STEALTH_ALWAYS_INLINE auto operator[](int index) const noexcept {
                 return distribution(generator);
             }
-
         private:
             Distribution&& distribution;
             Generator&& generator;

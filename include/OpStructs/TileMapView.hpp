@@ -41,12 +41,13 @@ namespace StealthTileMap {
                 size = area * height;
             typedef dat containsData;
             typedef writable isWritable;
+            typedef typename internal::traits<InternalTileMap>::UnderlyingTileMapType UnderlyingTileMapType;
         };
     } /* internal */
 
     namespace {
         template <typename TileMapViewType, typename InternalTileMapType>
-        constexpr STEALTH_ALWAYS_INLINE auto singleIndexAccess(int offset, int offsetXZ, int minX, int minY, int minZ, int x, int y, int z) {
+        constexpr STEALTH_ALWAYS_INLINE auto computeSingleIndex(int offset, int offsetXZ, int minX, int minY, int minZ, int x, int y, int z) {
             if constexpr (internal::traits<TileMapViewType>::width == internal::traits<InternalTileMapType>::width
                 && internal::traits<TileMapViewType>::length == internal::traits<InternalTileMapType>::length) {
                 // No need to deduce anything, dimensions are the same
@@ -100,7 +101,7 @@ namespace StealthTileMap {
             typedef typename internal::traits<TileMapView>::ScalarType ScalarType;
 
             constexpr STEALTH_ALWAYS_INLINE TileMapView(InternalTileMap& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
-                : tileMap{tileMap}, minX{minX}, minY{minY}, minZ{minZ},
+                : tileMap{tileMap.underlyingTileMap()}, minX{minX + tileMap.minX}, minY{minY + tileMap.minY}, minZ{minZ + tileMap.minZ},
                 offset{minX + minY * widthAtCompileTime + minZ * widthAtCompileTime * lengthAtCompileTime},
                 offsetXZ{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
 
@@ -129,13 +130,13 @@ namespace StealthTileMap {
             }
 
             constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int index, int x, int y, int z) const {
-                int newIndex = singleIndexAccess<TileMapView, InternalTileMap>(offset, offsetXZ, minX, minY, minZ, x, y, z);
-                return tileMap(newIndex, x, y, z);
+                int newIndex = computeSingleIndex<TileMapView, InternalTileMap>(offset, offsetXZ, minX, minY, minZ, x, y, z);
+                return tileMap(newIndex, x + minX, y + minY, z + minZ);
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator()(int index, int x, int y, int z) {
-                int newIndex = singleIndexAccess<TileMapView, InternalTileMap>(offset, offsetXZ, minX, minY, minZ, x, y, z);
-                return tileMap(newIndex, x, y, z);
+                int newIndex = computeSingleIndex<TileMapView, InternalTileMap>(offset, offsetXZ, minX, minY, minZ, x, y, z);
+                return tileMap(newIndex, x + minX, y + minY, z + minZ);
             }
 
             constexpr STEALTH_ALWAYS_INLINE const auto* data() const noexcept {
@@ -145,10 +146,19 @@ namespace StealthTileMap {
             constexpr STEALTH_ALWAYS_INLINE auto* data() noexcept {
                 return &(this -> operator()(0));
             }
-        private:
-            InternalTileMap& tileMap;
+
+            constexpr STEALTH_ALWAYS_INLINE auto& underlyingTileMap() {
+                return tileMap.underlyingTileMap();
+            }
+
+            constexpr STEALTH_ALWAYS_INLINE const auto& underlyingTileMap() const {
+                return tileMap.underlyingTileMap();
+            }
+
             const int minX, minY, minZ;
             const int offset, offsetXZ;
+        private:
+            typename internal::traits<TileMapView>::UnderlyingTileMapType& tileMap;
     };
 
     // Const view
@@ -159,7 +169,7 @@ namespace StealthTileMap {
             typedef typename internal::traits<TileMapView>::ScalarType ScalarType;
 
             constexpr STEALTH_ALWAYS_INLINE TileMapView(const InternalTileMap& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
-                : tileMap{tileMap}, minX{minX}, minY{minY}, minZ{minZ},
+                : tileMap{tileMap.underlyingTileMap()}, minX{minX + tileMap.minX}, minY{minY + tileMap.minY}, minZ{minZ + tileMap.minZ},
                 offset{minX + minY * widthAtCompileTime + minZ * widthAtCompileTime * lengthAtCompileTime},
                 offsetXZ{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
 
@@ -176,17 +186,18 @@ namespace StealthTileMap {
             }
 
             constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int index, int x, int y, int z) const {
-                int newIndex = singleIndexAccess<TileMapView, InternalTileMap>(offset, offsetXZ, minX, minY, minZ, x, y, z);
-                return tileMap(newIndex, x, y, z);
+                int newIndex = computeSingleIndex<TileMapView, InternalTileMap>(offset, offsetXZ, minX, minY, minZ, x, y, z);
+                return tileMap(newIndex, x + minX, y + minY, z + minZ);
             }
 
             constexpr STEALTH_ALWAYS_INLINE const auto* data() const noexcept {
                 return &(this -> operator()(0));
             }
-        private:
-            const InternalTileMap& tileMap;
+
             const int minX, minY, minZ;
             const int offset, offsetXZ;
+        private:
+            const typename internal::traits<TileMapView>::UnderlyingTileMapType& tileMap;
     };
 
     // A view of a temporary object. Cannot be modified.
@@ -197,7 +208,7 @@ namespace StealthTileMap {
             typedef typename internal::traits<TileMapView>::ScalarType ScalarType;
 
             constexpr STEALTH_ALWAYS_INLINE TileMapView(const InternalTileMap& tileMap, int minX = 0, int minY = 0, int minZ = 0) noexcept
-                : tileMap{tileMap}, minX{minX}, minY{minY}, minZ{minZ},
+                : tileMap{tileMap.underlyingTileMap()}, minX{minX + tileMap.minX}, minY{minY + tileMap.minY}, minZ{minZ + tileMap.minZ},
                 offset{minX + minY * widthAtCompileTime + minZ * widthAtCompileTime * lengthAtCompileTime},
                 offsetXZ{minX + minZ * widthAtCompileTime * lengthAtCompileTime} { }
 
@@ -214,13 +225,14 @@ namespace StealthTileMap {
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int index, int x, int y, int z) const {
-                int newIndex = singleIndexAccess<TileMapView, InternalTileMap>(offset, offsetXZ, minX, minY, minZ, x, y, z);
-                return tileMap(newIndex, x, y, z);
+                int newIndex = computeSingleIndex<TileMapView, InternalTileMap>(offset, offsetXZ, minX, minY, minZ, x, y, z);
+                return tileMap(newIndex, x + minX, y + minY, z + minZ);
             }
-        private:
-            const InternalTileMap& tileMap;
+
             const int minX, minY, minZ;
             const int offset, offsetXZ;
+        private:
+            const typename internal::traits<TileMapView>::UnderlyingTileMapType& tileMap;
     };
 
 } /* StealthTileMap */
