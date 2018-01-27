@@ -24,7 +24,7 @@ namespace StealthTileMap {
 
     namespace {
         template <typename BlockType, typename InternalTileMap>
-        constexpr STEALTH_ALWAYS_INLINE auto optimal_indexing_mode() noexcept {
+        constexpr STEALTH_ALWAYS_INLINE auto optimal_hinting_mode() noexcept {
             if constexpr (internal::traits<BlockType>::height == 1 && internal::traits<BlockType>::length == 1) {
                 // 1D Views always use 1D indexing.
                 return 1;
@@ -53,13 +53,13 @@ namespace StealthTileMap {
             }
         }
 
-        template <int indexingMode, typename BlockType>
-        constexpr STEALTH_ALWAYS_INLINE auto indexSpecial(int hintX, int hintY, int x, int y, int z, BlockType block)
+        template <int hintingMode, typename BlockType>
+        constexpr STEALTH_ALWAYS_INLINE auto indexWithHints(int hintX, int hintY, int x, int y, int z, BlockType block)
             -> typename std::invoke_result<BlockType, int>::type {
-            if constexpr (indexingMode == 1) {
+            if constexpr (hintingMode == 1) {
                 // hintX and hintY are valid, just add offsets
                 return block.underlyingTileMap()(hintX + block.offset, hintY + block.minY, x, y, z);
-            } else if constexpr (indexingMode == 2) {
+            } else if constexpr (hintingMode == 2) {
                 // hintY is valid, but hintX must be recalculated. Then add offsets
                 hintX = (x + block.minX) + (hintY + block.minY) * block.underlyingTileMap().width();
                 return block.underlyingTileMap()(hintX, hintY + block.minY, x, y, z);
@@ -87,13 +87,13 @@ namespace StealthTileMap {
                 minYOffset{this -> minY * tileMap.width()} { }
 
             constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int hintX, int hintY, int x, int y, int z) const {
-                constexpr int indexingMode = optimal_indexing_mode<Block, UnderlyingTileMapType>();
-                return indexSpecial<indexingMode, const Block&>(hintX, hintY, x, y, z, *this);
+                constexpr int hintingMode = optimal_hinting_mode<Block, UnderlyingTileMapType>();
+                return indexWithHints<hintingMode, const Block&>(hintX, hintY, x, y, z, *this);
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator()(int hintX, int hintY, int x, int y, int z) {
-                constexpr int indexingMode = optimal_indexing_mode<Block, UnderlyingTileMapType>();
-                return indexSpecial<indexingMode, Block&>(hintX, hintY, x, y, z, *this);
+                constexpr int hintingMode = optimal_hinting_mode<Block, UnderlyingTileMapType>();
+                return indexWithHints<hintingMode, Block&>(hintX, hintY, x, y, z, *this);
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x, int y, int z) {
@@ -157,8 +157,8 @@ namespace StealthTileMap {
                 minYOffset{this -> minY * tileMap.width()} { }
 
             constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int hintX, int hintY, int x, int y, int z) const {
-                constexpr int indexingMode = optimal_indexing_mode<Block, UnderlyingTileMapType>();
-                return indexSpecial<indexingMode, const Block&>(hintX, hintY, x, y, z, *this);
+                constexpr int hintingMode = optimal_hinting_mode<Block, UnderlyingTileMapType>();
+                return indexWithHints<hintingMode, const Block&>(hintX, hintY, x, y, z, *this);
             }
 
             constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x, int y, int z) const {
@@ -202,8 +202,8 @@ namespace StealthTileMap {
                 minYOffset{this -> minY * tileMap.width()} { }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int hintX, int hintY, int x, int y, int z) const {
-                constexpr int indexingMode = optimal_indexing_mode<Block, UnderlyingTileMapType>();
-                return indexSpecial<indexingMode, const Block&>(hintX, hintY, x, y, z, *this);
+                constexpr int hintingMode = optimal_hinting_mode<Block, UnderlyingTileMapType>();
+                return indexWithHints<hintingMode, const Block&>(hintX, hintY, x, y, z, *this);
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z) const {
