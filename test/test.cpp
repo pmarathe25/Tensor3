@@ -58,9 +58,9 @@ int main() noexcept {
     // Changing a value in the view actually changes the TileMap
     StealthTileMap::block<2, 2>(test)(0, 0, 1) = 2.4f;
     // Construct a separate TileMap from the view.
-    auto testView = StealthTileMap::block<3, 3>(test, 1, 1);
+    auto testView = StealthTileMap::block<3, 5>(test, 1, 0);
     auto testView2 = StealthTileMap::block<2, 2>(testView, 1, 1);
-    auto testReshape = StealthTileMap::reshape<2, 9>(testView);
+    // auto testReshape = StealthTileMap::reshape<2, 9>(testView);
 
     std::cout << "Test\n" << test << '\n';
     std::cout << "TestView\n" << testView.eval() << '\n';
