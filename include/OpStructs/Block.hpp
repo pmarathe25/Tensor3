@@ -25,17 +25,12 @@ namespace StealthTileMap {
     namespace {
         template <typename BlockType, typename InternalTileMap>
         constexpr STEALTH_ALWAYS_INLINE auto optimal_indexing_mode() noexcept {
-            if constexpr (internal::traits<BlockType>::width == internal::traits<InternalTileMap>::width
-                && internal::traits<BlockType>::length == internal::traits<InternalTileMap>::length) {
-                // No need to deduce anything, dimensions are the same.
+            if constexpr (internal::traits<BlockType>::height == 1 && internal::traits<BlockType>::length == 1) {
+                // 1D Views always use 1D indexing.
                 return 1;
-            } else if constexpr (internal::traits<BlockType>::length == internal::traits<InternalTileMap>::length) {
-                // Treat as a long 2D TileMap.
-                return 2;
             } else if constexpr (internal::traits<BlockType>::height == 1) {
-                // Optimizations for flat TileMaps.
-                if constexpr (internal::traits<BlockType>::length == 1
-                    || internal::traits<BlockType>::width == internal::traits<InternalTileMap>::width) {
+                // 2D Views can potentially use either 1D or 2D indexing.
+                if constexpr (internal::traits<BlockType>::width == internal::traits<InternalTileMap>::width) {
                     // If we can treat it as a single row, just use 1D accesses.
                     return 1;
                 } else {
@@ -43,20 +38,33 @@ namespace StealthTileMap {
                     return 2;
                 }
             } else {
-                // If all else fails, use 3D accesses.
-                return 3;
+                // 3D Views can potentially use 1D, 2D or 3D indexing.
+                if constexpr (internal::traits<BlockType>::width == internal::traits<InternalTileMap>::width
+                    && internal::traits<BlockType>::length == internal::traits<InternalTileMap>::length) {
+                    // Completely continuous - use 1D indexing.
+                    return 1;
+                } else if constexpr (internal::traits<BlockType>::length == internal::traits<InternalTileMap>::length) {
+                    // Treat as a long 2D block.
+                    return 2;
+                } else {
+                    // No usable patterns detected.
+                    return 3;
+                }
             }
         }
-        
+
         template <int indexingMode, typename BlockType>
-        constexpr auto indexSpecial(int hintX, int hintY, int x, int y, int z, BlockType block)
-        -> typename std::invoke_result<BlockType, int>::type {
+        constexpr STEALTH_ALWAYS_INLINE auto indexSpecial(int hintX, int hintY, int x, int y, int z, BlockType block)
+            -> typename std::invoke_result<BlockType, int>::type {
             if constexpr (indexingMode == 1) {
+                // hintX and hintY are valid, just add offsets
                 return block.underlyingTileMap()(hintX + block.offset, hintY + block.minY, x, y, z);
             } else if constexpr (indexingMode == 2) {
+                // hintY is valid, but hintX must be recalculated. Then add offsets
                 hintX = (x + block.minX) + (hintY + block.minY) * block.underlyingTileMap().width();
                 return block.underlyingTileMap()(hintX, hintY + block.minY, x, y, z);
             } else {
+                // hintY and hintX are invalid for 3D accesses
                 hintY = (y + block.minY) + (z + block.minZ) * block.underlyingTileMap().length();
                 hintX = (x + block.minX) + hintY * block.underlyingTileMap().width();
                 return block.underlyingTileMap()(hintX, hintY, x, y, z);
