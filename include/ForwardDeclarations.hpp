@@ -40,7 +40,7 @@ namespace StealthTileMap {
     template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename TileMapType,
         typename containsData = typename internal::traits<TileMapType>::containsData,
         typename isWritable = typename std::conjunction<containsData, typename internal::traits<TileMapType>::isWritable>::type>
-    class TileMapView;
+    class Block;
 
     // Generate random numbers on demand
     template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,

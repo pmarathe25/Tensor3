@@ -5,7 +5,7 @@
 #include "./Ops/BinaryOperations.hpp"
 #include "./Ops/UnaryOperations.hpp"
 #include "./Ops/UnaryOperations.hpp"
-#include "./Ops/TileMapViewOperations.hpp"
+#include "./Ops/BlockOperations.hpp"
 #include "./OpStructs/TileMapRandomGenerator.hpp"
 #include <stealthutil>
 #include <vector>
