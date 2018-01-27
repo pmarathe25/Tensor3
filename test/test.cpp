@@ -63,8 +63,8 @@ int main() noexcept {
     auto testReshape = StealthTileMap::reshape<2, 9>(testView);
 
     std::cout << "Test\n" << test << '\n';
-    std::cout << "TestView\n" << testView << '\n';
-    std::cout << "TestView2\n" << testView2 << '\n';
+    std::cout << "TestView\n" << testView.eval() << '\n';
+    std::cout << "TestView2\n" << testView2.eval() << '\n';
     std::cout << "Test5\n" << test5 << '\n';
     std::cout << "TestView2 + Test5\n" << (testView2 + test5) << '\n';
 
