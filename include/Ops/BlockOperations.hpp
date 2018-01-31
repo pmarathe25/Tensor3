@@ -21,15 +21,13 @@ namespace StealthTileMap {
     template <int width, int length, typename LHS>
     constexpr STEALTH_ALWAYS_INLINE auto block(LHS&& lhs, int minX = 0, int minY = 0) {
         typedef typename std::remove_reference<LHS>::type LHSRawType;
-        return Block<width, length, 1, LHSRawType>
-            {std::forward<LHS&&>(lhs), minX, minY, 0};
+        return Block<width, length, 1, LHSRawType>{std::forward<LHS&&>(lhs), minX, minY, 0};
     }
 
     template <int width, typename LHS>
     constexpr STEALTH_ALWAYS_INLINE auto block(LHS&& lhs, int minX = 0) {
         typedef typename std::remove_reference<LHS>::type LHSRawType;
-        return Block<width, 1, 1, LHSRawType>
-            {std::forward<LHS&&>(lhs), minX, 0, 0};
+        return Block<width, 1, 1, LHSRawType>{std::forward<LHS&&>(lhs), minX, 0, 0};
     }
 } /* StealthTileMap */
 
