@@ -57,7 +57,7 @@ namespace StealthTileMap {
         constexpr STEALTH_ALWAYS_INLINE auto indexWithHints(int hintX, int hintY, int x, int y, int z, BlockType block)
             -> typename std::invoke_result<BlockType, int>::type {
             if constexpr (hintingMode == 1) {
-                // hintX and hintY are valid, just add offsets
+                // hintX and hintY are valid - just add offsets.
                 return block.underlyingTileMap().hintedIndex(hintX + block.offset, hintY + block.minY, x, y, z);
             } else if constexpr (hintingMode == 2) {
                 // hintY is valid, but hintX must be recalculated.
