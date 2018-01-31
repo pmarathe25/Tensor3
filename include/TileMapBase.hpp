@@ -29,6 +29,10 @@ namespace StealthTileMap {
                 return internal::traits<Derived>::size;
             }
 
+            constexpr STEALTH_ALWAYS_INLINE const auto& hintedIndex(int hintX, int hintY, int x, int y, int z) const {
+                return static_cast<const Derived*>(this) -> hintedIndex(hintX, hintY, x, y, z);
+            }
+
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z) const {
                 return static_cast<const Derived*>(this) -> operator()(x, y, z);
             }
@@ -39,10 +43,6 @@ namespace StealthTileMap {
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x) const {
                 return static_cast<const Derived*>(this) -> operator()(x);
-            }
-
-            constexpr STEALTH_ALWAYS_INLINE auto operator[](int x) const {
-                return static_cast<const Derived*>(this) -> operator[](x);
             }
 
             constexpr STEALTH_ALWAYS_INLINE TileMap<ScalarType, TileMapBase::width(),

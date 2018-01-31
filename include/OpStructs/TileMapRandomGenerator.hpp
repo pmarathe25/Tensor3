@@ -44,7 +44,7 @@ namespace StealthTileMap {
                 return distribution(generator);
             }
 
-            constexpr STEALTH_ALWAYS_INLINE auto operator[](int index) const noexcept {
+            constexpr STEALTH_ALWAYS_INLINE auto operator()(int x = 0, int y = 0, int z = 0) const noexcept {
                 return distribution(generator);
             }
         private:

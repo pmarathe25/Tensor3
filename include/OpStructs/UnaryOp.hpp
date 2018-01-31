@@ -44,10 +44,6 @@ namespace StealthTileMap {
                 return op(lhs(x));
             }
 
-            constexpr STEALTH_ALWAYS_INLINE auto operator[](int x) const {
-                return op(lhs[x]);
-            }
-
         private:
             const LHS& lhs;
             const UnaryOperation& op;

@@ -70,16 +70,6 @@ namespace StealthTileMap {
                 }
             }
 
-            constexpr STEALTH_ALWAYS_INLINE auto operator[](int x) const {
-                if constexpr (std::is_scalar<RHS>::value) {
-                    return op(lhs[x], rhs);
-                } else if constexpr (std::is_scalar<LHS>::value) {
-                    return op(lhs, rhs[x]);
-                } else {
-                    return op(lhs[x], rhs[x]);
-                }
-            }
-
         private:
             const LHS& lhs;
             const RHS& rhs;

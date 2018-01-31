@@ -10,7 +10,7 @@ INCLUDEPATH = include
 INCLUDE = -I$(INCLUDEPATH)
 HEADERS = $(addprefix $(INCLUDEPATH)/, TileMapBase.hpp TileMap.hpp ForwardDeclarations.hpp \
 	OpStructs/BinaryOp.hpp OpStructs/UnaryOp.hpp OpStructs/UnaryOp.hpp OpStructs/Block.hpp OpStructs/TileMapRandomGenerator.hpp \
-	Ops/BinaryOperations.hpp Ops/InternalOperations.hpp Ops/UnaryOperations.hpp Ops/BlockOperations.hpp Ops/UnaryOperations.hpp)
+	Ops/BinaryOperations.hpp Ops/UnaryOperations.hpp Ops/BlockOperations.hpp Ops/UnaryOperations.hpp)
 # Compiler settings
 CXX = g++
 CFLAGS = -fPIC -c -std=c++17 $(INCLUDE) -flto -O3 -march=native -Wpedantic

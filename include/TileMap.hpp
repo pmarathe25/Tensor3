@@ -103,19 +103,19 @@ namespace StealthTileMap {
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x, int y, int z) {
-                return tiles[TileMap::area() * z + TileMap::width() * y + x];
+                return tiles[x + y * TileMap::width() + z * TileMap::area()];
             }
 
             constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x, int y, int z) const {
-                return tiles[TileMap::area() * z + TileMap::width() * y + x];
+                return tiles[x + y * TileMap::width() + z * TileMap::area()];
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x, int y) {
-                return tiles[TileMap::width() * y + x];
+                return tiles[x + y * TileMap::width()];
             }
 
             constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x, int y) const {
-                return tiles[TileMap::width() * y + x];
+                return tiles[x + y * TileMap::width()];
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x) {
@@ -123,14 +123,6 @@ namespace StealthTileMap {
             }
 
             constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x) const {
-                return tiles[x];
-            }
-
-            constexpr STEALTH_ALWAYS_INLINE const auto& operator[](int x) const {
-                return tiles[x];
-            }
-
-            constexpr STEALTH_ALWAYS_INLINE auto& operator[](int x) {
                 return tiles[x];
             }
 
