@@ -28,7 +28,11 @@ namespace StealthTileMap {
             typedef typename internal::traits<BinaryOp>::ScalarType ScalarType;
 
             constexpr STEALTH_ALWAYS_INLINE BinaryOp(const BinaryOperation& op, const LHS& lhs, const RHS& rhs) noexcept
-                : op{op}, lhs{lhs}, rhs{rhs} { }
+                : op{op}, lhs{lhs}, rhs{rhs} {
+                static_assert(internal::traits<LHS>::size == internal::traits<RHS>::size
+                    || (std::is_scalar<LHS>::value || std::is_scalar<RHS>::value),
+                    "Cannot operate on incompatible arguments");
+                }
 
             constexpr STEALTH_ALWAYS_INLINE auto hintedIndex(int hintX, int hintY, int x, int y, int z) const {
                 if constexpr (std::is_scalar<RHS>::value) {
