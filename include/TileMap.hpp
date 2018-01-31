@@ -94,11 +94,11 @@ namespace StealthTileMap {
             }
 
             // Accessors
-            constexpr STEALTH_ALWAYS_INLINE auto& operator()(int hintX, int hintY, int x, int y, int z) {
+            constexpr STEALTH_ALWAYS_INLINE auto& hintedIndex(int hintX, int hintY, int x, int y, int z) {
                 return tiles[hintX];
             }
 
-            constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int hintX, int hintY, int x, int y, int z) const {
+            constexpr STEALTH_ALWAYS_INLINE const auto& hintedIndex(int hintX, int hintY, int x, int y, int z) const {
                 return tiles[hintX];
             }
 
@@ -232,7 +232,7 @@ namespace StealthTileMap {
                     for (int j = 0; j < TileMap::length(); ++j) {
                         for (int i = 0; i < TileMap::width(); ++i) {
                             if constexpr (std::is_scalar<OtherTileMap>::value) tiles[hintX] = other;
-                            else tiles[hintX] = other(hintX, hintY, i, j, k);
+                            else tiles[hintX] = other.hintedIndex(hintX, hintY, i, j, k);
                             ++hintX;
                         }
                         ++hintY;

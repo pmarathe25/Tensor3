@@ -58,16 +58,16 @@ namespace StealthTileMap {
             -> typename std::invoke_result<BlockType, int>::type {
             if constexpr (hintingMode == 1) {
                 // hintX and hintY are valid, just add offsets
-                return block.underlyingTileMap()(hintX + block.offset, hintY + block.minY, x, y, z);
+                return block.underlyingTileMap().hintedIndex(hintX + block.offset, hintY + block.minY, x, y, z);
             } else if constexpr (hintingMode == 2) {
-                // hintY is valid, but hintX must be recalculated. Then add offsets
+                // hintY is valid, but hintX must be recalculated.
                 hintX = (x + block.minX) + (hintY + block.minY) * block.underlyingTileMap().width();
-                return block.underlyingTileMap()(hintX, hintY + block.minY, x, y, z);
+                return block.underlyingTileMap().hintedIndex(hintX, hintY + block.minY, x, y, z);
             } else {
                 // hintY and hintX are invalid for 3D accesses
                 hintY = (y + block.minY) + (z + block.minZ) * block.underlyingTileMap().length();
                 hintX = (x + block.minX) + hintY * block.underlyingTileMap().width();
-                return block.underlyingTileMap()(hintX, hintY, x, y, z);
+                return block.underlyingTileMap().hintedIndex(hintX, hintY, x, y, z);
             }
         }
     }
@@ -82,34 +82,32 @@ namespace StealthTileMap {
 
             constexpr STEALTH_ALWAYS_INLINE Block(InternalTileMap& tileMap, int x = 0, int y = 0, int z = 0) noexcept
                 : tileMap{tileMap.underlyingTileMap()}, minX{x + tileMap.minX}, minY{y + tileMap.minY}, minZ{z + tileMap.minZ},
-                offset{this -> minX + this -> minY * widthAtCompileTime + this -> minZ * widthAtCompileTime * lengthAtCompileTime},
-                offsetXZ{this -> minX + this -> minZ * widthAtCompileTime * lengthAtCompileTime},
-                minYOffset{this -> minY * tileMap.width()} { }
+                offset{minX + minY * tileMap.width() + minZ * tileMap.area()} {}
 
-            constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int hintX, int hintY, int x, int y, int z) const {
+            constexpr STEALTH_ALWAYS_INLINE const auto& hintedIndex(int hintX, int hintY, int x, int y, int z) const {
                 constexpr int hintingMode = optimal_hinting_mode<Block, UnderlyingTileMapType>();
                 return indexWithHints<hintingMode, const Block&>(hintX, hintY, x, y, z, *this);
             }
 
-            constexpr STEALTH_ALWAYS_INLINE auto& operator()(int hintX, int hintY, int x, int y, int z) {
+            constexpr STEALTH_ALWAYS_INLINE auto& hintedIndex(int hintX, int hintY, int x, int y, int z) {
                 constexpr int hintingMode = optimal_hinting_mode<Block, UnderlyingTileMapType>();
                 return indexWithHints<hintingMode, Block&>(hintX, hintY, x, y, z, *this);
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x, int y, int z) {
-                return tileMap(x + minX, y + minY, z + minZ);
+                return tileMap(x + offset, y, z);
             }
 
             constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x, int y, int z) const {
-                return tileMap(x + minX, y + minY, z + minZ);
+                return tileMap(x + offset, y, z);
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x, int y) {
-                return tileMap(x + offsetXZ, y + minY);
+                return tileMap(x + offset, y);
             }
 
             constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x, int y) const {
-                return tileMap(x + offsetXZ, y + minY);
+                return tileMap(x + offset, y);
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x) {
@@ -137,7 +135,7 @@ namespace StealthTileMap {
             }
 
             const int minX, minY, minZ;
-            const int offset, offsetXZ, minYOffset;
+            const int offset;
         private:
             UnderlyingTileMapType& tileMap;
     };
@@ -152,21 +150,19 @@ namespace StealthTileMap {
 
             constexpr STEALTH_ALWAYS_INLINE Block(const InternalTileMap& tileMap, int x = 0, int y = 0, int z = 0) noexcept
                 : tileMap{tileMap.underlyingTileMap()}, minX{x + tileMap.minX}, minY{y + tileMap.minY}, minZ{z + tileMap.minZ},
-                offset{this -> minX + this -> minY * widthAtCompileTime + this -> minZ * widthAtCompileTime * lengthAtCompileTime},
-                offsetXZ{this -> minX + this -> minZ * widthAtCompileTime * lengthAtCompileTime},
-                minYOffset{this -> minY * tileMap.width()} { }
+                offset{minX + minY * tileMap.width() + minZ * tileMap.area()} {}
 
-            constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int hintX, int hintY, int x, int y, int z) const {
+            constexpr STEALTH_ALWAYS_INLINE const auto& hintedIndex(int hintX, int hintY, int x, int y, int z) const {
                 constexpr int hintingMode = optimal_hinting_mode<Block, UnderlyingTileMapType>();
                 return indexWithHints<hintingMode, const Block&>(hintX, hintY, x, y, z, *this);
             }
 
             constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x, int y, int z) const {
-                return tileMap(x + minX, y + minY, z + minZ);
+                return tileMap(x + offset, y, z);
             }
 
             constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x, int y) const {
-                return tileMap(x + offsetXZ, y + minY);
+                return tileMap(x + offset, y);
             }
 
             constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x) const {
@@ -182,7 +178,7 @@ namespace StealthTileMap {
             }
 
             const int minX, minY, minZ;
-            const int offset, offsetXZ, minYOffset;
+            const int offset;
         private:
             const UnderlyingTileMapType& tileMap;
     };
@@ -197,21 +193,19 @@ namespace StealthTileMap {
 
             constexpr STEALTH_ALWAYS_INLINE Block(const InternalTileMap& tileMap, int x = 0, int y = 0, int z = 0) noexcept
                 : tileMap{tileMap.underlyingTileMap()}, minX{x + tileMap.minX}, minY{y + tileMap.minY}, minZ{z + tileMap.minZ},
-                offset{this -> minX + this -> minY * widthAtCompileTime + this -> minZ * widthAtCompileTime * lengthAtCompileTime},
-                offsetXZ{this -> minX + this -> minZ * widthAtCompileTime * lengthAtCompileTime},
-                minYOffset{this -> minY * tileMap.width()} { }
+                offset{minX + minY * tileMap.width() + minZ * tileMap.area()} {}
 
-            constexpr STEALTH_ALWAYS_INLINE auto operator()(int hintX, int hintY, int x, int y, int z) const {
+            constexpr STEALTH_ALWAYS_INLINE auto hintedIndex(int hintX, int hintY, int x, int y, int z) const {
                 constexpr int hintingMode = optimal_hinting_mode<Block, UnderlyingTileMapType>();
                 return indexWithHints<hintingMode, const Block&>(hintX, hintY, x, y, z, *this);
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z) const {
-                return tileMap(x + minX, y + minY, z + minZ);
+                return tileMap(x + offset, y, z);
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y) const {
-                return tileMap(x + offsetXZ, y + minY);
+                return tileMap(x + offset, y);
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x) const {
@@ -223,7 +217,7 @@ namespace StealthTileMap {
             }
 
             const int minX, minY, minZ;
-            const int offset, offsetXZ, minYOffset;
+            const int offset;
         private:
             const UnderlyingTileMapType& tileMap;
     };

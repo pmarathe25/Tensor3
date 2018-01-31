@@ -40,7 +40,7 @@ namespace StealthTileMap {
                 generator.seed(seed);
             }
 
-            constexpr STEALTH_ALWAYS_INLINE auto operator()(int hintX = 0, int hintY = 0, int x = 0, int y = 0, int z = 0) const noexcept {
+            constexpr STEALTH_ALWAYS_INLINE auto hintedIndex(int hintX = 0, int hintY = 0, int x = 0, int y = 0, int z = 0) const noexcept {
                 return distribution(generator);
             }
 
