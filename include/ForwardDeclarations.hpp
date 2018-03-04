@@ -12,6 +12,15 @@
 
 // DEBUG:
 #define DEBUG
+// DEBUG:
+#ifdef DEBUG
+    #include <iostream>
+    // DEBUG:
+    template <typename ExprStoredType>
+    constexpr void debugType() {
+        std::cout << __PRETTY_FUNCTION__ << '\n';
+    }
+#endif
 
 
 namespace StealthTileMap {
@@ -21,14 +30,6 @@ namespace StealthTileMap {
             static constexpr int length = 1, width = 1, height = 1, size = 1;
         };
     } /* internal */
-
-    #ifdef DEBUG
-        // DEBUG:
-        template <typename ExprStoredType>
-        constexpr void debugType() {
-            std::cout << __PRETTY_FUNCTION__ << '\n';
-        }
-    #endif
 
     // TileMapBase
     template <typename Derived>
