@@ -40,7 +40,6 @@ namespace StealthTileMap {
                     "Cannot operate on incompatible arguments");
             }
 
-
             constexpr STEALTH_ALWAYS_INLINE auto hintedIndex(int hintX, int hintY, int x, int y, int z) const {
                 if constexpr (std::is_scalar<RHS>::value) {
                     return op(lhs.hintedIndex(hintX, hintY, x, y, z), rhs);

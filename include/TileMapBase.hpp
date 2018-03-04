@@ -60,7 +60,7 @@ namespace StealthTileMap {
     namespace {
         // Utility Functions
         // Determine what expressions should store - a const ref or a copy
-        // const ref for lvalues and copy for rvalues
+        // (const ref for lvalues and copy for rvalues)
         template <typename TileMapType>
         using expression_stored_type = typename std::conditional<std::is_lvalue_reference<TileMapType>::value,
             // Make it a const reference.
