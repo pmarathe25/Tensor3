@@ -9,6 +9,12 @@
     #define STEALTH_ALWAYS_INLINE inline
 #endif
 
+
+// DEBUG:
+#define DEBUG
+
+
+
 namespace StealthTileMap {
     namespace internal {
         template <typename T> struct traits {
@@ -16,6 +22,13 @@ namespace StealthTileMap {
             static constexpr int length = 1, width = 1, height = 1, size = 1;
         };
     } /* internal */
+
+    #ifdef DEBUG
+        template <typename ExprStoredType>
+        constexpr void debugType() {
+            std::cout << __PRETTY_FUNCTION__ << '\n';
+        }
+    #endif
 
     // TileMapBase
     template <typename Derived>

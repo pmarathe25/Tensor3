@@ -120,6 +120,10 @@ namespace StealthTileMap {
 
     template <typename BinaryOperation, typename LHS, typename RHS>
     constexpr auto createBinaryOp(const BinaryOperation& op, LHS&& lhs, RHS&& rhs) noexcept {
+        // DEBUG:
+        std::cout << "Calling from operator" << '\n';
+        debugType<LHS>();
+
         using StoredLHS = expression_stored_type<LHS>;
         using StoredRHS = expression_stored_type<RHS>;
         return BinaryOp<BinaryOperation, StoredLHS, StoredRHS>{op, lhs, rhs};
@@ -128,13 +132,6 @@ namespace StealthTileMap {
 
     template <typename LHS, typename RHS>
     constexpr STEALTH_ALWAYS_INLINE auto operator+(LHS&& lhs, RHS&& rhs) noexcept {
-
-
-        // DEBUG:
-        std::cout << "Calling from operator+" << '\n';
-        debugType<LHS>();
-
-
         return createBinaryOp(internal::ops::add<LHS&&, RHS&&>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
     }
 

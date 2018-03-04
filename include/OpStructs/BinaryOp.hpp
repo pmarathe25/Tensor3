@@ -8,6 +8,8 @@ namespace StealthTileMap {
     namespace internal {
         template <typename BinaryOperation, typename LHS, typename RHS>
         struct traits<BinaryOp<BinaryOperation, LHS, RHS>> {
+            // Since the incoming LHS/RHS is either a const ref or copy,
+            // we need to remove qualifiers to get size information.
             using LHSNoCV = strip_qualifiers<LHS>;
             using RHSNoCV = strip_qualifiers<RHS>;
             typedef typename std::invoke_result<BinaryOperation, optimal_scalar_type<LHSNoCV>,
@@ -25,32 +27,16 @@ namespace StealthTileMap {
     } /* internal */
 
 
-
-    // DEBUG:
-    template <typename ExprStoredType>
-    constexpr void debugType() {
-        std::cout << __PRETTY_FUNCTION__ << '\n';
-    }
-
-
-
     template <typename BinaryOperation, typename LHS, typename RHS>
     class BinaryOp : public TileMapBase<BinaryOp<BinaryOperation, LHS, RHS>> {
         public:
             typedef typename internal::traits<BinaryOp>::ScalarType ScalarType;
 
             constexpr STEALTH_ALWAYS_INLINE BinaryOp(BinaryOperation op, LHS lhs, RHS rhs) noexcept
-                : op{std::move(op)}, lhs{(lhs)}, rhs{(rhs)} {
-
-                std::cout << "Calling from BinaryOp Constructor" << '\n';
-                std::cout << __PRETTY_FUNCTION__ << '\n';
-                debugType<expression_stored_type<LHS>>();
-                debugType<expression_stored_type<RHS>>();
-
-
-
-                static_assert(internal::traits<LHS>::size == internal::traits<RHS>::size
-                    || (std::is_scalar<LHS>::value || std::is_scalar<RHS>::value),
+                : op{std::move(op)}, lhs{lhs}, rhs{rhs} {
+                // For the purposes of size information, we need the types without qualifiers
+                static_assert(internal::traits<strip_qualifiers<LHS>>::size == internal::traits<strip_qualifiers<RHS>>::size
+                    || (std::is_scalar<strip_qualifiers<LHS>>::value || std::is_scalar<strip_qualifiers<RHS>>::value),
                     "Cannot operate on incompatible arguments");
             }
 

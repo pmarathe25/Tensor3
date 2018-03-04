@@ -33,8 +33,8 @@ int testTemporaryExpressionPersistence() {
     std::cout << "Int Sum (should be 4): " << testIntSum << '\n';
 
     StealthTileMap::TileMapF<4, 4> testResult;
-    // testResult = doMultiSum(test0, test1, test2, test3);
-    testResult = doMultiSum(test0, test1);
+    testResult = doMultiSum(test0, test1, test2, test3);
+    // testResult = doMultiSum(test0, test1);
     std::cout << "Result (should NOT segfault): " << testResult << '\n';
 }
 
