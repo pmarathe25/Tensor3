@@ -14,13 +14,13 @@ namespace StealthTileMap {
     } /* StealthTileMap::internal::ops */
 
     template <typename UnaryOperation, typename LHS>
-    constexpr STEALTH_ALWAYS_INLINE auto apply(const UnaryOperation& op, const LHS& lhs) noexcept {
-        return UnaryOp{op, lhs};
+    constexpr STEALTH_ALWAYS_INLINE auto apply(const UnaryOperation& op, LHS&& lhs) noexcept {
+        return UnaryOp{op, std::forward<LHS&&>(lhs)};
     }
 
     template <typename LHS>
-    constexpr STEALTH_ALWAYS_INLINE auto operator!(const LHS& lhs) noexcept {
-        return UnaryOp{internal::ops::notOp<LHS>{}, lhs};
+    constexpr STEALTH_ALWAYS_INLINE auto operator!(LHS&& lhs) noexcept {
+        return UnaryOp{internal::ops::notOp<LHS&&>{}, std::forward<LHS&&>(lhs)};
     }
 } /* StealthTileMap */
 

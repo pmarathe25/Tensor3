@@ -11,6 +11,14 @@
 #include <vector>
 #include <random>
 
+
+
+// DEBUG:
+#include <iostream>
+
+
+
+
 namespace StealthTileMap {
     namespace internal {
         template <typename type, int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
@@ -59,6 +67,11 @@ namespace StealthTileMap {
             }
 
             constexpr STEALTH_ALWAYS_INLINE TileMap(const TileMap& other) noexcept {
+
+
+                // DEBUG:
+                std::cout << "Doing copy" << '\n';
+
                 tiles = other.tiles;
             }
 
@@ -83,6 +96,10 @@ namespace StealthTileMap {
 
             // Copy Assignment
             constexpr STEALTH_ALWAYS_INLINE TileMap& operator=(const TileMap& other) noexcept {
+
+                // DEBUG:
+                std::cout << "Doing copy" << '\n';
+
                 tiles = other.tiles;
                 return *this;
             }
@@ -217,6 +234,14 @@ namespace StealthTileMap {
 
             template <typename OtherTileMap>
             constexpr void const_copy(const OtherTileMap& other) {
+
+
+
+                // DEBUG:
+                std::cout << "Doing copy" << '\n';
+
+
+
                 if constexpr (!std::is_scalar<OtherTileMap>::value) static_assert(other.size()
                     == TileMap::size(), "Cannot const_copy incompatible TileMaps");
                 int hintX = 0, hintY = 0;

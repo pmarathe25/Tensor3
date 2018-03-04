@@ -59,9 +59,27 @@ namespace StealthTileMap {
 
     namespace {
         // Utility Functions
+        // Determine what expressions should store - a const ref or a copy
+        // const ref for lvalues and copy for rvalues
         template <typename TileMapType>
-        using optimal_scalar_type = typename std::conditional<sizeof(typename internal::traits<TileMapType>::ScalarType) <= sizeof(void*),
-            typename internal::traits<TileMapType>::ScalarType, const typename internal::traits<TileMapType>::ScalarType&>::type;
+        using expression_stored_type = typename std::conditional<std::is_lvalue_reference<TileMapType>::value,
+            // Make it a const reference.
+            typename std::add_lvalue_reference<typename std::add_const<TileMapType>::type>::type,
+            // Otherwise, make it a copy.
+            typename std::remove_reference<TileMapType>::type
+        >::type;
+
+        // Remove const and reference
+        template <typename QualifiedType>
+        using strip_qualifiers = typename std::remove_const<typename std::remove_reference<QualifiedType>::type>::type;
+
+        // If the scalar is large enough, use a reference, otherwise pass by copy.
+        template <typename TileMapType>
+        using optimal_scalar_type = typename std::conditional<
+            sizeof(typename internal::traits<strip_qualifiers<TileMapType>>::ScalarType) <= sizeof(void*),
+            typename internal::traits<strip_qualifiers<TileMapType>>::ScalarType,
+            const typename internal::traits<strip_qualifiers<TileMapType>>::ScalarType&
+        >::type;
 
 
         // Display Functions

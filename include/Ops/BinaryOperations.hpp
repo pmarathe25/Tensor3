@@ -109,74 +109,98 @@ namespace StealthTileMap {
         return BinaryOp{op, lhs, rhs};
     }
 
+
+
+        // // DEBUG:
+        // template <typename ExprStoredType>
+        // constexpr void debugType() {
+        //     std::cout << __PRETTY_FUNCTION__ << '\n';
+        // }
+
+
+    template <typename BinaryOperation, typename LHS, typename RHS>
+    constexpr auto createBinaryOp(const BinaryOperation& op, LHS&& lhs, RHS&& rhs) noexcept {
+        using StoredLHS = expression_stored_type<LHS>;
+        using StoredRHS = expression_stored_type<RHS>;
+        return BinaryOp<BinaryOperation, StoredLHS, StoredRHS>{op, lhs, rhs};
+    }
+
+
     template <typename LHS, typename RHS>
-    constexpr STEALTH_ALWAYS_INLINE auto operator+(const LHS& lhs, const RHS& rhs) noexcept {
-        return BinaryOp{internal::ops::add<LHS, RHS>{}, lhs, rhs};
+    constexpr STEALTH_ALWAYS_INLINE auto operator+(LHS&& lhs, RHS&& rhs) noexcept {
+
+
+        // DEBUG:
+        std::cout << "Calling from operator+" << '\n';
+        debugType<LHS>();
+
+
+        return createBinaryOp(internal::ops::add<LHS&&, RHS&&>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
     }
 
     template <typename LHS, typename RHS>
-    constexpr STEALTH_ALWAYS_INLINE auto operator-(const LHS& lhs, const RHS& rhs) noexcept {
-        return BinaryOp{internal::ops::subtract<LHS, RHS>{}, lhs, rhs};
+    constexpr STEALTH_ALWAYS_INLINE auto operator-(LHS&& lhs, RHS&& rhs) noexcept {
+        return createBinaryOp(internal::ops::subtract<LHS&&, RHS&&>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
     }
 
     template <typename LHS, typename RHS>
-    constexpr STEALTH_ALWAYS_INLINE auto operator*(const LHS& lhs, const RHS& rhs) noexcept {
-        return BinaryOp{internal::ops::multiply<LHS, RHS>{}, lhs, rhs};
+    constexpr STEALTH_ALWAYS_INLINE auto operator*(LHS&& lhs, RHS&& rhs) noexcept {
+        return createBinaryOp(internal::ops::multiply<LHS&&, RHS&&>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
     }
 
     template <typename LHS, typename RHS>
-    constexpr STEALTH_ALWAYS_INLINE auto operator/(const LHS& lhs, const RHS& rhs) noexcept {
-        return BinaryOp{internal::ops::divide<LHS, RHS>{}, lhs, rhs};
+    constexpr STEALTH_ALWAYS_INLINE auto operator/(LHS&& lhs, RHS&& rhs) noexcept {
+        return createBinaryOp(internal::ops::divide<LHS&&, RHS&&>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
     }
 
     template <typename LHS, typename RHS>
-    constexpr STEALTH_ALWAYS_INLINE auto operator==(const LHS& lhs, const RHS& rhs) noexcept {
-        return BinaryOp{internal::ops::eq<LHS, RHS>{}, lhs, rhs};
+    constexpr STEALTH_ALWAYS_INLINE auto operator==(LHS&& lhs, RHS&& rhs) noexcept {
+        return createBinaryOp(internal::ops::eq<LHS&&, RHS&&>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
     }
 
     template <typename LHS, typename RHS>
-    constexpr STEALTH_ALWAYS_INLINE auto operator!=(const LHS& lhs, const RHS& rhs) noexcept {
-        return BinaryOp{internal::ops::neq<LHS, RHS>{}, lhs, rhs};
+    constexpr STEALTH_ALWAYS_INLINE auto operator!=(LHS&& lhs, RHS&& rhs) noexcept {
+        return createBinaryOp(internal::ops::neq<LHS&&, RHS&&>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
     }
 
     template <typename LHS, typename RHS>
-    constexpr STEALTH_ALWAYS_INLINE auto operator<(const LHS& lhs, const RHS& rhs) noexcept {
-        return BinaryOp{internal::ops::less<LHS, RHS>{}, lhs, rhs};
+    constexpr STEALTH_ALWAYS_INLINE auto operator<(LHS&& lhs, RHS&& rhs) noexcept {
+        return createBinaryOp(internal::ops::less<LHS&&, RHS&&>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
     }
 
     template <typename LHS, typename RHS>
-    constexpr STEALTH_ALWAYS_INLINE auto operator<=(const LHS& lhs, const RHS& rhs) noexcept {
-        return BinaryOp{internal::ops::lessEq<LHS, RHS>{}, lhs, rhs};
+    constexpr STEALTH_ALWAYS_INLINE auto operator<=(LHS&& lhs, RHS&& rhs) noexcept {
+        return createBinaryOp(internal::ops::lessEq<LHS&&, RHS&&>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
     }
 
     template <typename LHS, typename RHS>
-    constexpr STEALTH_ALWAYS_INLINE auto operator>(const LHS& lhs, const RHS& rhs) noexcept {
-        return BinaryOp{internal::ops::greater<LHS, RHS>{}, lhs, rhs};
+    constexpr STEALTH_ALWAYS_INLINE auto operator>(LHS&& lhs, RHS&& rhs) noexcept {
+        return createBinaryOp(internal::ops::greater<LHS&&, RHS&&>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
     }
 
     template <typename LHS, typename RHS>
-    constexpr STEALTH_ALWAYS_INLINE auto operator>=(const LHS& lhs, const RHS& rhs) noexcept {
-        return BinaryOp{internal::ops::greaterEq<LHS, RHS>{}, lhs, rhs};
+    constexpr STEALTH_ALWAYS_INLINE auto operator>=(LHS&& lhs, RHS&& rhs) noexcept {
+        return createBinaryOp(internal::ops::greaterEq<LHS&&, RHS&&>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
     }
 
     template <typename LHS, typename RHS>
-    constexpr STEALTH_ALWAYS_INLINE auto operator&&(const LHS& lhs, const RHS& rhs) noexcept {
-        return BinaryOp{internal::ops::andOp<LHS, RHS>{}, lhs, rhs};
+    constexpr STEALTH_ALWAYS_INLINE auto operator&&(LHS&& lhs, RHS&& rhs) noexcept {
+        return createBinaryOp(internal::ops::andOp<LHS&&, RHS&&>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
     }
 
     template <typename LHS, typename RHS>
-    constexpr STEALTH_ALWAYS_INLINE auto operator||(const LHS& lhs, const RHS& rhs) noexcept {
-        return BinaryOp{internal::ops::orOp<LHS, RHS>{}, lhs, rhs};
+    constexpr STEALTH_ALWAYS_INLINE auto operator||(LHS&& lhs, RHS&& rhs) noexcept {
+        return createBinaryOp(internal::ops::orOp<LHS&&, RHS&&>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
     }
 
     template <typename LHS, typename RHS>
-    constexpr STEALTH_ALWAYS_INLINE auto min(const LHS& lhs, const RHS& rhs) noexcept {
-        return BinaryOp{internal::ops::min<LHS, RHS>{}, lhs, rhs};
+    constexpr STEALTH_ALWAYS_INLINE auto min(LHS&& lhs, RHS&& rhs) noexcept {
+        return createBinaryOp(internal::ops::min<LHS&&, RHS&&>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
     }
 
     template <typename LHS, typename RHS>
-    constexpr STEALTH_ALWAYS_INLINE auto max(const LHS& lhs, const RHS& rhs) noexcept {
-        return BinaryOp{internal::ops::max<LHS, RHS>{}, lhs, rhs};
+    constexpr STEALTH_ALWAYS_INLINE auto max(LHS&& lhs, RHS&& rhs) noexcept {
+        return createBinaryOp(internal::ops::max<LHS&&, RHS&&>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
     }
 } /* StealthTileMap */
 

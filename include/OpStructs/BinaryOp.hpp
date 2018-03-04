@@ -8,31 +8,52 @@ namespace StealthTileMap {
     namespace internal {
         template <typename BinaryOperation, typename LHS, typename RHS>
         struct traits<BinaryOp<BinaryOperation, LHS, RHS>> {
-            typedef typename std::invoke_result<BinaryOperation, optimal_scalar_type<LHS>,
-                optimal_scalar_type<RHS>>::type ScalarType;
+            using LHSNoCV = strip_qualifiers<LHS>;
+            using RHSNoCV = strip_qualifiers<RHS>;
+            typedef typename std::invoke_result<BinaryOperation, optimal_scalar_type<LHSNoCV>,
+                optimal_scalar_type<RHSNoCV>>::type ScalarType;
             // Dimensions
-            static constexpr int length = (std::is_scalar<LHS>::value ? internal::traits<RHS>::length : internal::traits<LHS>::length),
-                width = (std::is_scalar<LHS>::value ? internal::traits<RHS>::width : internal::traits<LHS>::width),
-                height = (std::is_scalar<LHS>::value ? internal::traits<RHS>::height : internal::traits<LHS>::height),
-                area = (std::is_scalar<LHS>::value ? internal::traits<RHS>::area : internal::traits<LHS>::area),
-                size = (std::is_scalar<LHS>::value ? internal::traits<RHS>::size : internal::traits<LHS>::size);
+            static constexpr int length = (std::is_scalar<LHSNoCV>::value ? internal::traits<RHSNoCV>::length : internal::traits<LHSNoCV>::length),
+                width = (std::is_scalar<LHSNoCV>::value ? internal::traits<RHSNoCV>::width : internal::traits<LHSNoCV>::width),
+                height = (std::is_scalar<LHSNoCV>::value ? internal::traits<RHSNoCV>::height : internal::traits<LHSNoCV>::height),
+                area = (std::is_scalar<LHSNoCV>::value ? internal::traits<RHSNoCV>::area : internal::traits<LHSNoCV>::area),
+                size = (std::is_scalar<LHSNoCV>::value ? internal::traits<RHSNoCV>::size : internal::traits<LHSNoCV>::size);
             typedef std::false_type containsData;
             typedef std::false_type isWritable;
-            typedef BinaryOp<BinaryOperation, LHS, RHS> UnderlyingTileMapType;
+            typedef BinaryOp<BinaryOperation, LHSNoCV, RHSNoCV> UnderlyingTileMapType;
         };
     } /* internal */
+
+
+
+    // DEBUG:
+    template <typename ExprStoredType>
+    constexpr void debugType() {
+        std::cout << __PRETTY_FUNCTION__ << '\n';
+    }
+
+
 
     template <typename BinaryOperation, typename LHS, typename RHS>
     class BinaryOp : public TileMapBase<BinaryOp<BinaryOperation, LHS, RHS>> {
         public:
             typedef typename internal::traits<BinaryOp>::ScalarType ScalarType;
 
-            constexpr STEALTH_ALWAYS_INLINE BinaryOp(const BinaryOperation& op, const LHS& lhs, const RHS& rhs) noexcept
-                : op{op}, lhs{lhs}, rhs{rhs} {
+            constexpr STEALTH_ALWAYS_INLINE BinaryOp(BinaryOperation op, LHS lhs, RHS rhs) noexcept
+                : op{std::move(op)}, lhs{(lhs)}, rhs{(rhs)} {
+
+                std::cout << "Calling from BinaryOp Constructor" << '\n';
+                std::cout << __PRETTY_FUNCTION__ << '\n';
+                debugType<expression_stored_type<LHS>>();
+                debugType<expression_stored_type<RHS>>();
+
+
+
                 static_assert(internal::traits<LHS>::size == internal::traits<RHS>::size
                     || (std::is_scalar<LHS>::value || std::is_scalar<RHS>::value),
                     "Cannot operate on incompatible arguments");
-                }
+            }
+
 
             constexpr STEALTH_ALWAYS_INLINE auto hintedIndex(int hintX, int hintY, int x, int y, int z) const {
                 if constexpr (std::is_scalar<RHS>::value) {
@@ -75,9 +96,9 @@ namespace StealthTileMap {
             }
 
         private:
-            const LHS& lhs;
-            const RHS& rhs;
-            const BinaryOperation& op;
+            LHS lhs;
+            RHS rhs;
+            BinaryOperation op;
     };
 } /* StealthTileMap */
 
