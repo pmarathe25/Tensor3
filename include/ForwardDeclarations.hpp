@@ -14,7 +14,6 @@
 #define DEBUG
 
 
-
 namespace StealthTileMap {
     namespace internal {
         template <typename T> struct traits {
