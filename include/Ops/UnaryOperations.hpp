@@ -15,7 +15,7 @@ namespace StealthTileMap {
 
     template <typename UnaryOperation, typename LHS>
     constexpr auto createUnaryOp(const UnaryOperation& op, LHS&& lhs) noexcept {
-        using StoredLHS = expression_stored_type<LHS>;
+        using StoredLHS = expression_stored_type<LHS&&>;
         return UnaryOp<UnaryOperation, StoredLHS>{op, std::forward<LHS&&>(lhs)};
     }
 

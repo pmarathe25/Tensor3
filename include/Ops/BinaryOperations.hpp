@@ -106,12 +106,26 @@ namespace StealthTileMap {
 
     template <typename BinaryOperation, typename LHS, typename RHS>
     constexpr auto createBinaryOp(const BinaryOperation& op, LHS&& lhs, RHS&& rhs) noexcept {
+        using StoredLHS = expression_stored_type<LHS&&>;
+        using StoredRHS = expression_stored_type<RHS&&>;
+
         // DEBUG:
         std::cout << "Calling from operator" << '\n';
-        debugType<LHS>();
+        // LHS
+        std::cout << "LHS Information\nLHS Type: ";
+        debugType<LHS&&>();
+        std::cout << "LHS Stored Type: ";
+        debugType<expression_stored_type<LHS&&>>();
+        std::cout << "LHS Stored Type (Actual): ";
+        debugType<StoredLHS>();
+        // RHS
+        std::cout << "RHS Information\nRHS Type: ";
+        debugType<RHS&&>();
+        std::cout << "RHS Stored Type: ";
+        debugType<expression_stored_type<RHS&&>>();
+        std::cout << "RHS Stored Type (Actual): ";
+        debugType<StoredRHS>();
 
-        using StoredLHS = expression_stored_type<LHS>;
-        using StoredRHS = expression_stored_type<RHS>;
         return BinaryOp<BinaryOperation, StoredLHS, StoredRHS>{op, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs)};
     }
 
