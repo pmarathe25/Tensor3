@@ -110,7 +110,7 @@ namespace StealthTileMap {
         using StoredRHS = expression_stored_type<RHS&&>;
 
         // DEBUG:
-        std::cout << "Calling from operator" << '\n';
+        std::cout << "Creating BinaryOp" << '\n';
         // LHS
         std::cout << "LHS Information\nLHS Type: ";
         debugType<LHS&&>();
