@@ -70,7 +70,7 @@ namespace StealthTileMap {
 
 
                 // DEBUG:
-                std::cout << "Doing copy" << '\n';
+                std::cout << "\t\t!!!!Doing copy!!!!" << '\n';
 
                 tiles = other.tiles;
             }
@@ -98,7 +98,7 @@ namespace StealthTileMap {
             constexpr STEALTH_ALWAYS_INLINE TileMap& operator=(const TileMap& other) noexcept {
 
                 // DEBUG:
-                std::cout << "Doing copy" << '\n';
+                std::cout << "\t\t!!!!Doing copy!!!!" << '\n';
 
                 tiles = other.tiles;
                 return *this;
@@ -238,7 +238,7 @@ namespace StealthTileMap {
 
 
                 // DEBUG:
-                std::cout << "Doing copy" << '\n';
+                std::cout << "\t\t!!!!Doing copy!!!!" << '\n';
 
 
 
