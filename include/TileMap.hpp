@@ -62,8 +62,8 @@ namespace StealthTileMap {
 
             // Copy
             template <typename OtherTileMap>
-            constexpr STEALTH_ALWAYS_INLINE TileMap(const OtherTileMap& other) noexcept : tiles(sizeAtCompileTime) {
-                const_copy(other);
+            constexpr STEALTH_ALWAYS_INLINE TileMap(OtherTileMap&& other) noexcept : tiles(sizeAtCompileTime) {
+                copy(std::forward<OtherTileMap&&>(other));
             }
 
             constexpr STEALTH_ALWAYS_INLINE TileMap(const TileMap& other) noexcept {
@@ -105,8 +105,8 @@ namespace StealthTileMap {
             }
 
             template <typename OtherTileMap>
-            constexpr STEALTH_ALWAYS_INLINE TileMap& operator=(const OtherTileMap& other) noexcept {
-                const_copy(other);
+            constexpr STEALTH_ALWAYS_INLINE TileMap& operator=(OtherTileMap&& other) noexcept {
+                copy(std::forward<OtherTileMap&&>(other));
                 return *this;
             }
 
@@ -233,7 +233,7 @@ namespace StealthTileMap {
             std::vector<ScalarType> tiles;
 
             template <typename OtherTileMap>
-            constexpr void const_copy(const OtherTileMap& other) {
+            constexpr void copy(OtherTileMap&& other) {
 
 
 
@@ -243,7 +243,7 @@ namespace StealthTileMap {
 
 
                 if constexpr (!std::is_scalar<OtherTileMap>::value) static_assert(other.size()
-                    == TileMap::size(), "Cannot const_copy incompatible TileMaps");
+                    == TileMap::size(), "Cannot copy incompatible TileMaps");
                 int hintX = 0, hintY = 0;
                 for (int k = 0; k < TileMap::height(); ++k) {
                     for (int j = 0; j < TileMap::length(); ++j) {

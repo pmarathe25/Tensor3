@@ -62,9 +62,10 @@ namespace StealthTileMap {
         // Determine what expressions should store - a const ref or a copy
         // (const ref for lvalues and copy for rvalues)
         template <typename TileMapType>
-        using expression_stored_type = typename std::conditional<std::is_lvalue_reference<TileMapType>::value,
+        using expression_stored_type = typename std::conditional<std::is_lvalue_reference<TileMapType>::value or std::is_const<TileMapType>::value,
             // Make it a const reference.
-            typename std::add_lvalue_reference<typename std::add_const<TileMapType>::type>::type,
+            // typename std::add_lvalue_reference<typename std::add_const<TileMapType>::type>::type,
+            typename std::add_lvalue_reference<TileMapType>::type,
             // Otherwise, make it a copy.
             typename std::remove_reference<TileMapType>::type
         >::type;
@@ -81,6 +82,27 @@ namespace StealthTileMap {
             const typename internal::traits<strip_qualifiers<TileMapType>>::ScalarType&
         >::type;
 
+        // Function that tries to index a type if it is not a scalar.
+        template <typename LHS>
+        constexpr auto tryHintedIndex(LHS&& lhs, int hintX, int hintY, int x, int y, int z) {
+            using LHSNoCV = strip_qualifiers<LHS>;
+            if constexpr (std::is_scalar<LHSNoCV>::value) {
+                return lhs;
+            } else {
+                return lhs.hintedIndex(hintX, hintY, x, y, z);
+            }
+        }
+
+        // Function that tries to index a type if it is not a scalar.
+        template <typename LHS, typename... Index>
+        constexpr auto tryIndex(LHS&& lhs, Index&&... indices) {
+            using LHSNoCV = strip_qualifiers<LHS>;
+            if constexpr (std::is_scalar<LHSNoCV>::value) {
+                return lhs;
+            } else {
+                return lhs(std::forward<Index&&>(indices)...);
+            }
+        }
 
         // Display Functions
         template <typename T>

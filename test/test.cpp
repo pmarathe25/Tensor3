@@ -37,9 +37,21 @@ int testTemporaryExpressionPersistence() {
     std::cout << "Result (should NOT segfault): " << testResult << '\n';
 }
 
+int testExpressionIndexing() {
+    StealthTileMap::TileMapF<4, 4> test0;
+    test0(0, 0) = 1.0f;
+    StealthTileMap::TileMapF<4, 4> test1;
+    test1(1, 1) = 2.0f;
+    auto binExpr0 = test0 + test1;
+    auto binExpr1 = test0 + 3.14f;
+    std::cout << "Expr0 at (0, 0) is: " << binExpr0(0, 0) << '\n';
+    std::cout << "Expr1 at (0, 0) is: " << binExpr1(0, 0) << '\n';
+}
+
 
 int main() noexcept {
     testTemporaryExpressionPersistence();
+    testExpressionIndexing();
     // StealthTileMap::TileMapF<5, 5, 2> test{};
     // const StealthTileMap::TileMapF<5, 5, 2> test2 = 1.0f;
     // StealthTileMap::TileMapF<5, 5, 2> test3 = test + test2;

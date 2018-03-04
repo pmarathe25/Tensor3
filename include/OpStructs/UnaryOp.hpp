@@ -28,10 +28,10 @@ namespace StealthTileMap {
         public:
             typedef typename internal::traits<UnaryOp>::ScalarType ScalarType;
 
-            constexpr STEALTH_ALWAYS_INLINE UnaryOp(UnaryOperation& op, LHS lhs) noexcept
+            constexpr STEALTH_ALWAYS_INLINE UnaryOp(UnaryOperation op, LHS lhs) noexcept
                 : op{std::move(op)}, lhs{lhs} { }
 
-            constexpr STEALTH_ALWAYS_INLINE auto hintedIndex(int hintX, int hintY, int x, int y, int z) const {
+            constexpr STEALTH_ALWAYS_INLINE auto hintedIndex(int hintX, int hintY, int x, int y, int z) {
                 return op(lhs.hintedIndex(hintX, hintY, x, y, z));
             }
 

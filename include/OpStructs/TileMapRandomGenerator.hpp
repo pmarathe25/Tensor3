@@ -34,22 +34,22 @@ namespace StealthTileMap {
     class TileMapRandomGenerator : public TileMapBase<TileMapRandomGenerator<widthAtCompileTime,
         lengthAtCompileTime, heightAtCompileTime, Distribution, Generator, areaAtCompileTime, sizeAtCompileTime>>  {
         public:
-            constexpr STEALTH_ALWAYS_INLINE TileMapRandomGenerator(Distribution&& distribution = std::forward<Distribution&&>(DefaultDistribution),
-                long seed = stealth::getCurrentTime(), Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) noexcept
-                : distribution{std::forward<Distribution&&>(distribution)}, generator{std::forward<Generator&&>(generator)} {
+            constexpr STEALTH_ALWAYS_INLINE TileMapRandomGenerator(Distribution distribution = DefaultDistribution,
+                long seed = stealth::getCurrentTime(), Generator generator = DefaultGenerator) noexcept
+                : distribution{distribution}, generator{generator} {
                 generator.seed(seed);
             }
 
-            constexpr STEALTH_ALWAYS_INLINE auto hintedIndex(int hintX = 0, int hintY = 0, int x = 0, int y = 0, int z = 0) const noexcept {
+            constexpr STEALTH_ALWAYS_INLINE auto hintedIndex(int hintX = 0, int hintY = 0, int x = 0, int y = 0, int z = 0) noexcept {
                 return distribution(generator);
             }
 
-            constexpr STEALTH_ALWAYS_INLINE auto operator()(int x = 0, int y = 0, int z = 0) const noexcept {
+            constexpr STEALTH_ALWAYS_INLINE auto operator()(int x = 0, int y = 0, int z = 0) noexcept {
                 return distribution(generator);
             }
         private:
-            Distribution&& distribution;
-            Generator&& generator;
+            Distribution distribution;
+            Generator generator;
     };
 
 } /* StealthTileMap */

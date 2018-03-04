@@ -40,44 +40,21 @@ namespace StealthTileMap {
                     "Cannot operate on incompatible arguments");
             }
 
-            constexpr STEALTH_ALWAYS_INLINE auto hintedIndex(int hintX, int hintY, int x, int y, int z) const {
-                if constexpr (std::is_scalar<RHS>::value) {
-                    return op(lhs.hintedIndex(hintX, hintY, x, y, z), rhs);
-                } else if constexpr (std::is_scalar<LHS>::value) {
-                    return op(lhs, rhs.hintedIndex(hintX, hintY, x, y, z));
-                } else {
-                    return op(lhs.hintedIndex(hintX, hintY, x, y, z), rhs.hintedIndex(hintX, hintY, x, y, z));
-                }
+            // Since LHS/RHS could be scalars, tryHintedIndex checks for that possibility.
+            constexpr STEALTH_ALWAYS_INLINE auto hintedIndex(int hintX, int hintY, int x, int y, int z) {
+                return op(tryHintedIndex(lhs, hintX, hintY, x, y, z), tryHintedIndex(rhs, hintX, hintY, x, y, z));
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z) const {
-                if constexpr (std::is_scalar<RHS>::value) {
-                    return op(lhs(x, y, z), rhs);
-                } else if constexpr (std::is_scalar<LHS>::value) {
-                    return op(lhs, rhs(x, y, z));
-                } else {
-                    return op(lhs(x, y, z), rhs(x, y, z));
-                }
+                return op(tryIndex(lhs, x, y, z), tryIndex(rhs, x, y, z));
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y) const {
-                if constexpr (std::is_scalar<RHS>::value) {
-                    return op(lhs(x, y), rhs);
-                } else if constexpr (std::is_scalar<LHS>::value) {
-                    return op(lhs, rhs(x, y));
-                } else {
-                    return op(lhs(x, y), rhs(x, y));
-                }
+                return op(tryIndex(lhs, x, y), tryIndex(rhs, x, y));
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x) const {
-                if constexpr (std::is_scalar<RHS>::value) {
-                    return op(lhs(x), rhs);
-                } else if constexpr (std::is_scalar<LHS>::value) {
-                    return op(lhs, rhs(x));
-                } else {
-                    return op(lhs(x), rhs(x));
-                }
+                return op(tryIndex(lhs, x), tryIndex(rhs, x));
             }
 
         private:
