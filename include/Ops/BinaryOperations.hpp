@@ -112,7 +112,7 @@ namespace StealthTileMap {
 
         using StoredLHS = expression_stored_type<LHS>;
         using StoredRHS = expression_stored_type<RHS>;
-        return BinaryOp<BinaryOperation, StoredLHS, StoredRHS>{op, lhs, rhs};
+        return BinaryOp<BinaryOperation, StoredLHS, StoredRHS>{op, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs)};
     }
 
     template <typename BinaryOperation, typename LHS, typename RHS>

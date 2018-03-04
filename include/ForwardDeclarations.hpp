@@ -23,6 +23,7 @@ namespace StealthTileMap {
     } /* internal */
 
     #ifdef DEBUG
+        // DEBUG:
         template <typename ExprStoredType>
         constexpr void debugType() {
             std::cout << __PRETTY_FUNCTION__ << '\n';
