@@ -6,7 +6,7 @@ SRCDIR = src/
 OBJS =
 TESTOBJS = $(addprefix $(BUILDDIR)/, test.o)
 # Headers
-INCLUDEPATH = include
+INCLUDEPATH = include/
 INCLUDE = -I$(INCLUDEPATH)
 HEADERS = $(addprefix $(INCLUDEPATH)/, TileMapBase.hpp TileMap.hpp ForwardDeclarations.hpp \
 	OpStructs/BinaryOp.hpp OpStructs/UnaryOp.hpp OpStructs/UnaryOp.hpp OpStructs/Block.hpp OpStructs/TileMapRandomGenerator.hpp \
@@ -26,8 +26,18 @@ $(TESTDIR)/test: $(BUILDDIR)/test.o $(HEADERS) $(OBJS)
 $(BUILDDIR)/test.o: $(TESTDIR)/test.cpp $(HEADERS)
 	$(CXX) $(CFLAGS) $(TESTDIR)/test.cpp -o $(BUILDDIR)/test.o
 
+.PHONY: clean
 clean:
 	rm $(OBJS) $(TESTOBJS) $(TESTDIR)/test
 
+.PHONY: test
 test: $(TESTDIR)/test
 	$(TESTDIR)/test
+
+.PHONY: install
+install:
+	sudo ln -snf $(CURDIR)/$(INCLUDEPATH) /usr/local/include/TileMap
+
+.PHONY: uninstall
+uninstall:
+	sudo rm /usr/local/include/TileMap
