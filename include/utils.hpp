@@ -8,20 +8,20 @@ namespace StealthTileMap {
         template <typename QualifiedType>
         using strip_qualifiers = typename std::remove_const<typename std::remove_reference<QualifiedType>::type>::type;
 
-        // Determine what expressions should store - a const ref or a copy
-        // (const ref for lvalues and copy for rvalues)
+        // Determine what expressions should store - a reference or a copy
+        // (reference for lvalues and copy for rvalues)
         // If a TileMap does not contain data (i.e. is an expression, make a copy)
         template <typename TileMapType>
         using expression_stored_type = typename std::conditional<
             std::is_rvalue_reference<TileMapType>::value or not internal::traits<strip_qualifiers<TileMapType>>::containsData::value,
             // Otherwise, make it a copy.
             strip_qualifiers<TileMapType>,
-            // Make it a const reference.
-            const TileMapType&
+            // Make it a reference.
+            typename std::add_lvalue_reference<TileMapType>::type
         >::type;
 
 
-        // If the scalar is large enough, use a reference, otherwise pass by copy.
+        // If the scalar is large enough, use a const reference, otherwise pass by copy.
         template <typename TileMapType>
         using optimal_scalar_type = typename std::conditional<
             sizeof(typename internal::traits<strip_qualifiers<TileMapType>>::ScalarType) <= sizeof(void*),

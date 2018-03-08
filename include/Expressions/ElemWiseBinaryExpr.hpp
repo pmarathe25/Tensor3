@@ -8,7 +8,7 @@ namespace StealthTileMap {
     namespace internal {
         template <typename BinaryOperation, typename LHS, typename RHS>
         struct traits<ElemWiseBinaryExpr<BinaryOperation, LHS, RHS>> {
-            // Since the incoming LHS/RHS is either a const ref or copy,
+            // Since the incoming LHS/RHS is either a reference or copy,
             // we need to remove qualifiers to get size information.
             using LHSNoCV = strip_qualifiers<LHS>;
             using RHSNoCV = strip_qualifiers<RHS>;
@@ -31,7 +31,7 @@ namespace StealthTileMap {
     class ElemWiseBinaryExpr : public TileMapBase<ElemWiseBinaryExpr<BinaryOperation, LHS, RHS>> {
         public:
             using ScalarType = typename internal::traits<ElemWiseBinaryExpr>::ScalarType;
-            // Store either a const ref or copy depending on what the operands are.
+            // Store either a reference or copy depending on what the operands are.
             using StoredLHS = expression_stored_type<LHS>;
             using StoredRHS = expression_stored_type<RHS>;
 

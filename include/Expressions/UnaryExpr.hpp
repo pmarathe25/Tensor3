@@ -8,7 +8,7 @@ namespace StealthTileMap {
     namespace internal {
         template <typename UnaryOperation, typename LHS>
         struct traits<UnaryExpr<UnaryOperation, LHS>> {
-            // Since the incoming LHS is either a const ref or copy,
+            // Since the incoming LHS is either a reference or copy,
             // we need to remove qualifiers to get size information.
             using LHSNoCV = strip_qualifiers<LHS>;
             using ScalarType = typename std::invoke_result<UnaryOperation, optimal_scalar_type<LHSNoCV>>::type;
@@ -28,7 +28,7 @@ namespace StealthTileMap {
     class UnaryExpr : public TileMapBase<UnaryExpr<UnaryOperation, LHS>> {
         public:
             using ScalarType = typename internal::traits<UnaryExpr>::ScalarType;
-            // Store either a const ref or copy depending on what the operand is.
+            // Store either a reference or copy depending on what the operand is.
             using StoredLHS = expression_stored_type<LHS>;
 
             constexpr STEALTH_ALWAYS_INLINE UnaryExpr(UnaryOperation op, LHS&& lhs) noexcept
