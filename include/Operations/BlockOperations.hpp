@@ -6,7 +6,7 @@ namespace StealthTileMap {
     template <typename LHS>
     constexpr STEALTH_ALWAYS_INLINE auto layer(LHS&& lhs, int layerNum = 0) {
         typedef typename std::remove_reference<LHS>::type LHSRawType;
-        return BlockExpr<internal::traits<LHSRawType>::width, internal::traits<LHSRawType>::length, 1, LHSRawType>
+        return BlockExpr<lhs.width(), lhs.length(), 1, LHSRawType>
             {std::forward<LHS&&>(lhs), 0, 0, layerNum};
     }
 
