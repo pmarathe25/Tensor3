@@ -10,26 +10,30 @@ namespace StealthTileMap {
             // Since the incoming LHS is either a const ref or copy,
             // we need to remove qualifiers to get size information.
             using LHSNoCV = strip_qualifiers<LHS>;
-            typedef typename std::invoke_result<UnaryOperation, optimal_scalar_type<LHSNoCV>>::type ScalarType;
+            using ScalarType = typename std::invoke_result<UnaryOperation, optimal_scalar_type<LHSNoCV>>::type;
             // Dimensions
             static constexpr int length = internal::traits<LHSNoCV>::length,
                 width = internal::traits<LHSNoCV>::width,
                 height = internal::traits<LHSNoCV>::height,
                 area = internal::traits<LHSNoCV>::area,
                 size = internal::traits<LHSNoCV>::size;
-            typedef std::false_type containsData;
-            typedef std::false_type isWritable;
-            typedef UnaryOp<UnaryOperation, LHSNoCV> UnderlyingTileMapType;
+            using containsData = std::false_type;
+            using isWritable = std::false_type;
+            using UnderlyingTileMapType = UnaryOp<UnaryOperation, LHS>;
         };
     } /* internal */
 
     template <typename UnaryOperation, typename LHS>
     class UnaryOp : public TileMapBase<UnaryOp<UnaryOperation, LHS>> {
         public:
-            typedef typename internal::traits<UnaryOp>::ScalarType ScalarType;
+            using ScalarType = typename internal::traits<UnaryOp>::ScalarType;
 
             constexpr STEALTH_ALWAYS_INLINE UnaryOp(UnaryOperation op, LHS lhs) noexcept
                 : op{std::move(op)}, lhs{lhs} { }
+
+            constexpr STEALTH_ALWAYS_INLINE auto hintedIndex(int hintX, int hintY, int x, int y, int z) const {
+                return op(lhs.hintedIndex(hintX, hintY, x, y, z));
+            }
 
             constexpr STEALTH_ALWAYS_INLINE auto hintedIndex(int hintX, int hintY, int x, int y, int z) {
                 return op(lhs.hintedIndex(hintX, hintY, x, y, z));

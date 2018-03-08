@@ -25,9 +25,11 @@
 
 namespace StealthTileMap {
     namespace internal {
-        template <typename T> struct traits {
+        template <typename T>
+        struct traits {
             typedef T ScalarType;
             static constexpr int length = 1, width = 1, height = 1, size = 1;
+            using containsData = std::false_type;
         };
     } /* internal */
 

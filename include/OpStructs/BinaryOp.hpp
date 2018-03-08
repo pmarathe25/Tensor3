@@ -12,17 +12,17 @@ namespace StealthTileMap {
             // we need to remove qualifiers to get size information.
             using LHSNoCV = strip_qualifiers<LHS>;
             using RHSNoCV = strip_qualifiers<RHS>;
-            typedef typename std::invoke_result<BinaryOperation, optimal_scalar_type<LHSNoCV>,
-                optimal_scalar_type<RHSNoCV>>::type ScalarType;
+            using ScalarType = typename std::invoke_result<BinaryOperation, optimal_scalar_type<LHSNoCV>,
+                optimal_scalar_type<RHSNoCV>>::type;
             // Dimensions
             static constexpr int length = (std::is_scalar<LHSNoCV>::value ? internal::traits<RHSNoCV>::length : internal::traits<LHSNoCV>::length),
                 width = (std::is_scalar<LHSNoCV>::value ? internal::traits<RHSNoCV>::width : internal::traits<LHSNoCV>::width),
                 height = (std::is_scalar<LHSNoCV>::value ? internal::traits<RHSNoCV>::height : internal::traits<LHSNoCV>::height),
                 area = (std::is_scalar<LHSNoCV>::value ? internal::traits<RHSNoCV>::area : internal::traits<LHSNoCV>::area),
                 size = (std::is_scalar<LHSNoCV>::value ? internal::traits<RHSNoCV>::size : internal::traits<LHSNoCV>::size);
-            typedef std::false_type containsData;
-            typedef std::false_type isWritable;
-            typedef BinaryOp<BinaryOperation, LHSNoCV, RHSNoCV> UnderlyingTileMapType;
+            using containsData = std::false_type;
+            using isWritable = std::false_type;
+            using UnderlyingTileMapType = BinaryOp<BinaryOperation, LHS, RHS>;
         };
     } /* internal */
 
@@ -30,7 +30,7 @@ namespace StealthTileMap {
     template <typename BinaryOperation, typename LHS, typename RHS>
     class BinaryOp : public TileMapBase<BinaryOp<BinaryOperation, LHS, RHS>> {
         public:
-            typedef typename internal::traits<BinaryOp>::ScalarType ScalarType;
+            using ScalarType = typename internal::traits<BinaryOp>::ScalarType;
 
             constexpr STEALTH_ALWAYS_INLINE BinaryOp(BinaryOperation op, LHS lhs, RHS rhs) noexcept
                 : op{std::move(op)}, lhs{lhs}, rhs{rhs} {
@@ -41,6 +41,10 @@ namespace StealthTileMap {
             }
 
             // Since LHS/RHS could be scalars, tryHintedIndex checks for that possibility.
+            constexpr STEALTH_ALWAYS_INLINE auto hintedIndex(int hintX, int hintY, int x, int y, int z) const {
+                return op(tryHintedIndex(lhs, hintX, hintY, x, y, z), tryHintedIndex(rhs, hintX, hintY, x, y, z));
+            }
+
             constexpr STEALTH_ALWAYS_INLINE auto hintedIndex(int hintX, int hintY, int x, int y, int z) {
                 return op(tryHintedIndex(lhs, hintX, hintY, x, y, z), tryHintedIndex(rhs, hintX, hintY, x, y, z));
             }
