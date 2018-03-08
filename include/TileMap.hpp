@@ -11,14 +11,9 @@
 #include <vector>
 #include <random>
 
-
-
 #ifdef DEBUG
     #include <iostream>
 #endif
-
-
-
 
 namespace StealthTileMap {
     namespace internal {
