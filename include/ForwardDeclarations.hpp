@@ -46,17 +46,17 @@ namespace StealthTileMap {
     // Binary Op
 
     template <typename BinaryOperation, typename LHS, typename RHS>
-    class BinaryOp;
+    class ElemWiseBinaryExpr;
 
     // Unary Op
     template <typename UnaryOperation, typename LHS>
-    class UnaryOp;
+    class UnaryExpr;
 
     // View of a section of a TileMap or OpStruct
     template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename TileMapType,
         typename containsData = typename internal::traits<TileMapType>::containsData,
         typename isWritable = typename std::conjunction<containsData, typename internal::traits<TileMapType>::isWritable>::type>
-    class Block;
+    class BlockExpr;
 
     // Generate random numbers on demand
     template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,

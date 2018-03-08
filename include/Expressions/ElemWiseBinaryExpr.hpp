@@ -2,12 +2,12 @@
 #define BINARY_OP_H
 #include "../ForwardDeclarations.hpp"
 #include "../TileMapBase.hpp"
-#include <type_traits>
+#include "../utils.hpp"
 
 namespace StealthTileMap {
     namespace internal {
         template <typename BinaryOperation, typename LHS, typename RHS>
-        struct traits<BinaryOp<BinaryOperation, LHS, RHS>> {
+        struct traits<ElemWiseBinaryExpr<BinaryOperation, LHS, RHS>> {
             // Since the incoming LHS/RHS is either a const ref or copy,
             // we need to remove qualifiers to get size information.
             using LHSNoCV = strip_qualifiers<LHS>;
@@ -22,20 +22,20 @@ namespace StealthTileMap {
                 size = (std::is_scalar<LHSNoCV>::value ? internal::traits<RHSNoCV>::size : internal::traits<LHSNoCV>::size);
             using containsData = std::false_type;
             using isWritable = std::false_type;
-            using UnderlyingTileMapType = BinaryOp<BinaryOperation, LHS, RHS>;
+            using UnderlyingTileMapType = ElemWiseBinaryExpr<BinaryOperation, LHS, RHS>;
         };
     } /* internal */
 
 
     template <typename BinaryOperation, typename LHS, typename RHS>
-    class BinaryOp : public TileMapBase<BinaryOp<BinaryOperation, LHS, RHS>> {
+    class ElemWiseBinaryExpr : public TileMapBase<ElemWiseBinaryExpr<BinaryOperation, LHS, RHS>> {
         public:
-            using ScalarType = typename internal::traits<BinaryOp>::ScalarType;
+            using ScalarType = typename internal::traits<ElemWiseBinaryExpr>::ScalarType;
             // Store either a const ref or copy depending on what the operands are.
             using StoredLHS = expression_stored_type<LHS>;
             using StoredRHS = expression_stored_type<RHS>;
 
-            constexpr STEALTH_ALWAYS_INLINE BinaryOp(BinaryOperation op, LHS&& lhs, RHS&& rhs) noexcept
+            constexpr STEALTH_ALWAYS_INLINE ElemWiseBinaryExpr(BinaryOperation op, LHS&& lhs, RHS&& rhs) noexcept
                 : op{std::move(op)}, lhs{std::forward<LHS&&>(lhs)}, rhs{std::forward<RHS&&>(rhs)} {
                 // For the purposes of size information, we need the types without qualifiers
                 using LHSNoCV = strip_qualifiers<LHS>;
@@ -45,7 +45,7 @@ namespace StealthTileMap {
                     "Cannot operate on incompatible arguments");
 
                 #ifdef DEBUG
-                    std::cout << "Creating BinaryOp" << '\n';
+                    std::cout << "Creating ElemWiseBinaryExpr" << '\n';
                     // LHS
                     std::cout << "LHS Information\nLHS Type: ";
                     debugType<LHS&&>();

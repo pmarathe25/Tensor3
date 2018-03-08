@@ -8,7 +8,7 @@ float doDoubleAdd(float a, float b) {
 template <typename TileMapType, typename OtherTileMap>
 constexpr auto doSum(TileMapType&& first, OtherTileMap&& second) noexcept {
 // constexpr STEALTH_ALWAYS_INLINE auto doSum(const TileMapType& first, const OtherTileMap& second) noexcept {
-    // first + second will create a temporary BinaryOp.
+    // first + second will create a temporary ElemWiseBinaryExpr.
     // Check if it is destroyed when the function returns.
     // IT IS!!
     return first + second;

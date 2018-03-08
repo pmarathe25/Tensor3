@@ -3,12 +3,10 @@
 #include "../ForwardDeclarations.hpp"
 #include "../TileMapBase.hpp"
 
-#include <iostream>
-
 namespace StealthTileMap {
     namespace internal {
         template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename InternalTileMap, typename dat, typename writable>
-        struct traits<Block<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, dat, writable>> {
+        struct traits<BlockExpr<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, dat, writable>> {
             using ScalarType = typename internal::traits<InternalTileMap>::ScalarType;
             // Dimensions
             static constexpr int length = lengthAtCompileTime,
@@ -74,23 +72,23 @@ namespace StealthTileMap {
 
     // Writable view
     template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename InternalTileMap>
-    class Block<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::true_type, std::true_type>
-        : public TileMapBase<Block<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::true_type, std::true_type>> {
+    class BlockExpr<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::true_type, std::true_type>
+        : public TileMapBase<BlockExpr<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::true_type, std::true_type>> {
         public:
-            using ScalarType = typename internal::traits<Block>::ScalarType;
-            using UnderlyingTileMapType = typename internal::traits<Block>::UnderlyingTileMapType;
-            static constexpr int hintingMode = optimal_hinting_mode<Block, UnderlyingTileMapType>();
+            using ScalarType = typename internal::traits<BlockExpr>::ScalarType;
+            using UnderlyingTileMapType = typename internal::traits<BlockExpr>::UnderlyingTileMapType;
+            static constexpr int hintingMode = optimal_hinting_mode<BlockExpr, UnderlyingTileMapType>();
 
-            constexpr STEALTH_ALWAYS_INLINE Block(InternalTileMap& tileMap, int x = 0, int y = 0, int z = 0) noexcept
+            constexpr STEALTH_ALWAYS_INLINE BlockExpr(InternalTileMap& tileMap, int x = 0, int y = 0, int z = 0) noexcept
                 : tileMap{tileMap.underlyingTileMap()}, minX{x + tileMap.minX}, minY{y + tileMap.minY}, minZ{z + tileMap.minZ},
                 offset{minX + minY * tileMap.width() + minZ * tileMap.area()} {}
 
             constexpr STEALTH_ALWAYS_INLINE const auto& hintedIndex(int hintX, int hintY, int x, int y, int z) const {
-                return indexWithHints<hintingMode, const Block&>(hintX, hintY, x, y, z, *this);
+                return indexWithHints<hintingMode, const BlockExpr&>(hintX, hintY, x, y, z, *this);
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto& hintedIndex(int hintX, int hintY, int x, int y, int z) {
-                return indexWithHints<hintingMode, Block&>(hintX, hintY, x, y, z, *this);
+                return indexWithHints<hintingMode, BlockExpr&>(hintX, hintY, x, y, z, *this);
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x, int y, int z) {
@@ -141,19 +139,19 @@ namespace StealthTileMap {
 
     // Const view
     template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename InternalTileMap>
-    class Block<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::true_type, std::false_type>
-        : public TileMapBase<Block<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::true_type, std::false_type>> {
+    class BlockExpr<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::true_type, std::false_type>
+        : public TileMapBase<BlockExpr<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::true_type, std::false_type>> {
         public:
-            using ScalarType = typename internal::traits<Block>::ScalarType;
-            using UnderlyingTileMapType = typename internal::traits<Block>::UnderlyingTileMapType;
-            static constexpr int hintingMode = optimal_hinting_mode<Block, UnderlyingTileMapType>();
+            using ScalarType = typename internal::traits<BlockExpr>::ScalarType;
+            using UnderlyingTileMapType = typename internal::traits<BlockExpr>::UnderlyingTileMapType;
+            static constexpr int hintingMode = optimal_hinting_mode<BlockExpr, UnderlyingTileMapType>();
 
-            constexpr STEALTH_ALWAYS_INLINE Block(const InternalTileMap& tileMap, int x = 0, int y = 0, int z = 0) noexcept
+            constexpr STEALTH_ALWAYS_INLINE BlockExpr(const InternalTileMap& tileMap, int x = 0, int y = 0, int z = 0) noexcept
                 : tileMap{tileMap.underlyingTileMap()}, minX{x + tileMap.minX}, minY{y + tileMap.minY}, minZ{z + tileMap.minZ},
                 offset{minX + minY * tileMap.width() + minZ * tileMap.area()} {}
 
             constexpr STEALTH_ALWAYS_INLINE const auto& hintedIndex(int hintX, int hintY, int x, int y, int z) const {
-                return indexWithHints<hintingMode, const Block&>(hintX, hintY, x, y, z, *this);
+                return indexWithHints<hintingMode, const BlockExpr&>(hintX, hintY, x, y, z, *this);
             }
 
             constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x, int y, int z) const {
@@ -184,23 +182,23 @@ namespace StealthTileMap {
 
     // A view of a temporary object. Cannot be modified.
     template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename InternalTileMap>
-    class Block<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::false_type>
-        : public TileMapBase<Block<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::false_type>> {
+    class BlockExpr<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::false_type>
+        : public TileMapBase<BlockExpr<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, std::false_type>> {
         public:
-            using ScalarType = typename internal::traits<Block>::ScalarType;
-            using UnderlyingTileMapType = typename internal::traits<Block>::UnderlyingTileMapType;
-            static constexpr int hintingMode = optimal_hinting_mode<Block, UnderlyingTileMapType>();
+            using ScalarType = typename internal::traits<BlockExpr>::ScalarType;
+            using UnderlyingTileMapType = typename internal::traits<BlockExpr>::UnderlyingTileMapType;
+            static constexpr int hintingMode = optimal_hinting_mode<BlockExpr, UnderlyingTileMapType>();
 
-            constexpr STEALTH_ALWAYS_INLINE Block(const InternalTileMap& tileMap, int x = 0, int y = 0, int z = 0) noexcept
+            constexpr STEALTH_ALWAYS_INLINE BlockExpr(const InternalTileMap& tileMap, int x = 0, int y = 0, int z = 0) noexcept
                 : tileMap{tileMap.underlyingTileMap()}, minX{x + tileMap.minX}, minY{y + tileMap.minY}, minZ{z + tileMap.minZ},
                 offset{minX + minY * tileMap.width() + minZ * tileMap.area()} {}
 
             constexpr STEALTH_ALWAYS_INLINE auto hintedIndex(int hintX, int hintY, int x, int y, int z) const {
-                return indexWithHints<hintingMode, const Block&>(hintX, hintY, x, y, z, *this);
+                return indexWithHints<hintingMode, const BlockExpr&>(hintX, hintY, x, y, z, *this);
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto hintedIndex(int hintX, int hintY, int x, int y, int z) {
-                return indexWithHints<hintingMode, const Block&>(hintX, hintY, x, y, z, *this);
+                return indexWithHints<hintingMode, const BlockExpr&>(hintX, hintY, x, y, z, *this);
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z) const {

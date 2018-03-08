@@ -2,11 +2,12 @@
 #define RUNTIME_OP_H
 #include "../ForwardDeclarations.hpp"
 #include "../TileMapBase.hpp"
+#include "../utils.hpp"
 
 namespace StealthTileMap {
     namespace internal {
         template <typename UnaryOperation, typename LHS>
-        struct traits<UnaryOp<UnaryOperation, LHS>> {
+        struct traits<UnaryExpr<UnaryOperation, LHS>> {
             // Since the incoming LHS is either a const ref or copy,
             // we need to remove qualifiers to get size information.
             using LHSNoCV = strip_qualifiers<LHS>;
@@ -19,18 +20,18 @@ namespace StealthTileMap {
                 size = internal::traits<LHSNoCV>::size;
             using containsData = std::false_type;
             using isWritable = std::false_type;
-            using UnderlyingTileMapType = UnaryOp<UnaryOperation, LHS>;
+            using UnderlyingTileMapType = UnaryExpr<UnaryOperation, LHS>;
         };
     } /* internal */
 
     template <typename UnaryOperation, typename LHS>
-    class UnaryOp : public TileMapBase<UnaryOp<UnaryOperation, LHS>> {
+    class UnaryExpr : public TileMapBase<UnaryExpr<UnaryOperation, LHS>> {
         public:
-            using ScalarType = typename internal::traits<UnaryOp>::ScalarType;
+            using ScalarType = typename internal::traits<UnaryExpr>::ScalarType;
             // Store either a const ref or copy depending on what the operand is.
             using StoredLHS = expression_stored_type<LHS>;
 
-            constexpr STEALTH_ALWAYS_INLINE UnaryOp(UnaryOperation op, LHS&& lhs) noexcept
+            constexpr STEALTH_ALWAYS_INLINE UnaryExpr(UnaryOperation op, LHS&& lhs) noexcept
                 : op{std::move(op)}, lhs{std::forward<LHS&&>(lhs)} { }
 
             constexpr STEALTH_ALWAYS_INLINE auto hintedIndex(int hintX, int hintY, int x, int y, int z) const {

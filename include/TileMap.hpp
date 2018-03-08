@@ -2,11 +2,11 @@
 #define STEALTH_TILEMAP_H
 #include "./ForwardDeclarations.hpp"
 #include "./TileMapBase.hpp"
-#include "./Ops/BinaryOperations.hpp"
-#include "./Ops/UnaryOperations.hpp"
-#include "./Ops/UnaryOperations.hpp"
-#include "./Ops/BlockOperations.hpp"
-#include "./OpStructs/TileMapRandomGenerator.hpp"
+#include "./Operations/BinaryOperations.hpp"
+#include "./Operations/UnaryOperations.hpp"
+#include "./Operations/UnaryOperations.hpp"
+#include "./Operations/BlockOperations.hpp"
+#include "./Expressions/TileMapRandomGenerator.hpp"
 #include <stealthutil>
 #include <vector>
 #include <random>
