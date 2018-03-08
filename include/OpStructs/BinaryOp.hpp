@@ -31,13 +31,32 @@ namespace StealthTileMap {
     class BinaryOp : public TileMapBase<BinaryOp<BinaryOperation, LHS, RHS>> {
         public:
             using ScalarType = typename internal::traits<BinaryOp>::ScalarType;
+            // Store either a const ref or copy depending on what the operands are.
+            using StoredLHS = expression_stored_type<LHS>;
+            using StoredRHS = expression_stored_type<RHS>;
 
-            constexpr STEALTH_ALWAYS_INLINE BinaryOp(BinaryOperation op, LHS lhs, RHS rhs) noexcept
-                : op{std::move(op)}, lhs{lhs}, rhs{rhs} {
+            constexpr STEALTH_ALWAYS_INLINE BinaryOp(BinaryOperation op, LHS&& lhs, RHS&& rhs) noexcept
+                : op{std::move(op)}, lhs{std::forward<LHS&&>(lhs)}, rhs{std::forward<RHS&&>(rhs)} {
                 // For the purposes of size information, we need the types without qualifiers
-                static_assert(internal::traits<strip_qualifiers<LHS>>::size == internal::traits<strip_qualifiers<RHS>>::size
-                    || (std::is_scalar<strip_qualifiers<LHS>>::value || std::is_scalar<strip_qualifiers<RHS>>::value),
+                using LHSNoCV = strip_qualifiers<LHS>;
+                using RHSNoCV = strip_qualifiers<RHS>;
+                static_assert(internal::traits<LHSNoCV>::size == internal::traits<RHSNoCV>::size
+                    || (std::is_scalar<LHSNoCV>::value || std::is_scalar<RHSNoCV>::value),
                     "Cannot operate on incompatible arguments");
+
+                #ifdef DEBUG
+                    std::cout << "Creating BinaryOp" << '\n';
+                    // LHS
+                    std::cout << "LHS Information\nLHS Type: ";
+                    debugType<LHS&&>();
+                    std::cout << "LHS Stored Type: ";
+                    debugType<StoredLHS>();
+                    // RHS
+                    std::cout << "RHS Information\nRHS Type: ";
+                    debugType<RHS&&>();
+                    std::cout << "RHS Stored Type: ";
+                    debugType<StoredRHS>();
+                #endif
             }
 
             // Since LHS/RHS could be scalars, tryHintedIndex checks for that possibility.
@@ -62,8 +81,8 @@ namespace StealthTileMap {
             }
 
         private:
-            LHS lhs;
-            RHS rhs;
+            StoredLHS lhs;
+            StoredRHS rhs;
             BinaryOperation op;
     };
 } /* StealthTileMap */

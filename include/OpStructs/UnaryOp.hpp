@@ -27,9 +27,11 @@ namespace StealthTileMap {
     class UnaryOp : public TileMapBase<UnaryOp<UnaryOperation, LHS>> {
         public:
             using ScalarType = typename internal::traits<UnaryOp>::ScalarType;
+            // Store either a const ref or copy depending on what the operand is.
+            using StoredLHS = expression_stored_type<LHS>;
 
-            constexpr STEALTH_ALWAYS_INLINE UnaryOp(UnaryOperation op, LHS lhs) noexcept
-                : op{std::move(op)}, lhs{lhs} { }
+            constexpr STEALTH_ALWAYS_INLINE UnaryOp(UnaryOperation op, LHS&& lhs) noexcept
+                : op{std::move(op)}, lhs{std::forward<LHS&&>(lhs)} { }
 
             constexpr STEALTH_ALWAYS_INLINE auto hintedIndex(int hintX, int hintY, int x, int y, int z) const {
                 return op(lhs.hintedIndex(hintX, hintY, x, y, z));
@@ -52,7 +54,7 @@ namespace StealthTileMap {
             }
 
         private:
-            LHS lhs;
+            StoredLHS lhs;
             UnaryOperation op;
     };
 } /* StealthTileMap */

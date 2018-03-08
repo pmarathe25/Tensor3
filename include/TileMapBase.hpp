@@ -71,9 +71,9 @@ namespace StealthTileMap {
         using expression_stored_type = typename std::conditional<std::is_rvalue_reference<TileMapType>::value
             or not internal::traits<strip_qualifiers<TileMapType>>::containsData::value,
             // Otherwise, make it a copy.
-            typename std::remove_reference<typename std::remove_const<TileMapType>::type>::type,
+            strip_qualifiers<TileMapType>,
             // Make it a const reference.
-            typename std::add_lvalue_reference<typename std::add_const<TileMapType>::type>::type
+            const TileMapType&
         >::type;
 
 

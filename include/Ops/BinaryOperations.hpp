@@ -104,30 +104,10 @@ namespace StealthTileMap {
         };
     } /* StealthTileMap::internal::ops */
 
+    // Helper to construct BinaryOp expressions.
     template <typename BinaryOperation, typename LHS, typename RHS>
     constexpr auto createBinaryOp(BinaryOperation&& op, LHS&& lhs, RHS&& rhs) noexcept {
-        using StoredLHS = expression_stored_type<LHS>;
-        using StoredRHS = expression_stored_type<RHS>;
-
-        #ifdef DEBUG
-            std::cout << "Creating BinaryOp" << '\n';
-            // LHS
-            std::cout << "LHS Information\nLHS Type: ";
-            debugType<LHS&&>();
-            std::cout << "LHS Stored Type: ";
-            debugType<expression_stored_type<LHS&&>>();
-            std::cout << "LHS Stored Type (Actual): ";
-            debugType<StoredLHS>();
-            // RHS
-            std::cout << "RHS Information\nRHS Type: ";
-            debugType<RHS&&>();
-            std::cout << "RHS Stored Type: ";
-            debugType<expression_stored_type<RHS&&>>();
-            std::cout << "RHS Stored Type (Actual): ";
-            debugType<StoredRHS>();
-        #endif
-
-        return BinaryOp<BinaryOperation, StoredLHS, StoredRHS>{std::forward<BinaryOperation&&>(op), std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs)};
+        return BinaryOp<BinaryOperation, LHS, RHS>{std::forward<BinaryOperation&&>(op), std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs)};
     }
 
     template <typename BinaryOperation, typename LHS, typename RHS>
