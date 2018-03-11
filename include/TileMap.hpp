@@ -15,7 +15,7 @@
     #include <iostream>
 #endif
 
-namespace StealthTileMap {
+namespace Stealth {
     namespace internal {
         template <typename type, int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
             int areaAtCompileTime, int sizeAtCompileTime>
@@ -273,6 +273,6 @@ namespace StealthTileMap {
 
     template <int widthAtCompileTime, int lengthAtCompileTime = 1, int heightAtCompileTime = 1>
     using TileMapD = TileMap<double, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime>;
-} /* StealthTileMap */
+} /* Stealth */
 
 #endif

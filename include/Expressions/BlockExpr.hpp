@@ -3,7 +3,7 @@
 #include "../ForwardDeclarations.hpp"
 #include "../TileMapBase.hpp"
 
-namespace StealthTileMap {
+namespace Stealth {
     namespace internal {
         template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename InternalTileMap, typename dat, typename writable>
         struct traits<BlockExpr<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, InternalTileMap, dat, writable>> {
@@ -223,6 +223,6 @@ namespace StealthTileMap {
             const UnderlyingTileMapType& tileMap;
     };
 
-} /* StealthTileMap */
+} /* Stealth */
 
 #endif /* end of include guard: TILE_MAP_VIEW_H */

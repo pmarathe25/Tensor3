@@ -2,7 +2,7 @@
 #define TILE_MAP_VIEW_OPERATIONS_H
 #include "../Expressions/BlockExpr.hpp"
 
-namespace StealthTileMap {
+namespace Stealth {
     template <typename LHS>
     constexpr STEALTH_ALWAYS_INLINE auto layer(LHS&& lhs, int layerNum = 0) {
         typedef typename std::remove_reference<LHS>::type LHSRawType;
@@ -27,6 +27,6 @@ namespace StealthTileMap {
         typedef typename std::remove_reference<LHS>::type LHSRawType;
         return BlockExpr<width, 1, 1, LHSRawType>{std::forward<LHS&&>(lhs), minX, minY, minZ};
     }
-} /* StealthTileMap */
+} /* Stealth */
 
 #endif /* end of include guard: TILE_MAP_VIEW_OPERATIONS_H */

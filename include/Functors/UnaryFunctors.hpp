@@ -2,7 +2,7 @@
 #define UNARY_FUNCTORS_H
 #include "../utils.hpp"
 
-namespace StealthTileMap::internal::functors {
+namespace Stealth::internal::functors {
     // Internal Unary Operations
     template <typename LHS>
     struct notOp {
@@ -10,6 +10,6 @@ namespace StealthTileMap::internal::functors {
             return !lhs;
         }
     };
-} /* StealthTileMap::internal::ops */
+} /* Stealth::internal::ops */
 
 #endif /* end of include guard: UNARY_FUNCTORS_H */

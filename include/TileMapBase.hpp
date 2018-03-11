@@ -3,7 +3,7 @@
 #include "./ForwardDeclarations.hpp"
 #include <ostream>
 
-namespace StealthTileMap {
+namespace Stealth {
     template <typename Derived>
     class TileMapBase {
         public:
@@ -87,6 +87,6 @@ namespace StealthTileMap {
         }
         return os;
     }
-} /* StealthTileMap */
+} /* Stealth */
 
 #endif /* end of include guard: TILE_MAP_BASE_H */

@@ -4,7 +4,7 @@
 #include "../TileMapBase.hpp"
 #include "../utils.hpp"
 
-namespace StealthTileMap {
+namespace Stealth {
     namespace internal {
         template <typename UnaryOperation, typename LHS>
         struct traits<UnaryExpr<UnaryOperation, LHS>> {
@@ -58,6 +58,6 @@ namespace StealthTileMap {
             StoredLHS lhs;
             UnaryOperation op;
     };
-} /* StealthTileMap */
+} /* Stealth */
 
 #endif

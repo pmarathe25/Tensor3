@@ -6,7 +6,7 @@
 #include <type_traits>
 #include <random>
 
-namespace StealthTileMap {
+namespace Stealth {
     namespace internal {
         template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
             typename Distribution, typename Generator, int areaAtCompileTime, int sizeAtCompileTime>
@@ -52,6 +52,6 @@ namespace StealthTileMap {
             Generator generator;
     };
 
-} /* StealthTileMap */
+} /* Stealth */
 
 #endif /* end of include guard: TILEMAP_RANDOM_GENERATOR_H */

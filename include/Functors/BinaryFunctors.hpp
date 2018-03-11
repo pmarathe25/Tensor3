@@ -2,7 +2,7 @@
 #define BINARY_FUNCTORS_H
 #include "../utils.hpp"
 
-namespace StealthTileMap::internal::functors {
+namespace Stealth::internal::functors {
     // Internal Binary Operations
     template <typename LHS, typename RHS>
     struct add {
@@ -101,7 +101,7 @@ namespace StealthTileMap::internal::functors {
             return std::max(lhs, rhs);
         }
     };
-} /* StealthTileMap::internal::ops */
+} /* Stealth::internal::ops */
 
 
 #endif /* end of include guard: BINARY_FUNCTORS_H */

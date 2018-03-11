@@ -3,7 +3,7 @@
 #include "../Expressions/ElemWiseBinaryExpr.hpp"
 #include "../Functors/BinaryFunctors.hpp"
 
-namespace StealthTileMap {
+namespace Stealth {
     // Helper to construct ElemWiseBinaryExpr expressions.
     template <typename BinaryOperation, typename LHS, typename RHS>
     constexpr auto createBinaryOp(BinaryOperation&& op, LHS&& lhs, RHS&& rhs) noexcept {
@@ -84,6 +84,6 @@ namespace StealthTileMap {
     constexpr STEALTH_ALWAYS_INLINE auto max(LHS&& lhs, RHS&& rhs) noexcept {
         return createBinaryOp(internal::functors::max<LHS, RHS>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
     }
-} /* StealthTileMap */
+} /* Stealth */
 
 #endif

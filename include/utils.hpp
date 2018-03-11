@@ -2,7 +2,7 @@
 #define STEALTH_TILEMAP_UTILS_H
 #include <type_traits>
 
-namespace StealthTileMap {
+namespace Stealth {
     namespace {
         // Remove const and reference
         template <typename QualifiedType>

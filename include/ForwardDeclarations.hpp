@@ -23,7 +23,7 @@
 #endif
 
 
-namespace StealthTileMap {
+namespace Stealth {
     namespace internal {
         template <typename T>
         struct traits {
@@ -64,6 +64,6 @@ namespace StealthTileMap {
         = widthAtCompileTime * lengthAtCompileTime, int sizeAtCompileTime
         = widthAtCompileTime * lengthAtCompileTime * heightAtCompileTime>
     class TileMapRandomGenerator;
-} /* StealthTileMap */
+} /* Stealth */
 
 #endif
