@@ -256,14 +256,6 @@ namespace Stealth {
             }
     };
 
-    template <int width, int length = 1, int height = 1, typename LHS>
-    constexpr STEALTH_ALWAYS_INLINE auto reshape(LHS&& lhs) {
-        typedef typename std::remove_reference<LHS>::type LHSRawType;
-        typedef typename internal::traits<LHSRawType>::ScalarType ScalarType;
-        static_assert(width * length * height == internal::traits<LHSRawType>::size, "Cannot reshape into incompatible dimensions");
-        return TileMap<ScalarType, width, length, height>{std::forward<LHS&&>(lhs)};
-    }
-
     template <int widthAtCompileTime, int lengthAtCompileTime = 1, int heightAtCompileTime = 1>
     using TileMapI = TileMap<int, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime>;
 
