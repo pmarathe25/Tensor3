@@ -1,5 +1,4 @@
-#ifndef BINARY_FUNCTORS_H
-#define BINARY_FUNCTORS_H
+#pragma once
 #include "../utils.hpp"
 
 namespace Stealth::internal::functors {
@@ -102,6 +101,3 @@ namespace Stealth::internal::functors {
         }
     };
 } /* Stealth::internal::ops */
-
-
-#endif /* end of include guard: BINARY_FUNCTORS_H */

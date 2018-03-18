@@ -1,5 +1,4 @@
-#ifndef UNARY_FUNCTORS_H
-#define UNARY_FUNCTORS_H
+#pragma once
 #include "../utils.hpp"
 
 namespace Stealth::internal::functors {
@@ -11,5 +10,3 @@ namespace Stealth::internal::functors {
         }
     };
 } /* Stealth::internal::ops */
-
-#endif /* end of include guard: UNARY_FUNCTORS_H */

@@ -1,5 +1,4 @@
-#ifndef BINARY_OP_H
-#define BINARY_OP_H
+#pragma once
 #include "../ForwardDeclarations.hpp"
 #include "../TileMapBase.hpp"
 #include "../utils.hpp"
@@ -86,5 +85,3 @@ namespace Stealth {
             BinaryOperation op;
     };
 } /* Stealth */
-
-#endif

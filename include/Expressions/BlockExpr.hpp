@@ -1,5 +1,4 @@
-#ifndef TILE_MAP_VIEW_H
-#define TILE_MAP_VIEW_H
+#pragma once
 #include "../ForwardDeclarations.hpp"
 #include "../TileMapBase.hpp"
 
@@ -224,5 +223,3 @@ namespace Stealth {
     };
 
 } /* Stealth */
-
-#endif /* end of include guard: TILE_MAP_VIEW_H */

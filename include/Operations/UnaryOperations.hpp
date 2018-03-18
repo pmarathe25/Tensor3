@@ -1,5 +1,4 @@
-#ifndef UNARY_OPS_H
-#define UNARY_OPS_H
+#pragma once
 #include "../Expressions/UnaryExpr.hpp"
 #include "../Functors/UnaryFunctors.hpp"
 
@@ -20,5 +19,3 @@ namespace Stealth {
         return createUnaryOp(internal::functors::notOp<LHS>{}, std::forward<LHS&&>(lhs));
     }
 } /* Stealth */
-
-#endif

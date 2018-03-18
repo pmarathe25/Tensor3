@@ -1,4 +1,5 @@
 #include <iostream>
+#include "Benchmark/Benchmark.hpp"
 #include "TileMap/TileMap.hpp"
 
 float doDoubleAdd(float a, float b) {

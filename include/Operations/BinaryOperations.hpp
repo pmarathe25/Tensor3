@@ -1,5 +1,4 @@
-#ifndef BINARY_OPS_H
-#define BINARY_OPS_H
+#pragma once
 #include "../Expressions/ElemWiseBinaryExpr.hpp"
 #include "../Functors/BinaryFunctors.hpp"
 
@@ -85,5 +84,3 @@ namespace Stealth {
         return createBinaryOp(internal::functors::max<LHS, RHS>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
     }
 } /* Stealth */
-
-#endif

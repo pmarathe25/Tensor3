@@ -1,5 +1,4 @@
-#ifndef TILEMAP_RANDOM_GENERATOR_H
-#define TILEMAP_RANDOM_GENERATOR_H
+#pragma once
 #include "../ForwardDeclarations.hpp"
 #include "../TileMapBase.hpp"
 #include <stealthutil>
@@ -53,5 +52,3 @@ namespace Stealth {
     };
 
 } /* Stealth */
-
-#endif /* end of include guard: TILEMAP_RANDOM_GENERATOR_H */

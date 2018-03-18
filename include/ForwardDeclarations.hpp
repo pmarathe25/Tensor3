@@ -1,5 +1,4 @@
-#ifndef FORWARD_DECLARATIONS_H
-#define FORWARD_DECLARATIONS_H
+#pragma once
 #include <type_traits>
 
 // Macros
@@ -65,5 +64,3 @@ namespace Stealth {
         = widthAtCompileTime * lengthAtCompileTime * heightAtCompileTime>
     class TileMapRandomGenerator;
 } /* Stealth */
-
-#endif

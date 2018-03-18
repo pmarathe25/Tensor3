@@ -1,5 +1,4 @@
-#ifndef STEALTH_TILEMAP_H
-#define STEALTH_TILEMAP_H
+#pragma once
 #include "./ForwardDeclarations.hpp"
 #include "./TileMapBase.hpp"
 #include "./Operations/BinaryOperations.hpp"
@@ -274,5 +273,3 @@ namespace Stealth {
     template <int widthAtCompileTime, int lengthAtCompileTime = 1, int heightAtCompileTime = 1>
     using TileMapD = TileMap<double, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime>;
 } /* Stealth */
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef RUNTIME_OP_H
-#define RUNTIME_OP_H
+#pragma once
 #include "../ForwardDeclarations.hpp"
 #include "../TileMapBase.hpp"
 #include "../utils.hpp"
@@ -59,5 +58,3 @@ namespace Stealth {
             UnaryOperation op;
     };
 } /* Stealth */
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef STEALTH_TILEMAP_UTILS_H
-#define STEALTH_TILEMAP_UTILS_H
+#pragma once
 #include <type_traits>
 
 namespace Stealth {
@@ -52,5 +51,3 @@ namespace Stealth {
         }
     }
 }
-
-#endif /* end of include guard: STEALTH_TILEMAP_UTILS_H */

@@ -1,5 +1,4 @@
-#ifndef TILE_MAP_BASE_H
-#define TILE_MAP_BASE_H
+#pragma once
 #include "./ForwardDeclarations.hpp"
 #include <ostream>
 
@@ -88,5 +87,3 @@ namespace Stealth {
         return os;
     }
 } /* Stealth */
-
-#endif /* end of include guard: TILE_MAP_BASE_H */

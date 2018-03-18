@@ -1,5 +1,4 @@
-#ifndef TILE_MAP_VIEW_OPERATIONS_H
-#define TILE_MAP_VIEW_OPERATIONS_H
+#pragma once
 #include "../Expressions/BlockExpr.hpp"
 
 namespace Stealth {
@@ -28,5 +27,3 @@ namespace Stealth {
         return BlockExpr<width, 1, 1, LHSRawType>{std::forward<LHS&&>(lhs), minX, minY, minZ};
     }
 } /* Stealth */
-
-#endif /* end of include guard: TILE_MAP_VIEW_OPERATIONS_H */
