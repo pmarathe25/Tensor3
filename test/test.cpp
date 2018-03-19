@@ -1,6 +1,12 @@
-#include <iostream>
 #include "Benchmark/Benchmark.hpp"
 #include "TileMap/TileMap.hpp"
+#include <iostream>
+#include <algorithm>
+
+constexpr static int kTEST_WIDTH = 25;
+constexpr static int kTEST_HEIGHT = 25;
+constexpr static int kTEST_SIZE = kTEST_WIDTH * kTEST_HEIGHT;
+
 
 template <int width = 1, int length = 1, int height = 1>
 constexpr auto SequentialTileMapF() noexcept {
@@ -9,79 +15,102 @@ constexpr auto SequentialTileMapF() noexcept {
     return out;
 }
 
-int testBlockOps() {
-    // First generate a TileMap with sequential values.
-    auto blockTest0 = SequentialTileMapF<4, 4>();
-    std::cout << blockTest0 << '\n';
-    std::cout << "Reshaped:\n" << Stealth::reshape<16>(blockTest0) << '\n';
+// int testBinaryOps() {
+//
+// }
 
-}
+namespace Block {
+    int testReshape() {
+        // First generate a TileMap with sequential values.
+        auto reshapeTest0 = SequentialTileMapF<kTEST_WIDTH, kTEST_HEIGHT>();
+        // Try to reshape.
+        auto reshapeTest1 = SequentialTileMapF<kTEST_SIZE>();
+        // Make sure that it worked.
+        auto checkReshape0 = (Stealth::reshape<kTEST_SIZE>(reshapeTest0) == reshapeTest1).eval();
+        if (std::all_of(checkReshape0.cbegin(), checkReshape0.cend(), [](bool in) { return in; })) {
+            // Test passed, exit with no error code.
+            return 0;
+        } else {
+            return 1;
+        }
+    }
 
-int testUnaryOps() {
-    // First generate a TileMap with sequential values.
-    auto unaryTest0 = SequentialTileMapF<4, 4>();
-    std::cout << unaryTest0 << '\n';
-}
+    int testBlockOps() {
+        int numFailed = 0;
+        numFailed += testReshape();
+        return numFailed;
+    }
+} /* Block */
 
-float doDoubleAdd(float a, float b) {
-    return a * 2.0f + b;
-}
-
-template <typename TileMapType, typename OtherTileMap>
-constexpr auto doSum(TileMapType&& first, OtherTileMap&& second) noexcept {
-// constexpr STEALTH_ALWAYS_INLINE auto doSum(const TileMapType& first, const OtherTileMap& second) noexcept {
-    // first + second will create a temporary ElemWiseBinaryExpr.
-    // Check if it is destroyed when the function returns.
-    // IT IS!!
-    return first + second;
-}
-
-template <typename... TileMapTypes>
-constexpr auto doMultiSum(TileMapTypes&&... tileMaps) {
-    return (tileMaps + ...);
-}
-
-int testTemporaryExpressionPersistence() {
-    Stealth::TileMapF<4, 4> test0;
-    test0(0, 0) = 1.0f;
-    Stealth::TileMapF<4, 4> test1;
-    test1(1, 1) = 2.0f;
-    Stealth::TileMapF<4, 4> test2;
-    test2(2, 2) = 3.0f;
-    Stealth::TileMapF<4, 4> test3;
-    test3(3, 3) = 4.0f;
-    // First check if the multi sum function works.
-    auto testIntSum = doMultiSum(1, 1, 1, 1);
-    std::cout << "Int Sum (should be 4): " << testIntSum << '\n';
-
-    Stealth::TileMapF<4, 4> testResult;
-    testResult = doMultiSum(test0, test1, test2, test3);
-    std::cout << "Result (should NOT segfault): " << testResult << '\n';
-    return 0;
-}
-
-int testExpressionIndexing() {
-    Stealth::TileMapF<4, 4> test0;
-    test0(0, 0) = 1.0f;
-    Stealth::TileMapF<4, 4> test1;
-    test1(1, 1) = 2.0f;
-    auto binExpr0 = test0 + test1;
-    auto binExpr1 = test0 + 3.14f;
-    std::cout << "Expr0 at (0, 0) is: " << binExpr0(0, 0) << '\n';
-    std::cout << "Expr1 at (0, 0) is: " << binExpr1(0, 0) << '\n';
-    return 0;
-}
+//
+// int testUnaryOps() {
+//     // First generate a TileMap with sequential values.
+//     auto unaryTest0 = SequentialTileMapF<4, 4>();
+//     std::cout << unaryTest0 << '\n';
+// }
+//
+// float doDoubleAdd(float a, float b) {
+//     return a * 2.0f + b;
+// }
+//
+// template <typename TileMapType, typename OtherTileMap>
+// constexpr auto doSum(TileMapType&& first, OtherTileMap&& second) noexcept {
+// // constexpr STEALTH_ALWAYS_INLINE auto doSum(const TileMapType& first, const OtherTileMap& second) noexcept {
+//     // first + second will create a temporary ElemWiseBinaryExpr.
+//     // Check if it is destroyed when the function returns.
+//     // IT IS!!
+//     return first + second;
+// }
+//
+// template <typename... TileMapTypes>
+// constexpr auto doMultiSum(TileMapTypes&&... tileMaps) {
+//     return (tileMaps + ...);
+// }
+//
+// int testTemporaryExpressionPersistence() {
+//     Stealth::TileMapF<4, 4> test0;
+//     test0(0, 0) = 1.0f;
+//     Stealth::TileMapF<4, 4> test1;
+//     test1(1, 1) = 2.0f;
+//     Stealth::TileMapF<4, 4> test2;
+//     test2(2, 2) = 3.0f;
+//     Stealth::TileMapF<4, 4> test3;
+//     test3(3, 3) = 4.0f;
+//     // First check if the multi sum function works.
+//     auto testIntSum = doMultiSum(1, 1, 1, 1);
+//     std::cout << "Int Sum (should be 4): " << testIntSum << '\n';
+//
+//     Stealth::TileMapF<4, 4> testResult;
+//     testResult = doMultiSum(test0, test1, test2, test3);
+//     std::cout << "Result (should NOT segfault): " << testResult << '\n';
+//     return 0;
+// }
+//
+// int testExpressionIndexing() {
+//     Stealth::TileMapF<4, 4> test0;
+//     test0(0, 0) = 1.0f;
+//     Stealth::TileMapF<4, 4> test1;
+//     test1(1, 1) = 2.0f;
+//     auto binExpr0 = test0 + test1;
+//     auto binExpr1 = test0 + 3.14f;
+//     std::cout << "Expr0 at (0, 0) is: " << binExpr0(0, 0) << '\n';
+//     std::cout << "Expr1 at (0, 0) is: " << binExpr1(0, 0) << '\n';
+//     return 0;
+// }
 
 
 int main() {
-    bool testFailed = false;
-    testFailed += testBlockOps();
-    testFailed += testUnaryOps();
-    // testFailed += testTemporaryExpressionPersistence();
-    // testFailed += testExpressionIndexing();
-    // if (testFailed) {
-    //     std::cout << "One or more tests failed!" << '\n';
-    // }
+    int numFailed = 0;
+    // Block op tests
+    numFailed += Block::testBlockOps();
+    // numFailed += testUnaryOps();
+    // numFailed += testTemporaryExpressionPersistence();
+    // numFailed += testExpressionIndexing();
+    if (numFailed) {
+        std::cout << "One or more tests failed!" << '\n';
+    } else {
+        std::cout << "All tests passed!" << '\n';
+    }
     //
     //
     // Stealth::TileMapF<5, 5, 2> test{};

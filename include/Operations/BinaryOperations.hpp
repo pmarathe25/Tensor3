@@ -6,7 +6,7 @@ namespace Stealth {
     // Helper to construct ElemWiseBinaryExpr expressions.
     template <typename BinaryOperation, typename LHS, typename RHS>
     constexpr auto createBinaryOp(BinaryOperation&& op, LHS&& lhs, RHS&& rhs) noexcept {
-        return ElemWiseBinaryExpr<BinaryOperation, LHS, RHS>{std::forward<BinaryOperation&&>(op), std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs)};
+        return ElemWiseBinaryExpr<BinaryOperation, LHS&&, RHS&&>{std::forward<BinaryOperation&&>(op), std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs)};
     }
 
     template <typename BinaryOperation, typename LHS, typename RHS>

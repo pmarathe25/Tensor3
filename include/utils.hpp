@@ -13,9 +13,9 @@ namespace Stealth {
         template <typename TileMapType>
         using expression_stored_type = typename std::conditional<
             std::is_rvalue_reference<TileMapType>::value or not internal::traits<strip_qualifiers<TileMapType>>::containsData::value,
-            // Otherwise, make it a copy.
+            // Make it a copy.
             strip_qualifiers<TileMapType>,
-            // Make it a reference.
+            // Otherwise, make it a reference.
             typename std::add_lvalue_reference<TileMapType>::type
         >::type;
 

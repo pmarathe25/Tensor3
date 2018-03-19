@@ -6,7 +6,7 @@ namespace Stealth {
     // Helper to construct UnaryExpr expressions.
     template <typename UnaryOperation, typename LHS>
     constexpr auto createUnaryOp(UnaryOperation&& op, LHS&& lhs) noexcept {
-        return UnaryExpr<UnaryOperation, LHS>{std::forward<UnaryOperation&&>(op), std::forward<LHS&&>(lhs)};
+        return UnaryExpr<UnaryOperation, LHS&&>{std::forward<UnaryOperation&&>(op), std::forward<LHS&&>(lhs)};
     }
 
     template <typename UnaryOperation, typename LHS>

@@ -27,7 +27,7 @@ namespace Stealth {
         return BlockExpr<width, 1, 1, LHSRawType>{std::forward<LHS&&>(lhs), minX, minY, minZ};
     }
 
-    template <int width, int length = 1, int height = 1, typename LHS>
+    template <int width = 1, int length = 1, int height = 1, typename LHS>
     constexpr STEALTH_ALWAYS_INLINE auto reshape(LHS&& lhs) {
         typedef typename std::remove_reference<LHS>::type LHSRawType;
         static_assert(width * length * height == internal::traits<LHSRawType>::size, "Cannot reshape into incompatible dimensions");
