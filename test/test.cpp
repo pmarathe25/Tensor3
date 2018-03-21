@@ -16,6 +16,12 @@ constexpr auto SequentialTileMapF(int startValue = 0) noexcept {
     return out;
 }
 
+struct TestResult {
+    TestResult(int errorCode, std::string testName = __builtin_FUNCTION()) : testName{testName}, errorCode{errorCode} { }
+    int errorCode;
+    std::string testName;
+};
+
 template <typename Callable>
 constexpr bool runTest(const Callable& test) {
     // Returns true if the test passed, false otherwise.
@@ -26,12 +32,6 @@ constexpr bool runTest(const Callable& test) {
     }
     return true;
 }
-
-struct TestResult {
-    TestResult(int errorCode, std::string testName = __builtin_FUNCTION()) : testName{testName}, errorCode{errorCode} { }
-    int errorCode;
-    std::string testName;
-};
 
 // int testBinaryOps() {
 //
