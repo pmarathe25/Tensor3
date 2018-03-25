@@ -9,7 +9,7 @@ namespace Stealth {
         struct traits<UnaryExpr<UnaryOperation, LHS>> {
             // Since the incoming LHS is either a reference or copy,
             // we need to remove qualifiers to get size information.
-            using ScalarType = typename std::invoke_result<UnaryOperation, optimal_scalar_type<raw_type<LHS>>>::type;
+            using ScalarType = typename std::invoke_result<UnaryOperation, scalar_element<raw_type<LHS>>>::type;
             // Dimensions
             static constexpr int length = internal::traits<raw_type<LHS>>::length,
                 width = internal::traits<raw_type<LHS>>::width,

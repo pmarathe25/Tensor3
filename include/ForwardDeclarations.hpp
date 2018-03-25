@@ -43,7 +43,7 @@ namespace Stealth {
 
     // Binary Op
 
-    template <typename BinaryOperation, typename LHS, typename RHS>
+    template <typename LHS, typename BinaryOperation, typename RHS>
     class ElemWiseBinaryExpr;
 
     // Unary Op

@@ -5,12 +5,12 @@
 
 namespace Stealth {
     namespace internal {
-        template <typename BinaryOperation, typename LHS, typename RHS>
-        struct traits<ElemWiseBinaryExpr<BinaryOperation, LHS, RHS>> {
+        template <typename LHS, typename BinaryOperation, typename RHS>
+        struct traits<ElemWiseBinaryExpr<LHS, BinaryOperation, RHS>> {
             // Since the incoming LHS/RHS is either a reference or copy,
             // we need to remove qualifiers to get size information.
-            using ScalarType = typename std::invoke_result<BinaryOperation, optimal_scalar_type<raw_type<LHS>>,
-                optimal_scalar_type<raw_type<RHS>>>::type;
+            using ScalarType = typename std::invoke_result<BinaryOperation, scalar_element<raw_type<LHS>>,
+                scalar_element<raw_type<RHS>>>::type;
             // Dimensions
             static constexpr int length = internal::traits<raw_type<LHS>>::length,
                 width = internal::traits<raw_type<LHS>>::width,
@@ -25,15 +25,15 @@ namespace Stealth {
     } /* internal */
 
 
-    template <typename BinaryOperation, typename LHS, typename RHS>
-    class ElemWiseBinaryExpr : public TileMapBase<ElemWiseBinaryExpr<BinaryOperation, LHS, RHS>> {
-        public:
-            // Store either a reference or copy depending on what the operands are.
-            using StoredLHS = typename internal::traits<ElemWiseBinaryExpr>::StoredLHS;
-            using StoredRHS = typename internal::traits<ElemWiseBinaryExpr>::StoredRHS;
+    template <typename LHS, typename BinaryOperation, typename RHS>
+    class ElemWiseBinaryExpr : public TileMapBase<ElemWiseBinaryExpr<LHS, BinaryOperation, RHS>> {
+        // Store either a reference or copy depending on what the operands are.
+        using StoredLHS = typename internal::traits<ElemWiseBinaryExpr>::StoredLHS;
+        using StoredRHS = typename internal::traits<ElemWiseBinaryExpr>::StoredRHS;
 
-            constexpr STEALTH_ALWAYS_INLINE ElemWiseBinaryExpr(BinaryOperation op, LHS&& lhs, RHS&& rhs) noexcept
-                : op{std::move(op)}, lhs{std::forward<LHS&&>(lhs)}, rhs{std::forward<RHS&&>(rhs)} {
+        public:
+            constexpr STEALTH_ALWAYS_INLINE ElemWiseBinaryExpr(LHS&& lhs, BinaryOperation op, RHS&& rhs) noexcept
+                : lhs{std::forward<LHS&&>(lhs)}, op{op}, rhs{std::forward<RHS&&>(rhs)} {
                 // For the purposes of size information, we need the types without qualifiers
                 static_assert(internal::traits<raw_type<LHS>>::size == internal::traits<raw_type<RHS>>::size,
                     "Cannot operate on incompatible arguments");
@@ -67,7 +67,7 @@ namespace Stealth {
 
         private:
             StoredLHS lhs;
-            StoredRHS rhs;
             BinaryOperation op;
+            StoredRHS rhs;
     };
 } /* Stealth */

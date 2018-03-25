@@ -5,82 +5,133 @@
 namespace Stealth {
     // Helper to construct ElemWiseBinaryExpr expressions.
     template <typename BinaryOperation, typename LHS, typename RHS>
-    constexpr auto createBinaryOp(BinaryOperation&& op, LHS&& lhs, RHS&& rhs) noexcept {
-        return ElemWiseBinaryExpr<BinaryOperation, LHS&&, RHS&&>{std::forward<BinaryOperation&&>(op), std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs)};
-    }
-
-    template <typename BinaryOperation, typename LHS, typename RHS>
-    constexpr STEALTH_ALWAYS_INLINE auto apply(BinaryOperation&& op, LHS&& lhs, RHS&& rhs) noexcept {
-        return createBinaryOp(std::forward<BinaryOperation&&>(op), std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
+    constexpr auto apply(BinaryOperation&& op, LHS&& lhs, RHS&& rhs) noexcept {
+        return ElemWiseBinaryExpr<LHS&&, BinaryOperation, RHS&&>{std::forward<LHS&&>(lhs), std::forward<BinaryOperation&&>(op), std::forward<RHS&&>(rhs)};
     }
 
     template <typename LHS, typename RHS>
     constexpr STEALTH_ALWAYS_INLINE auto operator+(LHS&& lhs, RHS&& rhs) noexcept {
-        return createBinaryOp(internal::functors::add<LHS, RHS>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
+        return apply(
+            internal::functors::add<scalar_element<LHS>, scalar_element<RHS>>{},
+            std::forward<LHS&&>(lhs),
+            std::forward<RHS&&>(rhs)
+        );
     }
 
     template <typename LHS, typename RHS>
     constexpr STEALTH_ALWAYS_INLINE auto operator-(LHS&& lhs, RHS&& rhs) noexcept {
-        return createBinaryOp(internal::functors::subtract<LHS, RHS>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
+        return apply(
+            internal::functors::subtract<scalar_element<LHS>, scalar_element<RHS>>{},
+            std::forward<LHS&&>(lhs),
+            std::forward<RHS&&>(rhs)
+        );
     }
 
     template <typename LHS, typename RHS>
     constexpr STEALTH_ALWAYS_INLINE auto operator*(LHS&& lhs, RHS&& rhs) noexcept {
-        return createBinaryOp(internal::functors::multiply<LHS, RHS>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
+        return apply(
+            internal::functors::multiply<scalar_element<LHS>, scalar_element<RHS>>{},
+            std::forward<LHS&&>(lhs),
+            std::forward<RHS&&>(rhs)
+        );
     }
 
     template <typename LHS, typename RHS>
     constexpr STEALTH_ALWAYS_INLINE auto operator/(LHS&& lhs, RHS&& rhs) noexcept {
-        return createBinaryOp(internal::functors::divide<LHS, RHS>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
+        return apply(
+            internal::functors::divide<scalar_element<LHS>, scalar_element<RHS>>{},
+            std::forward<LHS&&>(lhs),
+            std::forward<RHS&&>(rhs)
+        );
     }
 
     template <typename LHS, typename RHS>
     constexpr STEALTH_ALWAYS_INLINE auto operator==(LHS&& lhs, RHS&& rhs) noexcept {
-        return createBinaryOp(internal::functors::eq<LHS, RHS>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
+        return apply(
+            internal::functors::eq<scalar_element<LHS>, scalar_element<RHS>>{},
+            std::forward<LHS&&>(lhs),
+            std::forward<RHS&&>(rhs)
+        );
     }
 
     template <typename LHS, typename RHS>
     constexpr STEALTH_ALWAYS_INLINE auto operator!=(LHS&& lhs, RHS&& rhs) noexcept {
-        return createBinaryOp(internal::functors::neq<LHS, RHS>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
+        return apply(
+            internal::functors::neq<scalar_element<LHS>, scalar_element<RHS>>{},
+            std::forward<LHS&&>(lhs),
+            std::forward<RHS&&>(rhs)
+        );
     }
 
     template <typename LHS, typename RHS>
     constexpr STEALTH_ALWAYS_INLINE auto operator<(LHS&& lhs, RHS&& rhs) noexcept {
-        return createBinaryOp(internal::functors::less<LHS, RHS>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
+        return apply(
+            internal::functors::less<scalar_element<LHS>, scalar_element<RHS>>{},
+            std::forward<LHS&&>(lhs),
+            std::forward<RHS&&>(rhs)
+        );
     }
 
     template <typename LHS, typename RHS>
     constexpr STEALTH_ALWAYS_INLINE auto operator<=(LHS&& lhs, RHS&& rhs) noexcept {
-        return createBinaryOp(internal::functors::lessEq<LHS, RHS>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
+        return apply(
+            internal::functors::lessEq<scalar_element<LHS>, scalar_element<RHS>>{},
+            std::forward<LHS&&>(lhs),
+            std::forward<RHS&&>(rhs)
+        );
     }
 
     template <typename LHS, typename RHS>
     constexpr STEALTH_ALWAYS_INLINE auto operator>(LHS&& lhs, RHS&& rhs) noexcept {
-        return createBinaryOp(internal::functors::greater<LHS, RHS>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
+        return apply(
+            internal::functors::greater<scalar_element<LHS>, scalar_element<RHS>>{},
+            std::forward<LHS&&>(lhs),
+            std::forward<RHS&&>(rhs)
+        );
     }
 
     template <typename LHS, typename RHS>
     constexpr STEALTH_ALWAYS_INLINE auto operator>=(LHS&& lhs, RHS&& rhs) noexcept {
-        return createBinaryOp(internal::functors::greaterEq<LHS, RHS>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
+        return apply(
+            internal::functors::greaterEq<scalar_element<LHS>, scalar_element<RHS>>{},
+            std::forward<LHS&&>(lhs),
+            std::forward<RHS&&>(rhs)
+        );
     }
 
     template <typename LHS, typename RHS>
     constexpr STEALTH_ALWAYS_INLINE auto operator&&(LHS&& lhs, RHS&& rhs) noexcept {
-        return createBinaryOp(internal::functors::andOp<LHS, RHS>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
+        return apply(
+            internal::functors::andOp<scalar_element<LHS>, scalar_element<RHS>>{},
+            std::forward<LHS&&>(lhs),
+            std::forward<RHS&&>(rhs)
+        );
     }
 
     template <typename LHS, typename RHS>
     constexpr STEALTH_ALWAYS_INLINE auto operator||(LHS&& lhs, RHS&& rhs) noexcept {
-        return createBinaryOp(internal::functors::orOp<LHS, RHS>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
+        return apply(
+            internal::functors::orOp<scalar_element<LHS>, scalar_element<RHS>>{},
+            std::forward<LHS&&>(lhs),
+            std::forward<RHS&&>(rhs)
+        );
     }
 
     template <typename LHS, typename RHS>
     constexpr STEALTH_ALWAYS_INLINE auto min(LHS&& lhs, RHS&& rhs) noexcept {
-        return createBinaryOp(internal::functors::min<LHS, RHS>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
+        return apply(
+            internal::functors::min<scalar_element<LHS>, scalar_element<RHS>>{},
+            std::forward<LHS&&>(lhs),
+            std::forward<RHS&&>(rhs)
+        );
     }
 
     template <typename LHS, typename RHS>
     constexpr STEALTH_ALWAYS_INLINE auto max(LHS&& lhs, RHS&& rhs) noexcept {
-        return createBinaryOp(internal::functors::max<LHS, RHS>{}, std::forward<LHS&&>(lhs), std::forward<RHS&&>(rhs));
+        return apply(
+            internal::functors::max<scalar_element<LHS>, scalar_element<RHS>>{},
+            std::forward<LHS&&>(lhs),
+            std::forward<RHS&&>(rhs)
+        );
     }
 } /* Stealth */

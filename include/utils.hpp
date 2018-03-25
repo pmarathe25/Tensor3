@@ -21,7 +21,7 @@ namespace Stealth {
 
         // If the scalar is large enough, use a const reference, otherwise pass by copy.
         template <typename TileMapType>
-        using optimal_scalar_type = typename std::conditional<
+        using scalar_element = typename std::conditional<
             sizeof(typename internal::traits<raw_type<TileMapType>>::ScalarType) <= sizeof(void*),
             typename internal::traits<raw_type<TileMapType>>::ScalarType,
             const typename internal::traits<raw_type<TileMapType>>::ScalarType&
