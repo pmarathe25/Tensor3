@@ -236,12 +236,12 @@ namespace Stealth {
             }
     };
 
-    template <int widthAtCompileTime, int lengthAtCompileTime = 1, int heightAtCompileTime = 1>
+    template <int widthAtCompileTime = 1, int lengthAtCompileTime = 1, int heightAtCompileTime = 1>
     using TileMapI = TileMap<int, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime>;
 
-    template <int widthAtCompileTime, int lengthAtCompileTime = 1, int heightAtCompileTime = 1>
+    template <int widthAtCompileTime = 1, int lengthAtCompileTime = 1, int heightAtCompileTime = 1>
     using TileMapF = TileMap<float, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime>;
 
-    template <int widthAtCompileTime, int lengthAtCompileTime = 1, int heightAtCompileTime = 1>
+    template <int widthAtCompileTime = 1, int lengthAtCompileTime = 1, int heightAtCompileTime = 1>
     using TileMapD = TileMap<double, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime>;
 } /* Stealth */
