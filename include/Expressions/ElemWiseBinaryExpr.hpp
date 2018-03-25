@@ -33,7 +33,7 @@ namespace Stealth {
 
         public:
             constexpr STEALTH_ALWAYS_INLINE ElemWiseBinaryExpr(LHS&& lhs, BinaryOperation op, RHS&& rhs) noexcept
-                : lhs{std::forward<LHS&&>(lhs)}, op{op}, rhs{std::forward<RHS&&>(rhs)} {
+                : lhs{std::forward<LHS&&>(lhs)}, op{std::move(op)}, rhs{std::forward<RHS&&>(rhs)} {
                 // For the purposes of size information, we need the types without qualifiers
                 static_assert(internal::traits<raw_type<LHS>>::size == internal::traits<raw_type<RHS>>::size,
                     "Cannot operate on incompatible arguments");

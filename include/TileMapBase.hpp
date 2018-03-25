@@ -28,11 +28,8 @@ namespace Stealth {
                 return internal::traits<Derived>::size;
             }
 
-            constexpr STEALTH_ALWAYS_INLINE const auto& hintedIndex(int hintX, int hintY, int x, int y, int z) const {
-                return static_cast<const Derived*>(this) -> hintedIndex(hintX, hintY, x, y, z);
-            }
-
-            constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z) const {
+            constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z) const
+                -> std::invoke_result<const Derived, int, int, int> {
                 return static_cast<const Derived*>(this) -> operator()(x, y, z);
             }
 

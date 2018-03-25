@@ -11,6 +11,9 @@ namespace Stealth {
 
     template <typename LHS>
     constexpr STEALTH_ALWAYS_INLINE auto operator!(LHS&& lhs) noexcept {
-        return apply(internal::functors::notOp<scalar_element<LHS>>{}, std::forward<LHS&&>(lhs));
+        return apply(
+            internal::functors::notOp<scalar_element<LHS>>{},
+            std::forward<LHS&&>(lhs)
+        );
     }
 } /* Stealth */
