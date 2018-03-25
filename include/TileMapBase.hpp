@@ -48,12 +48,6 @@ namespace Stealth {
                 TileMapBase::length(), TileMapBase::height()> eval() const {
                 return *(static_cast<const Derived*>(this));
             }
-
-            constexpr STEALTH_ALWAYS_INLINE const auto& underlyingTileMap() const {
-                return *(static_cast<const Derived*>(this));
-            }
-
-            static constexpr int minX = 0, minY = 0, minZ = 0;
     };
 
     namespace {

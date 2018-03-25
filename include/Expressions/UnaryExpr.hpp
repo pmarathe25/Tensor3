@@ -16,9 +16,9 @@ namespace Stealth {
                 width = internal::traits<LHSNoCV>::width,
                 height = internal::traits<LHSNoCV>::height,
                 area = internal::traits<LHSNoCV>::area,
-                size = internal::traits<LHSNoCV>::size;
-            using containsData = std::false_type;
-            using isWritable = std::false_type;
+                size = internal::traits<LHSNoCV>::size,
+                indexingModeRequired = internal::traits<LHSNoCV>::indexingModeRequired;
+            using StoredLHS = expression_stored_type<LHS>;
         };
     } /* internal */
 
@@ -27,7 +27,7 @@ namespace Stealth {
         public:
             using ScalarType = typename internal::traits<UnaryExpr>::ScalarType;
             // Store either a reference or copy depending on what the operand is.
-            using StoredLHS = expression_stored_type<LHS>;
+            using StoredLHS = typename internal::traits<UnaryExpr>::StoredLHS;
 
             constexpr STEALTH_ALWAYS_INLINE UnaryExpr(UnaryOperation op, LHS&& lhs) noexcept
                 : op{std::move(op)}, lhs{std::forward<LHS&&>(lhs)} { }

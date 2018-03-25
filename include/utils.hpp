@@ -30,7 +30,7 @@ namespace Stealth {
 
         // Function that tries to index a type if it is not a scalar.
         template <typename LHS>
-        constexpr auto tryHintedIndex(LHS&& lhs, int hintX, int hintY, int x, int y, int z) {
+        constexpr STEALTH_ALWAYS_INLINE auto tryHintedIndex(LHS&& lhs, int hintX, int hintY, int x, int y, int z) {
             using LHSNoCV = strip_qualifiers<LHS>;
             if constexpr (std::is_scalar<LHSNoCV>::value) {
                 return lhs;
@@ -41,7 +41,7 @@ namespace Stealth {
 
         // Function that tries to index a type if it is not a scalar.
         template <typename LHS, typename... Index>
-        constexpr auto tryIndex(LHS&& lhs, Index&&... indices) {
+        constexpr STEALTH_ALWAYS_INLINE auto tryIndex(LHS&& lhs, Index&&... indices) {
             using LHSNoCV = strip_qualifiers<LHS>;
             if constexpr (std::is_scalar<LHSNoCV>::value) {
                 return lhs;

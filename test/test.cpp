@@ -3,11 +3,12 @@
 #include <iostream>
 #include <algorithm>
 
-constexpr int kTEST_WIDTH = 25;
-constexpr int kTEST_LENGTH = 25;
-constexpr int kTEST_HEIGHT = 25;
+constexpr int kTEST_WIDTH = 30;
+constexpr int kTEST_LENGTH = 30;
+constexpr int kTEST_HEIGHT = 30;
 constexpr int kTEST_AREA = kTEST_WIDTH * kTEST_LENGTH;
 constexpr int kTEST_SIZE = kTEST_AREA * kTEST_HEIGHT;
+constexpr int kPERF_ITERS = 10000;
 
 template <int width = 1, int length = 1, int height = 1>
 constexpr auto SequentialTileMapF(int startValue = 0) noexcept {
@@ -153,6 +154,80 @@ bool testBlockOps() {
     return allTestsPassed;
 }
 
+namespace Perf {
+    TestResult testCopy() {
+        Stealth::Benchmark bench;
+        auto perfTest0 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        Stealth::TileMapF<kTEST_SIZE> result;
+        bench.start();
+        for (int i = 0; i < kPERF_ITERS; ++i) {
+            result = perfTest0;
+        }
+        bench.finish();
+        std::cout << bench.info() << '\n';
+    }
+
+    TestResult testLargeSum() {
+        Stealth::Benchmark bench;
+        auto perfTest0 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        auto perfTest1 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        auto perfTest2 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        auto perfTest3 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        auto perfTest4 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        Stealth::TileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT> result;
+        bench.start();
+        for (int i = 0; i < kPERF_ITERS; ++i) {
+            result = perfTest0 + perfTest1 + perfTest2 + perfTest3 + perfTest4;
+        }
+        bench.finish();
+        std::cout << bench.info() << '\n';
+    }
+
+    // Choose blocks starting about halfway in the TileMap.
+    constexpr int kBLOCK_X = kTEST_WIDTH / 2, kBLOCK_Y = kTEST_LENGTH / 2, kBLOCK_Z = kTEST_HEIGHT / 2;
+    constexpr int kBLOCK_WIDTH = kTEST_WIDTH / 4, kBLOCK_LENGTH = kTEST_LENGTH / 4, kBLOCK_HEIGHT = kTEST_HEIGHT / 4;
+
+    TestResult testBlockSum() {
+        Stealth::Benchmark bench;
+
+        auto perfTest0 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        auto perfTest1 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        auto perfTest2 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        auto perfTest3 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        auto perfTest4 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+
+        auto perfTest5 = SequentialTileMapF<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>();
+        auto perfTest6 = SequentialTileMapF<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>();
+        auto perfTest7 = SequentialTileMapF<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>();
+        auto perfTest8 = SequentialTileMapF<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>();
+        auto perfTest9 = SequentialTileMapF<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>();
+        // This should force 3D accesses, since the block is in the center of a 3D TileMap.
+        auto block0 = Stealth::block<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>(perfTest0 + perfTest1
+            + perfTest2 + perfTest3 + perfTest4, kBLOCK_X, kBLOCK_Y, kBLOCK_Z);
+        // This should use 1D accesses.
+        auto block1 = Stealth::block<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>(perfTest5 + perfTest6
+            + perfTest7 + perfTest8 + perfTest9);
+
+        Stealth::TileMapF<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT> result;
+        bench.start();
+        for (int i = 0; i < kPERF_ITERS; ++i) {
+            result = block0 + block1;
+        }
+        bench.finish();
+        std::cout << bench.info() << '\n';
+
+    }
+
+} /* Perf */
+
+bool testPerf() {
+    bool allTestsPassed = true;
+    allTestsPassed &= runTest(Perf::testCopy);
+    allTestsPassed &= runTest(Perf::testLargeSum);
+    allTestsPassed &= runTest(Perf::testBlockSum);
+    return allTestsPassed;
+}
+
 //
 // int testUnaryOps() {
 //     // First generate a TileMap with sequential values.
@@ -214,6 +289,7 @@ int main() {
     bool allTestsPassed = true;
     // Block op tests
     allTestsPassed &= testBlockOps();
+    allTestsPassed &= testPerf();
     // numFailed += testUnaryOps();
     // numFailed += testTemporaryExpressionPersistence();
     // numFailed += testExpressionIndexing();

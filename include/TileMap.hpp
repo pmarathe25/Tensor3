@@ -19,21 +19,13 @@ namespace Stealth {
         template <typename type, int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
             int areaAtCompileTime, int sizeAtCompileTime>
         struct traits<TileMap<type, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime>> {
-            typedef type ScalarType;
-            static constexpr int width = widthAtCompileTime, length = lengthAtCompileTime, height = heightAtCompileTime,
-                area = areaAtCompileTime, size = sizeAtCompileTime;
-            typedef std::true_type containsData;
-            typedef std::true_type isWritable;
-        };
-
-        template <typename type, int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
-            int areaAtCompileTime, int sizeAtCompileTime>
-        struct traits<const TileMap<type, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime>> {
-            typedef type ScalarType;
-            static constexpr int width = widthAtCompileTime, length = lengthAtCompileTime, height = heightAtCompileTime,
-                area = areaAtCompileTime, size = sizeAtCompileTime;
-            typedef std::true_type containsData;
-            typedef std::false_type isWritable;
+            using ScalarType = type;
+            static constexpr int width = widthAtCompileTime,
+                length = lengthAtCompileTime,
+                height = heightAtCompileTime,
+                area = areaAtCompileTime,
+                size = sizeAtCompileTime,
+                indexingModeRequired = 1;
         };
     } /* internal */
 
@@ -41,8 +33,7 @@ namespace Stealth {
         int areaAtCompileTime, int sizeAtCompileTime>
     class TileMap : public TileMapBase<TileMap<type, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime>> {
         public:
-            typedef type ScalarType;
-            static constexpr bool containsData = false;
+            using ScalarType = typename internal::traits<TileMap>::ScalarType;
 
             constexpr STEALTH_ALWAYS_INLINE TileMap() noexcept : tiles(sizeAtCompileTime) { }
 
@@ -66,14 +57,14 @@ namespace Stealth {
                     std::cout << "\t\t!!!!Doing copy!!!!" << '\n';
                 #endif
 
-                tiles = other.tiles;
+                copy(other);
             }
 
             // Move Constructor
             constexpr STEALTH_ALWAYS_INLINE TileMap(TileMap&& other) noexcept = default;
 
-            template <typename OtherType, int width, int length, int height>
-            constexpr STEALTH_ALWAYS_INLINE TileMap(TileMap<OtherType, width, length, height>&& other) {
+            template <int width, int length, int height>
+            constexpr STEALTH_ALWAYS_INLINE TileMap(TileMap<ScalarType, width, length, height>&& other) {
                 static_assert(other.size() == TileMap::size(), "Cannot move incompatible TileMaps");
                 tiles = std::move(other.elements());
             }
@@ -95,7 +86,7 @@ namespace Stealth {
                     std::cout << "\t\t!!!!Doing copy!!!!" << '\n';
                 #endif
 
-                tiles = other.tiles;
+                copy(other);
                 return *this;
             }
 
@@ -236,21 +227,29 @@ namespace Stealth {
                     std::cout << "\t\t!!!!Doing copy!!!!" << '\n';
                 #endif
 
-
-
-                if constexpr (!std::is_scalar<OtherTileMap>::value) static_assert(other.size()
-                    == TileMap::size(), "Cannot copy incompatible TileMaps");
-                int hintX = 0, hintY = 0;
-                for (int k = 0; k < TileMap::height(); ++k) {
-                    for (int j = 0; j < TileMap::length(); ++j) {
-                        for (int i = 0; i < TileMap::width(); ++i) {
-                            if constexpr (std::is_scalar<OtherTileMap>::value) tiles[hintX] = other;
-                            else tiles[hintX] = other.hintedIndex(hintX, hintY, i, j, k);
-                            ++hintX;
+                if constexpr (internal::traits<strip_qualifiers<OtherTileMap>>::indexingModeRequired == 1) {
+                    // Treat it as a 1D array
+                    for (int i = 0; i < other.size(); ++i) {
+                        (*this)(i) = other(i);
+                    }
+                } else if constexpr (internal::traits<strip_qualifiers<OtherTileMap>>::indexingModeRequired == 2) {
+                    // Treat it as a long 2D array.
+                    for (int j = 0; j < other.length() * other.height(); ++j) {
+                        for (int i = 0; i < other.width(); ++i) {
+                            (*this)(i + j * other.width()) = other(i, j);
                         }
-                        ++hintY;
+                    }
+                } else {
+                    // Copy as 3D array.
+                    for (int z = 0; z < other.height(); ++z) {
+                        for (int j = 0; j < other.length(); ++j) {
+                            for (int i = 0; i < other.width(); ++i) {
+                                (*this)(i + j * other.width() + z * other.area()) = other(i, j, z);
+                            }
+                        }
                     }
                 }
+
             }
     };
 

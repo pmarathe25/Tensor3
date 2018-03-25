@@ -14,13 +14,15 @@ namespace Stealth {
             using ScalarType = typename std::invoke_result<BinaryOperation, optimal_scalar_type<LHSNoCV>,
                 optimal_scalar_type<RHSNoCV>>::type;
             // Dimensions
-            static constexpr int length = (std::is_scalar<LHSNoCV>::value ? internal::traits<RHSNoCV>::length : internal::traits<LHSNoCV>::length),
-                width = (std::is_scalar<LHSNoCV>::value ? internal::traits<RHSNoCV>::width : internal::traits<LHSNoCV>::width),
-                height = (std::is_scalar<LHSNoCV>::value ? internal::traits<RHSNoCV>::height : internal::traits<LHSNoCV>::height),
-                area = (std::is_scalar<LHSNoCV>::value ? internal::traits<RHSNoCV>::area : internal::traits<LHSNoCV>::area),
-                size = (std::is_scalar<LHSNoCV>::value ? internal::traits<RHSNoCV>::size : internal::traits<LHSNoCV>::size);
-            using containsData = std::false_type;
-            using isWritable = std::false_type;
+            static constexpr int length = internal::traits<LHSNoCV>::length,
+                width = internal::traits<LHSNoCV>::width,
+                height = internal::traits<LHSNoCV>::height,
+                area = internal::traits<LHSNoCV>::area,
+                size = internal::traits<LHSNoCV>::size,
+                indexingModeRequired = std::max(internal::traits<LHSNoCV>::indexingModeRequired,
+                    internal::traits<RHSNoCV>::indexingModeRequired);
+            using StoredLHS = expression_stored_type<LHS>;
+            using StoredRHS = expression_stored_type<RHS>;
         };
     } /* internal */
 
@@ -30,16 +32,15 @@ namespace Stealth {
         public:
             using ScalarType = typename internal::traits<ElemWiseBinaryExpr>::ScalarType;
             // Store either a reference or copy depending on what the operands are.
-            using StoredLHS = expression_stored_type<LHS>;
-            using StoredRHS = expression_stored_type<RHS>;
+            using StoredLHS = typename internal::traits<ElemWiseBinaryExpr>::StoredLHS;
+            using StoredRHS = typename internal::traits<ElemWiseBinaryExpr>::StoredRHS;
 
             constexpr STEALTH_ALWAYS_INLINE ElemWiseBinaryExpr(BinaryOperation op, LHS&& lhs, RHS&& rhs) noexcept
                 : op{std::move(op)}, lhs{std::forward<LHS&&>(lhs)}, rhs{std::forward<RHS&&>(rhs)} {
                 // For the purposes of size information, we need the types without qualifiers
                 using LHSNoCV = strip_qualifiers<LHS>;
                 using RHSNoCV = strip_qualifiers<RHS>;
-                static_assert(internal::traits<LHSNoCV>::size == internal::traits<RHSNoCV>::size
-                    || (std::is_scalar<LHSNoCV>::value || std::is_scalar<RHSNoCV>::value),
+                static_assert(internal::traits<LHSNoCV>::size == internal::traits<RHSNoCV>::size,
                     "Cannot operate on incompatible arguments");
 
                 #ifdef DEBUG
@@ -57,25 +58,16 @@ namespace Stealth {
                 #endif
             }
 
-            // Since LHS/RHS could be scalars, tryHintedIndex checks for that possibility.
-            constexpr STEALTH_ALWAYS_INLINE auto hintedIndex(int hintX, int hintY, int x, int y, int z) const {
-                return op(tryHintedIndex(lhs, hintX, hintY, x, y, z), tryHintedIndex(rhs, hintX, hintY, x, y, z));
-            }
-
-            constexpr STEALTH_ALWAYS_INLINE auto hintedIndex(int hintX, int hintY, int x, int y, int z) {
-                return op(tryHintedIndex(lhs, hintX, hintY, x, y, z), tryHintedIndex(rhs, hintX, hintY, x, y, z));
-            }
-
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z) const {
-                return op(tryIndex(lhs, x, y, z), tryIndex(rhs, x, y, z));
+                return op(lhs(x, y, z), rhs(x, y, z));
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y) const {
-                return op(tryIndex(lhs, x, y), tryIndex(rhs, x, y));
+                return op(lhs(x, y), rhs(x, y));
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x) const {
-                return op(tryIndex(lhs, x), tryIndex(rhs, x));
+                return op(lhs(x), rhs(x));
             }
 
         private:

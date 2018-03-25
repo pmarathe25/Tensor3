@@ -28,7 +28,6 @@ namespace Stealth {
         struct traits {
             typedef T ScalarType;
             static constexpr int length = 1, width = 1, height = 1, size = 1;
-            using containsData = std::false_type;
         };
     } /* internal */
 
@@ -53,8 +52,6 @@ namespace Stealth {
 
     // View of a section of a TileMap or OpStruct
     template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename TileMapType>
-        // typename containsData = typename internal::traits<TileMapType>::containsData,
-        // typename isWritable = typename std::conjunction<containsData, typename internal::traits<TileMapType>::isWritable>::type>
     class BlockExpr;
 
     // Generate random numbers on demand

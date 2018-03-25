@@ -16,7 +16,7 @@ HEADERS = $(addprefix $(INCLUDEPATH)/, TileMapBase.hpp TileMap.hpp ForwardDeclar
 CXX = g++
 CFLAGS = -fPIC -c -std=c++17 $(INCLUDE) -flto -O3 -march=native -Wpedantic
 LFLAGS = -shared -flto -O3 -march=native -Wpedantic
-TESTLFLAGS = -flto -O3 -march=native -Wpedantic
+TESTLFLAGS = -flto -O3 -march=native -Wpedantic -lstealthbenchmark
 EXECLFLAGS = -flto -O3 -march=native -Wpedantic
 
 all: $(TESTOBJS)
