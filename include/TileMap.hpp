@@ -97,14 +97,6 @@ namespace Stealth {
             }
 
             // Accessors
-            constexpr STEALTH_ALWAYS_INLINE auto& hintedIndex(int hintX, int hintY, int x, int y, int z) {
-                return tiles[hintX];
-            }
-
-            constexpr STEALTH_ALWAYS_INLINE const auto& hintedIndex(int hintX, int hintY, int x, int y, int z) const {
-                return tiles[hintX];
-            }
-
             constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x, int y, int z) {
                 return tiles[x + y * TileMap::width() + z * TileMap::area()];
             }
