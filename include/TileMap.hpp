@@ -210,12 +210,12 @@ namespace Stealth {
                     std::cout << "\t\t!!!!Doing copy!!!!" << '\n';
                 #endif
 
-                if constexpr (internal::traits<strip_qualifiers<OtherTileMap>>::indexingModeRequired == 1) {
+                if constexpr (internal::traits<raw_type<OtherTileMap>>::indexingModeRequired == 1) {
                     // Treat it as a 1D array
                     for (int i = 0; i < other.size(); ++i) {
                         (*this)(i) = other(i);
                     }
-                } else if constexpr (internal::traits<strip_qualifiers<OtherTileMap>>::indexingModeRequired == 2) {
+                } else if constexpr (internal::traits<raw_type<OtherTileMap>>::indexingModeRequired == 2) {
                     // Treat it as a long 2D array.
                     for (int j = 0; j < other.length() * other.height(); ++j) {
                         for (int i = 0; i < other.width(); ++i) {

@@ -5,7 +5,7 @@ namespace Stealth {
     namespace {
         // Remove const and reference
         template <typename QualifiedType>
-        using strip_qualifiers = typename std::remove_const<typename std::remove_reference<QualifiedType>::type>::type;
+        using raw_type = typename std::remove_const<typename std::remove_reference<QualifiedType>::type>::type;
 
         // Determine what expressions should store - a reference or a copy
         // (reference for lvalues and copy for rvalues)
@@ -14,40 +14,17 @@ namespace Stealth {
         using expression_stored_type = typename std::conditional<
             std::is_rvalue_reference<TileMapType>::value,
             // Make it a copy.
-            strip_qualifiers<TileMapType>,
+            raw_type<TileMapType>,
             // Otherwise, make it a reference.
             typename std::add_lvalue_reference<TileMapType>::type
         >::type;
 
-
         // If the scalar is large enough, use a const reference, otherwise pass by copy.
         template <typename TileMapType>
         using optimal_scalar_type = typename std::conditional<
-            sizeof(typename internal::traits<strip_qualifiers<TileMapType>>::ScalarType) <= sizeof(void*),
-            typename internal::traits<strip_qualifiers<TileMapType>>::ScalarType,
-            const typename internal::traits<strip_qualifiers<TileMapType>>::ScalarType&
+            sizeof(typename internal::traits<raw_type<TileMapType>>::ScalarType) <= sizeof(void*),
+            typename internal::traits<raw_type<TileMapType>>::ScalarType,
+            const typename internal::traits<raw_type<TileMapType>>::ScalarType&
         >::type;
-
-        // Function that tries to index a type if it is not a scalar.
-        template <typename LHS>
-        constexpr STEALTH_ALWAYS_INLINE auto tryHintedIndex(LHS&& lhs, int hintX, int hintY, int x, int y, int z) {
-            using LHSNoCV = strip_qualifiers<LHS>;
-            if constexpr (std::is_scalar<LHSNoCV>::value) {
-                return lhs;
-            } else {
-                return lhs.hintedIndex(hintX, hintY, x, y, z);
-            }
-        }
-
-        // Function that tries to index a type if it is not a scalar.
-        template <typename LHS, typename... Index>
-        constexpr STEALTH_ALWAYS_INLINE auto tryIndex(LHS&& lhs, Index&&... indices) {
-            using LHSNoCV = strip_qualifiers<LHS>;
-            if constexpr (std::is_scalar<LHSNoCV>::value) {
-                return lhs;
-            } else {
-                return lhs(std::forward<Index&&>(indices)...);
-            }
-        }
     }
 }

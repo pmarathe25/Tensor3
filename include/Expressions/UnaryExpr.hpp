@@ -9,15 +9,14 @@ namespace Stealth {
         struct traits<UnaryExpr<UnaryOperation, LHS>> {
             // Since the incoming LHS is either a reference or copy,
             // we need to remove qualifiers to get size information.
-            using LHSNoCV = strip_qualifiers<LHS>;
-            using ScalarType = typename std::invoke_result<UnaryOperation, optimal_scalar_type<LHSNoCV>>::type;
+            using ScalarType = typename std::invoke_result<UnaryOperation, optimal_scalar_type<raw_type<LHS>>>::type;
             // Dimensions
-            static constexpr int length = internal::traits<LHSNoCV>::length,
-                width = internal::traits<LHSNoCV>::width,
-                height = internal::traits<LHSNoCV>::height,
-                area = internal::traits<LHSNoCV>::area,
-                size = internal::traits<LHSNoCV>::size,
-                indexingModeRequired = internal::traits<LHSNoCV>::indexingModeRequired;
+            static constexpr int length = internal::traits<raw_type<LHS>>::length,
+                width = internal::traits<raw_type<LHS>>::width,
+                height = internal::traits<raw_type<LHS>>::height,
+                area = internal::traits<raw_type<LHS>>::area,
+                size = internal::traits<raw_type<LHS>>::size,
+                indexingModeRequired = internal::traits<raw_type<LHS>>::indexingModeRequired;
             using StoredLHS = expression_stored_type<LHS>;
         };
     } /* internal */
@@ -25,7 +24,6 @@ namespace Stealth {
     template <typename UnaryOperation, typename LHS>
     class UnaryExpr : public TileMapBase<UnaryExpr<UnaryOperation, LHS>> {
         public:
-            using ScalarType = typename internal::traits<UnaryExpr>::ScalarType;
             // Store either a reference or copy depending on what the operand is.
             using StoredLHS = typename internal::traits<UnaryExpr>::StoredLHS;
 

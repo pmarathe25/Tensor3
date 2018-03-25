@@ -38,35 +38,23 @@ namespace Stealth {
     namespace internal {
         template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename LHS>
         struct traits<BlockExpr<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, LHS>> {
-            using InternalTileMapNoCV = strip_qualifiers<LHS>;
-            using ScalarType = typename internal::traits<InternalTileMapNoCV>::ScalarType;
+            using ScalarType = typename internal::traits<raw_type<LHS>>::ScalarType;
             // Dimensions
             static constexpr int length = lengthAtCompileTime,
                 width = widthAtCompileTime,
                 height = heightAtCompileTime,
                 area = length * width,
                 size = area * height,
-                indexingModeRequired = std::max(optimal_indexing_mode<width, length, height, InternalTileMapNoCV>(),
-                    internal::traits<InternalTileMapNoCV>::indexingModeRequired);
+                indexingModeRequired = std::max(optimal_indexing_mode<width, length, height, raw_type<LHS>>(),
+                    internal::traits<raw_type<LHS>>::indexingModeRequired);
             using StoredLHS = expression_stored_type<LHS>;
         };
 
-        // Specialization for blocks of other blocks
+        // TODO: Specialization for blocks of other blocks
         // template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
         //     int otherWidth, int otherLength, int otherHeight, typename otherInternalTileMap>
         // struct traits<BlockExpr<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime,
         //     BlockExpr<otherWidth, otherLength, otherHeight, otherInternalTileMap>>> {
-        //     // FIXME: If the other block is rvalue, steal its data.
-        //     using LHS = strip_qualifiers<otherInternalTileMap>;
-        //     using ScalarType = typename internal::traits<LHS>::ScalarType;
-        //     // Dimensions
-        //     static constexpr int length = lengthAtCompileTime,
-        //         width = widthAtCompileTime,
-        //         height = heightAtCompileTime,
-        //         area = length * width,
-        //         size = area * height;
-        //     using UnderlyingTileMap = typename internal::traits<LHS>::UnderlyingTileMap;
-        //     using StoredLHS = UnderlyingTileMap;
         // };
 
     } /* internal */
@@ -74,18 +62,13 @@ namespace Stealth {
     template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename LHS>
     class BlockExpr : public TileMapBase<BlockExpr<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, LHS>> {
         public:
-            using ScalarType = typename internal::traits<BlockExpr>::ScalarType;
             using StoredLHS = typename internal::traits<BlockExpr>::StoredLHS;
-            static constexpr int indexingModeRequired = internal::traits<BlockExpr>::indexingModeRequired;
 
             constexpr STEALTH_ALWAYS_INLINE BlockExpr(LHS&& otherTileMap, int x = 0, int y = 0, int z = 0) noexcept
                 : tileMap{otherTileMap}, minX{x}, minY{y}, minZ{z},
                 offset{minX + minY * tileMap.width() + minZ * tileMap.area()} { }
 
-            // template <int otherWidth, int otherLength, int otherHeight, typename otherInternalTileMap>
-            // constexpr STEALTH_ALWAYS_INLINE BlockExpr(BlockExpr<otherWidth, otherLength, otherHeight, otherInternalTileMap>&& otherTileMap, int x = 0, int y = 0, int z = 0) noexcept
-            //     : tileMap{otherTileMap.underlyingTileMap()}, minX{x + tileMap.minX}, minY{y + tileMap.minY}, minZ{z + tileMap.minZ},
-            //     offset{minX + minY * tileMap.width() + minZ * tileMap.area()} { }
+            // TODO: Constructor for blocks of blocks.
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z)
                 -> typename std::invoke_result<StoredLHS, int, int, int>::type {
@@ -125,18 +108,10 @@ namespace Stealth {
                 return &(this -> operator()(0));
             }
 
-            // constexpr STEALTH_ALWAYS_INLINE auto underlyingTileMap() {
-            //     return tileMap;
-            // }
-            //
-            // constexpr STEALTH_ALWAYS_INLINE auto underlyingTileMap() const {
-            //     return tileMap;
-            // }
-
+        private:
             const int minX, minY, minZ;
             const int offset;
             StoredLHS tileMap;
-        // private:
     };
 
 } /* Stealth */

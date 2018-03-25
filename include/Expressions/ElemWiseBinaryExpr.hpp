@@ -9,18 +9,16 @@ namespace Stealth {
         struct traits<ElemWiseBinaryExpr<BinaryOperation, LHS, RHS>> {
             // Since the incoming LHS/RHS is either a reference or copy,
             // we need to remove qualifiers to get size information.
-            using LHSNoCV = strip_qualifiers<LHS>;
-            using RHSNoCV = strip_qualifiers<RHS>;
-            using ScalarType = typename std::invoke_result<BinaryOperation, optimal_scalar_type<LHSNoCV>,
-                optimal_scalar_type<RHSNoCV>>::type;
+            using ScalarType = typename std::invoke_result<BinaryOperation, optimal_scalar_type<raw_type<LHS>>,
+                optimal_scalar_type<raw_type<RHS>>>::type;
             // Dimensions
-            static constexpr int length = internal::traits<LHSNoCV>::length,
-                width = internal::traits<LHSNoCV>::width,
-                height = internal::traits<LHSNoCV>::height,
-                area = internal::traits<LHSNoCV>::area,
-                size = internal::traits<LHSNoCV>::size,
-                indexingModeRequired = std::max(internal::traits<LHSNoCV>::indexingModeRequired,
-                    internal::traits<RHSNoCV>::indexingModeRequired);
+            static constexpr int length = internal::traits<raw_type<LHS>>::length,
+                width = internal::traits<raw_type<LHS>>::width,
+                height = internal::traits<raw_type<LHS>>::height,
+                area = internal::traits<raw_type<LHS>>::area,
+                size = internal::traits<raw_type<LHS>>::size,
+                indexingModeRequired = std::max(internal::traits<raw_type<LHS>>::indexingModeRequired,
+                    internal::traits<raw_type<RHS>>::indexingModeRequired);
             using StoredLHS = expression_stored_type<LHS>;
             using StoredRHS = expression_stored_type<RHS>;
         };
@@ -30,7 +28,6 @@ namespace Stealth {
     template <typename BinaryOperation, typename LHS, typename RHS>
     class ElemWiseBinaryExpr : public TileMapBase<ElemWiseBinaryExpr<BinaryOperation, LHS, RHS>> {
         public:
-            using ScalarType = typename internal::traits<ElemWiseBinaryExpr>::ScalarType;
             // Store either a reference or copy depending on what the operands are.
             using StoredLHS = typename internal::traits<ElemWiseBinaryExpr>::StoredLHS;
             using StoredRHS = typename internal::traits<ElemWiseBinaryExpr>::StoredRHS;
@@ -38,9 +35,7 @@ namespace Stealth {
             constexpr STEALTH_ALWAYS_INLINE ElemWiseBinaryExpr(BinaryOperation op, LHS&& lhs, RHS&& rhs) noexcept
                 : op{std::move(op)}, lhs{std::forward<LHS&&>(lhs)}, rhs{std::forward<RHS&&>(rhs)} {
                 // For the purposes of size information, we need the types without qualifiers
-                using LHSNoCV = strip_qualifiers<LHS>;
-                using RHSNoCV = strip_qualifiers<RHS>;
-                static_assert(internal::traits<LHSNoCV>::size == internal::traits<RHSNoCV>::size,
+                static_assert(internal::traits<raw_type<LHS>>::size == internal::traits<raw_type<RHS>>::size,
                     "Cannot operate on incompatible arguments");
 
                 #ifdef DEBUG
