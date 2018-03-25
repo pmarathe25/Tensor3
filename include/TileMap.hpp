@@ -29,12 +29,11 @@ namespace Stealth {
         };
     } /* internal */
 
-    template <typename type, int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
+    template <typename ScalarType, int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
         int areaAtCompileTime, int sizeAtCompileTime>
-    class TileMap : public TileMapBase<TileMap<type, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime>> {
+    class TileMap : public TileMapBase<TileMap<ScalarType, widthAtCompileTime, lengthAtCompileTime,
+        heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime>> {
         public:
-            using ScalarType = typename internal::traits<TileMap>::ScalarType;
-
             constexpr STEALTH_ALWAYS_INLINE TileMap() noexcept : tiles(sizeAtCompileTime) { }
 
             constexpr STEALTH_ALWAYS_INLINE TileMap(const std::initializer_list<ScalarType>& other) noexcept : tiles(sizeAtCompileTime) {
@@ -198,14 +197,6 @@ namespace Stealth {
                 long seed = stealth::getCurrentTime(), Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) noexcept {
                 return TileMapRandomGenerator<TileMap::width(), TileMap::length(), TileMap::height(), Distribution, Generator>
                     {std::forward<Distribution&&>(distribution), seed, std::forward<Generator&&>(generator)};
-            }
-
-            constexpr STEALTH_ALWAYS_INLINE auto& underlyingTileMap() {
-                return (*this);
-            }
-
-            constexpr STEALTH_ALWAYS_INLINE const auto& underlyingTileMap() const {
-                return (*this);
             }
         private:
             std::vector<ScalarType> tiles;

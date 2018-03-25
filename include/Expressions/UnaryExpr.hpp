@@ -32,14 +32,6 @@ namespace Stealth {
             constexpr STEALTH_ALWAYS_INLINE UnaryExpr(UnaryOperation op, LHS&& lhs) noexcept
                 : op{std::move(op)}, lhs{std::forward<LHS&&>(lhs)} { }
 
-            constexpr STEALTH_ALWAYS_INLINE auto hintedIndex(int hintX, int hintY, int x, int y, int z) const {
-                return op(lhs.hintedIndex(hintX, hintY, x, y, z));
-            }
-
-            constexpr STEALTH_ALWAYS_INLINE auto hintedIndex(int hintX, int hintY, int x, int y, int z) {
-                return op(lhs.hintedIndex(hintX, hintY, x, y, z));
-            }
-
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z) const {
                 return op(lhs(x, y, z));
             }
