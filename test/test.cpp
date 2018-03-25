@@ -37,24 +37,64 @@ constexpr bool runTest(const Callable& test) {
 //
 // }
 
+// TestResult testReshape() {
+//     // First generate a TileMap with sequential values.
+//     auto reshapeTest0 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH>();
+//     // Try to reshape.
+//     auto reshapeTest1 = SequentialTileMapF<kTEST_AREA>();
+//     // Make sure that it worked.
+//     auto checkReshape0 = (Stealth::reshape<kTEST_AREA>(reshapeTest0) == reshapeTest1).eval();
+//     int error = not std::all_of(checkReshape0.cbegin(), checkReshape0.cend(), [](bool in) { return in; });
+//     return TestResult{error};
+// }
+
 namespace Block {
     // Choose blocks starting about halfway in the TileMap.
     constexpr int kBLOCK_X = kTEST_WIDTH / 2, kBLOCK_Y = kTEST_LENGTH / 2, kBLOCK_Z = kTEST_HEIGHT / 2;
     constexpr int kBLOCK_WIDTH = kTEST_WIDTH / 4, kBLOCK_LENGTH = kTEST_LENGTH / 4, kBLOCK_HEIGHT = kTEST_HEIGHT / 4;
+    // Choose subblocks starting about halfway in the other blocks.
+    constexpr int kSUBBLOCK_X = kBLOCK_WIDTH / 2, kSUBBLOCK_Y = kBLOCK_LENGTH / 2, kSUBBLOCK_Z = kBLOCK_HEIGHT / 2;
+    constexpr int kSUBBLOCK_WIDTH = kBLOCK_WIDTH / 2, kSUBBLOCK_LENGTH = kBLOCK_LENGTH / 2, kSUBBLOCK_HEIGHT = kBLOCK_HEIGHT / 2;
     // In a sequential TileMap, what should the value be at this location?
-    constexpr int kSTART_VALUE1D = kBLOCK_X;
-    constexpr int kSTART_VALUE2D = kBLOCK_X + kBLOCK_Y * kTEST_WIDTH;
-    constexpr int kSTART_VALUE3D = kBLOCK_X + kBLOCK_Y * kTEST_WIDTH + kBLOCK_Z * kTEST_AREA;
+    constexpr int kBLOCK_START1D = kBLOCK_X;
+    constexpr int kBLOCK_START2D = kBLOCK_X + kBLOCK_Y * kTEST_WIDTH;
+    constexpr int kBLOCK_START3D = kBLOCK_X + kBLOCK_Y * kTEST_WIDTH + kBLOCK_Z * kTEST_AREA;
+    constexpr int kSUBBLOCK_START1D = (kBLOCK_X + kSUBBLOCK_X);
+    constexpr int kSUBBLOCK_START2D = (kBLOCK_X + kSUBBLOCK_X) + (kBLOCK_Y + kSUBBLOCK_Y) * kTEST_WIDTH;
+    constexpr int kSUBBLOCK_START3D = (kBLOCK_X + kSUBBLOCK_X) + (kBLOCK_Y + kSUBBLOCK_Y) * kTEST_WIDTH + (kBLOCK_Z + kSUBBLOCK_Z) * kTEST_AREA;
 
-    TestResult testReshape() {
-        // First generate a TileMap with sequential values.
-        auto reshapeTest0 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH>();
-        // Try to reshape.
-        auto reshapeTest1 = SequentialTileMapF<kTEST_AREA>();
-        // Make sure that it worked.
-        auto checkReshape0 = (Stealth::reshape<kTEST_AREA>(reshapeTest0) == reshapeTest1).eval();
-        int error = not std::all_of(checkReshape0.cbegin(), checkReshape0.cend(), [](bool in) { return in; });
-        return TestResult{error};
+    // TestResult testBlockception() {
+    //     // Test whether a block of a block works as expected.
+    //     auto blockTest0 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH>();
+    //     // Retrieve a block.
+    //     auto blockTest1 = Stealth::block<kBLOCK_WIDTH, kBLOCK_LENGTH>(blockTest0, kBLOCK_X, kBLOCK_Y);
+    //     // Retrieve a block from that block
+    //     auto blockTest2 = Stealth::block<kSUBBLOCK_WIDTH, kSUBBLOCK_LENGTH>(blockTest1, kSUBBLOCK_X, kSUBBLOCK_Y);
+    //     // Check whether every digit is consecutive row-by-row and that all the rows start on the correct value.
+    //     int numIncorrect = 0;
+    //     for (int y = 0; y < blockTest2.length(); ++y) {
+    //         numIncorrect += blockTest2(0, y) != (kSUBBLOCK_START2D + kTEST_WIDTH * y);
+    //         for (int x = 1; x < blockTest2.width(); ++x) {
+    //             numIncorrect += blockTest2(x, y) != blockTest2(x - 1, y) + 1;
+    //         }
+    //     }
+    //     return TestResult{numIncorrect};
+    // }
+
+    TestResult testConstBlock() {
+        // Test whether we can grab a block from a const TileMap.
+        const auto blockTest0 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH>();
+        // Retrieve a block.
+        auto blockTest1 = Stealth::block<kBLOCK_WIDTH, kBLOCK_LENGTH>(blockTest0, kBLOCK_X, kBLOCK_Y);
+        // Check whether every digit is consecutive row-by-row and that all the rows start on the correct value.
+        int numIncorrect = 0;
+        for (int y = 0; y < blockTest1.length(); ++y) {
+            numIncorrect += blockTest1(0, y) != (kBLOCK_START2D + kTEST_WIDTH * y);
+            for (int x = 1; x < blockTest1.width(); ++x) {
+                numIncorrect += blockTest1(x, y) != blockTest1(x - 1, y) + 1;
+            }
+        }
+        return TestResult{numIncorrect};
     }
 
     TestResult test1DBlockFrom1D() {
@@ -76,7 +116,7 @@ namespace Block {
         // Check whether every digit is consecutive row-by-row and that all the rows start on the correct value.
         int numIncorrect = 0;
         for (int y = 0; y < blockTest1.length(); ++y) {
-            numIncorrect += blockTest1(0, y) != (kSTART_VALUE2D + kTEST_WIDTH * y);
+            numIncorrect += blockTest1(0, y) != (kBLOCK_START2D + kTEST_WIDTH * y);
             for (int x = 1; x < blockTest1.width(); ++x) {
                 numIncorrect += blockTest1(x, y) != blockTest1(x - 1, y) + 1;
             }
@@ -91,7 +131,7 @@ namespace Block {
         // Check whether every digit is consecutive row-by-row and that all the rows start on the correct value.
         int numIncorrect = 0;
         for (int y = 0; y < blockTest1.length(); ++y) {
-            numIncorrect += blockTest1(0, y) != (kSTART_VALUE3D + kTEST_WIDTH * y);
+            numIncorrect += blockTest1(0, y) != (kBLOCK_START3D + kTEST_WIDTH * y);
             for (int x = 1; x < blockTest1.width(); ++x) {
                 numIncorrect += blockTest1(x, y) != blockTest1(x - 1, y) + 1;
             }
@@ -106,8 +146,8 @@ namespace Block {
 
 bool testBlockOps() {
     bool allTestsPassed = true;
-    allTestsPassed &= runTest(Block::testReshape);
-
+    // allTestsPassed &= runTest(Block::testBlockception);
+    allTestsPassed &= runTest(Block::testConstBlock);
     allTestsPassed &= runTest(Block::test2DBlockFrom2D);
     allTestsPassed &= runTest(Block::test2DBlockFrom3D);
     return allTestsPassed;

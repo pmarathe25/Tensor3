@@ -24,7 +24,6 @@ namespace Stealth {
                 area = areaAtCompileTime, size = sizeAtCompileTime;
             typedef std::true_type containsData;
             typedef std::true_type isWritable;
-            typedef TileMap<type, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime> UnderlyingTileMapType;
         };
 
         template <typename type, int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
@@ -35,7 +34,6 @@ namespace Stealth {
                 area = areaAtCompileTime, size = sizeAtCompileTime;
             typedef std::true_type containsData;
             typedef std::false_type isWritable;
-            typedef const TileMap<type, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime> UnderlyingTileMapType;
         };
     } /* internal */
 

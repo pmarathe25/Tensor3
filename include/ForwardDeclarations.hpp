@@ -37,7 +37,7 @@ namespace Stealth {
     class TileMapBase;
 
     // TileMap
-    template <typename type, int widthAtCompileTime, int lengthAtCompileTime = 1, int heightAtCompileTime = 1,
+    template <typename type, int widthAtCompileTime = 1, int lengthAtCompileTime = 1, int heightAtCompileTime = 1,
         int areaAtCompileTime = widthAtCompileTime * lengthAtCompileTime, int sizeAtCompileTime
         = widthAtCompileTime * lengthAtCompileTime * heightAtCompileTime>
     class TileMap;
@@ -52,9 +52,9 @@ namespace Stealth {
     class UnaryExpr;
 
     // View of a section of a TileMap or OpStruct
-    template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename TileMapType,
-        typename containsData = typename internal::traits<TileMapType>::containsData,
-        typename isWritable = typename std::conjunction<containsData, typename internal::traits<TileMapType>::isWritable>::type>
+    template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename TileMapType>
+        // typename containsData = typename internal::traits<TileMapType>::containsData,
+        // typename isWritable = typename std::conjunction<containsData, typename internal::traits<TileMapType>::isWritable>::type>
     class BlockExpr;
 
     // Generate random numbers on demand

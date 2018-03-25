@@ -21,7 +21,6 @@ namespace Stealth {
                 size = (std::is_scalar<LHSNoCV>::value ? internal::traits<RHSNoCV>::size : internal::traits<LHSNoCV>::size);
             using containsData = std::false_type;
             using isWritable = std::false_type;
-            using UnderlyingTileMapType = ElemWiseBinaryExpr<BinaryOperation, LHS, RHS>;
         };
     } /* internal */
 

@@ -19,7 +19,6 @@ namespace Stealth {
                 size = internal::traits<LHSNoCV>::size;
             using containsData = std::false_type;
             using isWritable = std::false_type;
-            using UnderlyingTileMapType = UnaryExpr<UnaryOperation, LHS>;
         };
     } /* internal */
 

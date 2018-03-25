@@ -9,10 +9,10 @@ namespace Stealth {
 
         // Determine what expressions should store - a reference or a copy
         // (reference for lvalues and copy for rvalues)
-        // If a TileMap does not contain data (i.e. is an expression, make a copy)
+        // FIXME: If a TileMap does not contain data (i.e. is an expression, make a copy)
         template <typename TileMapType>
         using expression_stored_type = typename std::conditional<
-            std::is_rvalue_reference<TileMapType>::value or not internal::traits<strip_qualifiers<TileMapType>>::containsData::value,
+            std::is_rvalue_reference<TileMapType>::value,
             // Make it a copy.
             strip_qualifiers<TileMapType>,
             // Otherwise, make it a reference.
