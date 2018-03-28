@@ -1,5 +1,4 @@
 #pragma once
-#include "../utils.hpp"
 
 namespace Stealth::internal::functors {
     // Internal Unary Operations
