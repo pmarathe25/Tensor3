@@ -13,7 +13,6 @@
 #ifdef DEBUG
     #include <iostream>
 #endif
-// #include <iostream>
 
 namespace Stealth {
     namespace internal {
@@ -54,41 +53,33 @@ namespace Stealth {
             }
 
             constexpr STEALTH_ALWAYS_INLINE Tensor3(const Tensor3& other) noexcept : mData(sizeAtCompileTime) {
-
-
-                #ifdef DEBUG
-                    std::cout << "\t\t!!!!Doing copy!!!!" << '\n';
-                #endif
-
                 copy(other);
             }
 
             // Move Constructor
-            constexpr STEALTH_ALWAYS_INLINE Tensor3(Tensor3&& other) noexcept = default;
+            constexpr STEALTH_ALWAYS_INLINE Tensor3(Tensor3&& other) noexcept {
+                move(other);
+            }
 
             template <int width, int length, int height>
             constexpr STEALTH_ALWAYS_INLINE Tensor3(Tensor3<ScalarType, width, length, height>&& other) {
-                static_assert(other.size() == Tensor3::size(), "Cannot move incompatible Tensor3s");
-                mData = std::move(other.elements());
+                move(other);
             }
 
             // Move Assignment
-            constexpr STEALTH_ALWAYS_INLINE Tensor3& operator=(Tensor3&& other) noexcept = default;
+            constexpr STEALTH_ALWAYS_INLINE Tensor3& operator=(Tensor3&& other) noexcept {
+                move(other);
+                return *this;
+            }
 
             template <typename OtherType, int width, int length, int height>
             constexpr STEALTH_ALWAYS_INLINE Tensor3& operator=(Tensor3<OtherType, width, length, height>&& other) {
-                static_assert(other.size() == Tensor3::size(), "Cannot move incompatible Tensor3s");
-                mData = std::move(other.elements());
+                move(other);
                 return *this;
             }
 
             // Copy Assignment
             constexpr STEALTH_ALWAYS_INLINE Tensor3& operator=(const Tensor3& other) noexcept {
-
-                #ifdef DEBUG
-                    std::cout << "\t\t!!!!Doing copy!!!!" << '\n';
-                #endif
-
                 copy(other);
                 return *this;
             }
@@ -243,6 +234,13 @@ namespace Stealth {
                 }
 
             }
+
+            template <typename OtherTensor3>
+            constexpr void move(OtherTensor3&& other) {
+                static_assert(other.size() == Tensor3::size(), "Cannot move incompatible Tensor3s");
+                mData = std::move(other.elements());
+            }
+
     };
 
     template <int widthAtCompileTime = 1, int lengthAtCompileTime = 1, int heightAtCompileTime = 1>
@@ -278,10 +276,10 @@ namespace Stealth {
 
     template <int width, int length>
     using MatrixI = Matrix<int, width, length>;
-    
+
     template <int width, int length>
     using MatrixF = Matrix<float, width, length>;
-    
+
     template <int width, int length>
     using MatrixD = Matrix<double, width, length>;
 } /* Stealth */
