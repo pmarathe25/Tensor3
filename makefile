@@ -9,7 +9,7 @@ TESTOBJS = $(addprefix $(BUILDDIR)/, test.o)
 INCLUDEPATH = include/
 INCLUDE = -I$(INCLUDEPATH)
 HEADERS = $(addprefix $(INCLUDEPATH)/, Tensor3Base.hpp Tensor3.hpp ForwardDeclarations.hpp utils.hpp \
-	Expressions/ElemWiseBinaryExpr.hpp Expressions/ElemWiseUnaryExpr.hpp Expressions/BlockExpr.hpp Expressions/Tensor3RandomGenerator.hpp \
+	Expressions/ElemWiseBinaryExpr.hpp Expressions/ElemWiseUnaryExpr.hpp Expressions/BlockExpr.hpp \
 	Operations/BinaryOperations.hpp Operations/UnaryOperations.hpp Operations/BlockOperations.hpp \
 	Functors/BinaryFunctors.hpp Functors/UnaryFunctors.hpp)
 # Compiler settings

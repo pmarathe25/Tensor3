@@ -5,7 +5,6 @@
 #include "./Operations/UnaryOperations.hpp"
 #include "./Operations/UnaryOperations.hpp"
 #include "./Operations/BlockOperations.hpp"
-#include "./Expressions/Tensor3RandomGenerator.hpp"
 #include <stealthutil>
 #include <vector>
 #include <random>
@@ -169,29 +168,12 @@ namespace Stealth {
                 (*this) = (*this) / std::forward<OtherTensor3&&>(other);
             }
 
-            template <typename Distribution = decltype(DefaultDistribution), typename Generator = decltype(DefaultGenerator)>
-            constexpr Tensor3& randomize(Distribution&& distribution = std::forward<Distribution&&>(DefaultDistribution),
-                long seed = stealth::getCurrentTime(), Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) noexcept {
-                generator.seed(seed);
-                for (int i = 0; i < Tensor3::size(); ++i) {
-                    mData[i] = distribution(generator);
-                }
-                return (*this);
-            }
-
             constexpr STEALTH_ALWAYS_INLINE Tensor3& eval() {
                 return (*this);
             }
 
             constexpr STEALTH_ALWAYS_INLINE const Tensor3& eval() const {
                 return (*this);
-            }
-
-            template <typename Distribution = decltype(DefaultDistribution), typename Generator = decltype(DefaultGenerator)>
-            static constexpr STEALTH_ALWAYS_INLINE auto Random(Distribution&& distribution = std::forward<Distribution&&>(DefaultDistribution),
-                long seed = stealth::getCurrentTime(), Generator&& generator = std::forward<Generator&&>(DefaultGenerator)) noexcept {
-                return Tensor3RandomGenerator<Tensor3::width(), Tensor3::length(), Tensor3::height(), Distribution, Generator>
-                    {std::forward<Distribution&&>(distribution), seed, std::forward<Generator&&>(generator)};
             }
         private:
             std::vector<ScalarType> mData;
