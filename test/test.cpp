@@ -145,7 +145,7 @@ namespace Perf {
     TestResult testCopy() {
         Stealth::Benchmark bench;
         auto perfTest0 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
-        Stealth::Tensor3F<kTEST_SIZE> result;
+        Stealth::VectorF<kTEST_SIZE> result;
         bench.start();
         for (int i = 0; i < kPERF_ITERS; ++i) {
             result = perfTest0;
@@ -232,7 +232,7 @@ namespace Binary {
     TestResult test1DBroadcastOver2DSum() {
         auto binaryTest0 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH>();
         auto binaryTest1 = SequentialTensor3F<kTEST_WIDTH, 1>();
-        Stealth::Tensor3F<kTEST_WIDTH, kTEST_LENGTH> result = binaryTest0 + binaryTest1;
+        Stealth::MatrixF<kTEST_WIDTH, kTEST_LENGTH> result = binaryTest0 + binaryTest1;
         int numIncorrect = 0;
         for (int k = 0; k < result.height(); ++k) {
             for (int j = 0; j < result.length(); ++j) {

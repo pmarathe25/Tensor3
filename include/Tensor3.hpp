@@ -253,4 +253,35 @@ namespace Stealth {
 
     template <int widthAtCompileTime = 1, int lengthAtCompileTime = 1, int heightAtCompileTime = 1>
     using Tensor3D = Tensor3<double, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime>;
+
+    template <typename ScalarType>
+    using Scalar = Tensor3<ScalarType, 1, 1, 1>;
+
+    template <typename ScalarType, int size>
+    using Vector = Tensor3<ScalarType, size, 1, 1>;
+
+    template <typename ScalarType, int width, int length>
+    using Matrix = Tensor3<ScalarType, width, length, 1>;
+
+    using ScalarI = Scalar<int>;
+    using ScalarF = Scalar<float>;
+    using ScalarD = Scalar<double>;
+
+    template <int size>
+    using VectorI = Vector<int, size>;
+
+    template <int size>
+    using VectorF = Vector<float, size>;
+
+    template <int size>
+    using VectorD = Vector<double, size>;
+
+    template <int width, int length>
+    using MatrixI = Matrix<int, width, length>;
+    
+    template <int width, int length>
+    using MatrixF = Matrix<float, width, length>;
+    
+    template <int width, int length>
+    using MatrixD = Matrix<double, width, length>;
 } /* Stealth */

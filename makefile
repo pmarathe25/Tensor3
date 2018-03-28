@@ -14,7 +14,7 @@ HEADERS = $(addprefix $(INCLUDEPATH)/, Tensor3Base.hpp Tensor3.hpp ForwardDeclar
 	Functors/BinaryFunctors.hpp Functors/UnaryFunctors.hpp)
 # Compiler settings
 CXX = g++
-CFLAGS = -fPIC -c -std=c++17 $(INCLUDE) -flto -O3 -march=native -Wpedantic -fopenmp
+CFLAGS = -fPIC -c -std=c++17 -flto -O3 -march=native -Wpedantic -fopenmp
 LFLAGS = -shared -flto -O3 -march=native -Wpedantic -fopenmp
 TESTLFLAGS = -flto -O3 -march=native -Wpedantic -lstealthbenchmark -fopenmp
 EXECLFLAGS = -flto -O3 -march=native -Wpedantic -fopenmp
