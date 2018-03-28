@@ -3,6 +3,7 @@
 #include <iostream>
 #include <algorithm>
 
+// If you set this too small it will cause segfaults for some reason.
 constexpr int kTEST_WIDTH = 30;
 constexpr int kTEST_LENGTH = 30;
 constexpr int kTEST_HEIGHT = 30;
@@ -18,7 +19,7 @@ constexpr auto SequentialTileMapF(int startValue = 0) noexcept {
 }
 
 struct TestResult {
-    TestResult(int errorCode, std::string testName = __builtin_FUNCTION()) : testName{testName}, errorCode{errorCode} { }
+    TestResult(int errorCode = 0, std::string testName = __builtin_FUNCTION()) : testName{testName}, errorCode{errorCode} { }
     int errorCode;
     std::string testName;
 };
@@ -26,17 +27,16 @@ struct TestResult {
 template <typename Callable>
 constexpr bool runTest(const Callable& test) {
     // Returns true if the test passed, false otherwise.
+    std::cout << "Running test" << "..." << '\n';
     auto result = test();
     if (result.errorCode) {
         std::cout << "Test " << result.testName << " failed with error code " << result.errorCode << '\n';
         return false;
+    } else {
+        std::cout << "Test " << result.testName << " passed." << '\n';
+        return true;
     }
-    return true;
 }
-
-// int testBinaryOps() {
-//
-// }
 
 // TestResult testReshape() {
 //     // First generate a TileMap with sequential values.
@@ -165,6 +165,7 @@ namespace Perf {
         }
         bench.finish();
         std::cout << bench.info() << '\n';
+        return TestResult{};
     }
 
     TestResult testLargeSum() {
@@ -181,6 +182,7 @@ namespace Perf {
         }
         bench.finish();
         std::cout << bench.info() << '\n';
+        return TestResult{};
     }
 
     // Choose blocks starting about halfway in the TileMap.
@@ -215,7 +217,7 @@ namespace Perf {
         }
         bench.finish();
         std::cout << bench.info() << '\n';
-
+        return TestResult{};
     }
 
 } /* Perf */
@@ -228,68 +230,47 @@ bool testPerf() {
     return allTestsPassed;
 }
 
-//
-// int testUnaryOps() {
-//     // First generate a TileMap with sequential values.
-//     auto unaryTest0 = SequentialTileMapF<4, 4>();
-//     std::cout << unaryTest0 << '\n';
-// }
-//
-// float doDoubleAdd(float a, float b) {
-//     return a * 2.0f + b;
-// }
-//
-// template <typename TileMapType, typename OtherTileMap>
-// constexpr auto doSum(TileMapType&& first, OtherTileMap&& second) noexcept {
-// // constexpr STEALTH_ALWAYS_INLINE auto doSum(const TileMapType& first, const OtherTileMap& second) noexcept {
-//     // first + second will create a temporary ElemWiseBinaryExpr.
-//     // Check if it is destroyed when the function returns.
-//     // IT IS!!
-//     return first + second;
-// }
-//
-// template <typename... TileMapTypes>
-// constexpr auto doMultiSum(TileMapTypes&&... tileMaps) {
-//     return (tileMaps + ...);
-// }
-//
-// int testTemporaryExpressionPersistence() {
-//     Stealth::TileMapF<4, 4> test0;
-//     test0(0, 0) = 1.0f;
-//     Stealth::TileMapF<4, 4> test1;
-//     test1(1, 1) = 2.0f;
-//     Stealth::TileMapF<4, 4> test2;
-//     test2(2, 2) = 3.0f;
-//     Stealth::TileMapF<4, 4> test3;
-//     test3(3, 3) = 4.0f;
-//     // First check if the multi sum function works.
-//     auto testIntSum = doMultiSum(1, 1, 1, 1);
-//     std::cout << "Int Sum (should be 4): " << testIntSum << '\n';
-//
-//     Stealth::TileMapF<4, 4> testResult;
-//     testResult = doMultiSum(test0, test1, test2, test3);
-//     std::cout << "Result (should NOT segfault): " << testResult << '\n';
-//     return 0;
-// }
-//
-// int testExpressionIndexing() {
-//     Stealth::TileMapF<4, 4> test0;
-//     test0(0, 0) = 1.0f;
-//     Stealth::TileMapF<4, 4> test1;
-//     test1(1, 1) = 2.0f;
-//     auto binExpr0 = test0 + test1;
-//     auto binExpr1 = test0 + 3.14f;
-//     std::cout << "Expr0 at (0, 0) is: " << binExpr0(0, 0) << '\n';
-//     std::cout << "Expr1 at (0, 0) is: " << binExpr1(0, 0) << '\n';
-//     return 0;
-// }
+namespace Binary {
+    TestResult testSum() {
+        auto binaryTest0 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        auto binaryTest1 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        Stealth::TileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT> result = binaryTest0 + binaryTest1;
+        int numIncorrect = 0;
+        for (int i = 0; i < result.size(); ++i) {
+            numIncorrect += result(i) != i * 2;
+        }
+        return TestResult{numIncorrect};
+    }
 
+    TestResult test1DBroadcastOver2DSum() {
+        auto binaryTest0 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH>();
+        auto binaryTest1 = SequentialTileMapF<kTEST_WIDTH, 1>();
+        Stealth::TileMapF<kTEST_WIDTH, kTEST_LENGTH> result = binaryTest0 + binaryTest1;
+        int numIncorrect = 0;
+        for (int k = 0; k < result.height(); ++k) {
+            for (int j = 0; j < result.length(); ++j) {
+                for (int i = 0; i < result.width(); ++i) {
+                    numIncorrect += result(i, j, k) != (binaryTest0(i, j, k) + i);
+                }
+            }
+        }
+        return TestResult{numIncorrect};
+    }
+} /* Binary */
+
+bool testBinary() {
+    bool allTestsPassed = true;
+    allTestsPassed &= runTest(Binary::testSum);
+    allTestsPassed &= runTest(Binary::test1DBroadcastOver2DSum);
+    return allTestsPassed;
+}
 
 int main() {
     bool allTestsPassed = true;
     // Block op tests
     allTestsPassed &= testBlockOps();
     allTestsPassed &= testPerf();
+    allTestsPassed &= testBinary();
     // numFailed += testUnaryOps();
     // numFailed += testTemporaryExpressionPersistence();
     // numFailed += testExpressionIndexing();

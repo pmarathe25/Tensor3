@@ -28,7 +28,7 @@ namespace Stealth {
     }
 
     template <typename LHS, typename RHS>
-    constexpr STEALTH_ALWAYS_INLINE auto operator*(LHS&& lhs, RHS&& rhs) noexcept {
+    constexpr STEALTH_ALWAYS_INLINE auto hadamard(LHS&& lhs, RHS&& rhs) noexcept {
         return apply(
             internal::functors::multiply<scalar_element<LHS>, scalar_element<RHS>>{},
             std::forward<LHS&&>(lhs),

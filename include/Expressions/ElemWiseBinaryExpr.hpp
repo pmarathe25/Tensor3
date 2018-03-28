@@ -4,6 +4,69 @@
 #include "../utils.hpp"
 
 namespace Stealth {
+    namespace {
+        template <typename LHS, typename RHS>
+        constexpr STEALTH_ALWAYS_INLINE auto optimal_indexing_mode() noexcept {
+            // Figure out what the operands require
+            constexpr int intrinsicIndexingMode = std::max(internal::traits<raw_type<LHS>>::indexingMode,
+                internal::traits<raw_type<RHS>>::indexingMode);
+            // Now figure out what broadcasting would require.
+            constexpr int lhsLength = internal::traits<raw_type<LHS>>::length,
+                lhsSize = internal::traits<raw_type<LHS>>::size;
+            constexpr bool lhs_is_scalar = internal::traits<raw_type<LHS>>::is_scalar;
+            // RHS
+            constexpr int rhsLength = internal::traits<raw_type<RHS>>::length,
+                rhsSize = internal::traits<raw_type<RHS>>::size;
+            constexpr bool rhs_is_scalar = internal::traits<raw_type<RHS>>::is_scalar;
+            // If dimensions match or either value is a scalar, we can index in 1D.
+            if constexpr (lhs_is_scalar or rhs_is_scalar or lhsSize == rhsSize) {
+                return std::max(1, intrinsicIndexingMode);
+            } else if constexpr (lhsLength == 1 or rhsLength == 1) {
+                // Otherwise, if one is a row vector, index in 2D.
+                return std::max(2, intrinsicIndexingMode);
+            } else {
+                // Otherwise, we must index in 3D.
+                return std::max(3, intrinsicIndexingMode);
+            }
+        }
+
+        template <typename LHS, typename RHS>
+        constexpr STEALTH_ALWAYS_INLINE auto assert_compatibility() noexcept {
+            // Check if these TileMaps can be operated on correctly.
+            constexpr int lhsWidth = internal::traits<raw_type<LHS>>::width,
+                lhsLength = internal::traits<raw_type<LHS>>::length,
+                lhsHeight = internal::traits<raw_type<LHS>>::height,
+                lhsSize = internal::traits<raw_type<LHS>>::size;
+            constexpr bool lhs_is_scalar = internal::traits<raw_type<LHS>>::is_scalar,
+                lhs_is_vector = internal::traits<raw_type<LHS>>::is_vector,
+                lhs_is_matrix = internal::traits<raw_type<LHS>>::is_matrix;
+            // RHS
+            constexpr int rhsWidth = internal::traits<raw_type<RHS>>::width,
+                rhsLength = internal::traits<raw_type<RHS>>::length,
+                rhsHeight = internal::traits<raw_type<RHS>>::height,
+                rhsSize = internal::traits<raw_type<RHS>>::size;
+            constexpr bool rhs_is_scalar = internal::traits<raw_type<RHS>>::is_scalar,
+                rhs_is_vector = internal::traits<raw_type<RHS>>::is_vector,
+                rhs_is_matrix = internal::traits<raw_type<RHS>>::is_matrix;
+            if constexpr (rhsSize != lhsSize) {
+                // If their sizes do not match, either one is a scalar...
+                if constexpr (lhs_is_scalar or rhs_is_scalar)
+                    return true;
+                // ...or one must be a vector whose third dimension matches the other's...
+                else if constexpr (lhs_is_vector or rhs_is_vector)
+                    return (lhsWidth == rhsWidth or lhsLength == rhsLength or lhsHeight == rhsHeight);
+                // ...or one must be a matrix for which 2 dimensions match the other's.
+                else if constexpr (lhs_is_matrix or rhs_is_matrix)
+                    return ((lhsWidth == rhsWidth and lhsLength == rhsLength)
+                        or (lhsWidth == rhsWidth and lhsHeight == rhsHeight)
+                        or (lhsLength == rhsLength and lhsHeight == rhsHeight));
+            } else {
+                // Same size TileMaps are automatically compatible!
+                return true;
+            }
+        }
+    }
+
     namespace internal {
         template <typename LHS, typename BinaryOperation, typename RHS>
         struct traits<ElemWiseBinaryExpr<LHS, BinaryOperation, RHS>> {
@@ -12,15 +75,17 @@ namespace Stealth {
             using ScalarType = typename std::invoke_result<BinaryOperation, scalar_element<raw_type<LHS>>,
                 scalar_element<raw_type<RHS>>>::type;
             // Dimensions
-            static constexpr int length = internal::traits<raw_type<LHS>>::length,
-                width = internal::traits<raw_type<LHS>>::width,
-                height = internal::traits<raw_type<LHS>>::height,
-                area = internal::traits<raw_type<LHS>>::area,
-                size = internal::traits<raw_type<LHS>>::size,
-                indexingModeRequired = std::max(internal::traits<raw_type<LHS>>::indexingModeRequired,
-                    internal::traits<raw_type<RHS>>::indexingModeRequired);
+            static constexpr int length = std::max(internal::traits<raw_type<LHS>>::length, internal::traits<raw_type<RHS>>::length),
+                width = std::max(internal::traits<raw_type<LHS>>::width, internal::traits<raw_type<RHS>>::width),
+                height = std::max(internal::traits<raw_type<LHS>>::height, internal::traits<raw_type<RHS>>::height),
+                area = std::max(internal::traits<raw_type<LHS>>::area, internal::traits<raw_type<RHS>>::area),
+                size = std::max(internal::traits<raw_type<LHS>>::size, internal::traits<raw_type<RHS>>::size),
+                indexingMode = optimal_indexing_mode<LHS, RHS>();
             using StoredLHS = expression_stored_type<LHS>;
             using StoredRHS = expression_stored_type<RHS>;
+            static constexpr bool is_scalar = size == 1;
+            static constexpr bool is_vector = !is_scalar and (width == size or length == size or height == size);
+            static constexpr bool is_matrix = !is_vector and (width == 1 or length == 1 or height == 1);
         };
     } /* internal */
 
@@ -34,9 +99,8 @@ namespace Stealth {
         public:
             constexpr STEALTH_ALWAYS_INLINE ElemWiseBinaryExpr(LHS&& lhs, BinaryOperation op, RHS&& rhs) noexcept
                 : lhs{std::forward<LHS&&>(lhs)}, op{std::move(op)}, rhs{std::forward<RHS&&>(rhs)} {
-                // For the purposes of size information, we need the types without qualifiers
-                static_assert(internal::traits<raw_type<LHS>>::size == internal::traits<raw_type<RHS>>::size,
-                    "Cannot operate on incompatible arguments");
+                static_assert(assert_compatibility<LHS, RHS>(),
+                    "Cannot perform element-wise binary operation on incompatible arguments");
 
                 #ifdef DEBUG
                     std::cout << "Creating ElemWiseBinaryExpr" << '\n';
@@ -54,17 +118,28 @@ namespace Stealth {
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z) const {
-                return op(lhs(x, y, z), rhs(x, y, z));
+                // We can broadcast single points, 1D vectors, as well as 2D matrixs over 3D cubes.
+                return op(
+                    lhs((lhs.width() == 1) ? 0 : x, (lhs.length() == 1) ? 0 : y, (lhs.height() == 1) ? 0 : z),
+                    rhs((rhs.width() == 1) ? 0 : x, (rhs.length() == 1) ? 0 : y, (rhs.height() == 1) ? 0 : z)
+                );
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y) const {
-                return op(lhs(x, y), rhs(x, y));
+                // We can broadcast single points and 1D vectors across 2D matrixs
+                return op(
+                    lhs((lhs.width() == 1) ? 0 : x, (lhs.length() == 1) ? 0 : y),
+                    rhs((rhs.width() == 1) ? 0 : x, (rhs.length() == 1) ? 0 : y)
+                );
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x) const {
-                return op(lhs(x), rhs(x));
+                // We can broadcast scalars across 1D vectors.
+                return op(
+                    lhs((lhs.width() == 1) ? 0 : x),
+                    rhs((rhs.width() == 1) ? 0 : x)
+                );
             }
-
         private:
             StoredLHS lhs;
             BinaryOperation op;

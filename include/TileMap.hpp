@@ -13,6 +13,7 @@
 #ifdef DEBUG
     #include <iostream>
 #endif
+// #include <iostream>
 
 namespace Stealth {
     namespace internal {
@@ -25,7 +26,10 @@ namespace Stealth {
                 height = heightAtCompileTime,
                 area = areaAtCompileTime,
                 size = sizeAtCompileTime,
-                indexingModeRequired = 1;
+                indexingMode = 1;
+            static constexpr bool is_scalar = size == 1;
+            static constexpr bool is_vector = !is_scalar and (width == size or length == size or height == size);
+            static constexpr bool is_matrix = !is_vector and (width == 1 or length == 1 or height == 1);
         };
     } /* internal */
 
@@ -49,7 +53,7 @@ namespace Stealth {
                 copy(std::forward<OtherTileMap&&>(other));
             }
 
-            constexpr STEALTH_ALWAYS_INLINE TileMap(const TileMap& other) noexcept {
+            constexpr STEALTH_ALWAYS_INLINE TileMap(const TileMap& other) noexcept : tiles(sizeAtCompileTime) {
 
 
                 #ifdef DEBUG
@@ -203,20 +207,24 @@ namespace Stealth {
 
             template <typename OtherTileMap>
             constexpr void copy(OtherTileMap&& other) {
+                static_assert(other.size() == TileMap::size(), "Cannot copy incompatible TileMaps.");
 
-
+                constexpr int indexingModeToUse = std::max(internal::traits<TileMap>::indexingMode,
+                    internal::traits<raw_type<OtherTileMap>>::indexingMode);
 
                 #ifdef DEBUG
-                    std::cout << "\t\t!!!!Doing copy!!!!" << '\n';
+                    std::cout << "\t\t!!!!Doing copy using indexing mode: " << indexingModeToUse << '\n';
                 #endif
 
-                if constexpr (internal::traits<raw_type<OtherTileMap>>::indexingModeRequired == 1) {
+                if constexpr (indexingModeToUse == 1) {
                     // Treat it as a 1D array
+                    #pragma omp parallel for simd
                     for (int i = 0; i < other.size(); ++i) {
                         (*this)(i) = other(i);
                     }
-                } else if constexpr (internal::traits<raw_type<OtherTileMap>>::indexingModeRequired == 2) {
+                } else if constexpr (indexingModeToUse == 2) {
                     // Treat it as a long 2D array.
+                    #pragma omp parallel for simd
                     for (int j = 0; j < other.length() * other.height(); ++j) {
                         for (int i = 0; i < other.width(); ++i) {
                             (*this)(i + j * other.width()) = other(i, j);
@@ -224,6 +232,7 @@ namespace Stealth {
                     }
                 } else {
                     // Copy as 3D array.
+                    #pragma omp parallel for simd
                     for (int z = 0; z < other.height(); ++z) {
                         for (int j = 0; j < other.length(); ++j) {
                             for (int i = 0; i < other.width(); ++i) {

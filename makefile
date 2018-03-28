@@ -9,15 +9,15 @@ TESTOBJS = $(addprefix $(BUILDDIR)/, test.o)
 INCLUDEPATH = include/
 INCLUDE = -I$(INCLUDEPATH)
 HEADERS = $(addprefix $(INCLUDEPATH)/, TileMapBase.hpp TileMap.hpp ForwardDeclarations.hpp utils.hpp \
-	Expressions/ElemWiseBinaryExpr.hpp Expressions/UnaryExpr.hpp Expressions/BlockExpr.hpp Expressions/TileMapRandomGenerator.hpp \
+	Expressions/ElemWiseBinaryExpr.hpp Expressions/ElemWiseUnaryExpr.hpp Expressions/BlockExpr.hpp Expressions/TileMapRandomGenerator.hpp \
 	Operations/BinaryOperations.hpp Operations/UnaryOperations.hpp Operations/BlockOperations.hpp \
 	Functors/BinaryFunctors.hpp Functors/UnaryFunctors.hpp)
 # Compiler settings
 CXX = g++
-CFLAGS = -fPIC -c -std=c++17 $(INCLUDE) -flto -O3 -march=native -Wpedantic
-LFLAGS = -shared -flto -O3 -march=native -Wpedantic
-TESTLFLAGS = -flto -O3 -march=native -Wpedantic -lstealthbenchmark
-EXECLFLAGS = -flto -O3 -march=native -Wpedantic
+CFLAGS = -fPIC -c -std=c++17 $(INCLUDE) -flto -O3 -march=native -Wpedantic -fopenmp
+LFLAGS = -shared -flto -O3 -march=native -Wpedantic -fopenmp
+TESTLFLAGS = -flto -O3 -march=native -Wpedantic -lstealthbenchmark -fopenmp
+EXECLFLAGS = -flto -O3 -march=native -Wpedantic -fopenmp
 
 all: $(TESTOBJS)
 

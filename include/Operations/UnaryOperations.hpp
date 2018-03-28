@@ -1,12 +1,12 @@
 #pragma once
-#include "../Expressions/UnaryExpr.hpp"
+#include "../Expressions/ElemWiseUnaryExpr.hpp"
 #include "../Functors/UnaryFunctors.hpp"
 
 namespace Stealth {
-    // Helper to construct UnaryExpr expressions.
+    // Helper to construct ElemWiseUnaryExpr expressions.
     template <typename UnaryOperation, typename LHS>
     constexpr auto apply(UnaryOperation&& op, LHS&& lhs) noexcept {
-        return UnaryExpr<UnaryOperation, LHS&&>{std::forward<UnaryOperation&&>(op), std::forward<LHS&&>(lhs)};
+        return ElemWiseUnaryExpr<UnaryOperation, LHS&&>{std::forward<UnaryOperation&&>(op), std::forward<LHS&&>(lhs)};
     }
 
     template <typename LHS>

@@ -28,6 +28,9 @@ namespace Stealth {
         struct traits {
             typedef T ScalarType;
             static constexpr int length = 1, width = 1, height = 1, size = 1;
+            static constexpr bool is_scalar = size == 1;
+            static constexpr bool is_vector = !is_scalar and (width == size or length == size or height == size);
+            static constexpr bool is_matrix = !is_vector and (width == 1 or length == 1 or height == 1);
         };
     } /* internal */
 
@@ -48,7 +51,7 @@ namespace Stealth {
 
     // Unary Op
     template <typename UnaryOperation, typename LHS>
-    class UnaryExpr;
+    class ElemWiseUnaryExpr;
 
     // View of a section of a TileMap or OpStruct
     template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename TileMapType>

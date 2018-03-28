@@ -28,8 +28,7 @@ namespace Stealth {
                 return internal::traits<Derived>::size;
             }
 
-            constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z) const
-                -> std::invoke_result<const Derived, int, int, int> {
+            constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z) const {
                 return static_cast<const Derived*>(this) -> operator()(x, y, z);
             }
 
