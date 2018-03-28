@@ -70,8 +70,7 @@ namespace Stealth {
     namespace internal {
         template <typename LHS, typename BinaryOperation, typename RHS>
         struct traits<ElemWiseBinaryExpr<LHS, BinaryOperation, RHS>> {
-            // Since the incoming LHS/RHS is either a reference or copy,
-            // we need to remove qualifiers to get size information.
+            // Since the incoming LHS/RHS is either a reference or copy, we need to remove qualifiers to get size information.
             using ScalarType = typename std::invoke_result<BinaryOperation, scalar_element<raw_type<LHS>>,
                 scalar_element<raw_type<RHS>>>::type;
             // Dimensions
