@@ -34,15 +34,15 @@ namespace Stealth {
         };
     } /* internal */
 
-    // TileMapBase
+    // Tensor3Base
     template <typename Derived>
-    class TileMapBase;
+    class Tensor3Base;
 
-    // TileMap
+    // Tensor3
     template <typename type, int widthAtCompileTime = 1, int lengthAtCompileTime = 1, int heightAtCompileTime = 1,
         int areaAtCompileTime = widthAtCompileTime * lengthAtCompileTime, int sizeAtCompileTime
         = widthAtCompileTime * lengthAtCompileTime * heightAtCompileTime>
-    class TileMap;
+    class Tensor3;
 
     // Binary Op
 
@@ -53,8 +53,8 @@ namespace Stealth {
     template <typename UnaryOperation, typename LHS>
     class ElemWiseUnaryExpr;
 
-    // View of a section of a TileMap or OpStruct
-    template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename TileMapType>
+    // View of a section of a Tensor3 or OpStruct
+    template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename Tensor3Type>
     class BlockExpr;
 
     // Generate random numbers on demand
@@ -62,5 +62,5 @@ namespace Stealth {
         typename Distribution, typename Generator, int areaAtCompileTime
         = widthAtCompileTime * lengthAtCompileTime, int sizeAtCompileTime
         = widthAtCompileTime * lengthAtCompileTime * heightAtCompileTime>
-    class TileMapRandomGenerator;
+    class Tensor3RandomGenerator;
 } /* Stealth */

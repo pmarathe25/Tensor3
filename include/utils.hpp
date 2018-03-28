@@ -9,22 +9,22 @@ namespace Stealth {
 
         // Determine what expressions should store - a reference or a copy.
         // Generally want a reference for lvalues and copy for rvalues.
-        // FIXME: If a TileMap does not contain data (i.e. is an expression, make a copy)
-        template <typename TileMapType>
+        // FIXME: If a Tensor3 does not contain data (i.e. is an expression, make a copy)
+        template <typename Tensor3Type>
         using expression_stored_type = typename std::conditional<
-            std::is_rvalue_reference<TileMapType>::value,
+            std::is_rvalue_reference<Tensor3Type>::value,
             // Make it a copy.
-            raw_type<TileMapType>,
+            raw_type<Tensor3Type>,
             // Otherwise, make it a reference.
-            typename std::add_lvalue_reference<TileMapType>::type
+            typename std::add_lvalue_reference<Tensor3Type>::type
         >::type;
 
         // If the scalar is large enough, use a const reference, otherwise pass by copy.
-        template <typename TileMapType>
+        template <typename Tensor3Type>
         using scalar_element = typename std::conditional<
-            sizeof(typename internal::traits<raw_type<TileMapType>>::ScalarType) <= sizeof(void*),
-            typename internal::traits<raw_type<TileMapType>>::ScalarType,
-            const typename internal::traits<raw_type<TileMapType>>::ScalarType&
+            sizeof(typename internal::traits<raw_type<Tensor3Type>>::ScalarType) <= sizeof(void*),
+            typename internal::traits<raw_type<Tensor3Type>>::ScalarType,
+            const typename internal::traits<raw_type<Tensor3Type>>::ScalarType&
         >::type;
     }
 }

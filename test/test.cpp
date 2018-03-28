@@ -1,19 +1,18 @@
 #include "Benchmark/Benchmark.hpp"
-#include "TileMap/TileMap.hpp"
+#include "Tensor3/Tensor3.hpp"
 #include <iostream>
 #include <algorithm>
 
-// If you set this too small it will cause segfaults for some reason.
-constexpr int kTEST_WIDTH = 30;
-constexpr int kTEST_LENGTH = 30;
-constexpr int kTEST_HEIGHT = 30;
+constexpr int kTEST_WIDTH = 4;
+constexpr int kTEST_LENGTH = 4;
+constexpr int kTEST_HEIGHT = 4;
 constexpr int kTEST_AREA = kTEST_WIDTH * kTEST_LENGTH;
 constexpr int kTEST_SIZE = kTEST_AREA * kTEST_HEIGHT;
 constexpr int kPERF_ITERS = 10000;
 
 template <int width = 1, int length = 1, int height = 1>
-constexpr auto SequentialTileMapF(int startValue = 0) noexcept {
-    Stealth::TileMapF<width, length, height> out{};
+constexpr auto SequentialTensor3F(int startValue = 0) noexcept {
+    Stealth::Tensor3F<width, length, height> out{};
     std::iota(out.begin(), out.end(), startValue);
     return out;
 }
@@ -27,7 +26,6 @@ struct TestResult {
 template <typename Callable>
 constexpr bool runTest(const Callable& test) {
     // Returns true if the test passed, false otherwise.
-    std::cout << "Running test" << "..." << '\n';
     auto result = test();
     if (result.errorCode) {
         std::cout << "Test " << result.testName << " failed with error code " << result.errorCode << '\n';
@@ -39,13 +37,13 @@ constexpr bool runTest(const Callable& test) {
 }
 
 namespace Block {
-    // Choose blocks starting about halfway in the TileMap.
+    // Choose blocks starting about halfway in the Tensor3.
     constexpr int kBLOCK_X = kTEST_WIDTH / 2, kBLOCK_Y = kTEST_LENGTH / 2, kBLOCK_Z = kTEST_HEIGHT / 2;
     constexpr int kBLOCK_WIDTH = kTEST_WIDTH / 4, kBLOCK_LENGTH = kTEST_LENGTH / 4, kBLOCK_HEIGHT = kTEST_HEIGHT / 4;
     // Choose subblocks starting about halfway in the other blocks.
     constexpr int kSUBBLOCK_X = kBLOCK_WIDTH / 2, kSUBBLOCK_Y = kBLOCK_LENGTH / 2, kSUBBLOCK_Z = kBLOCK_HEIGHT / 2;
     constexpr int kSUBBLOCK_WIDTH = kBLOCK_WIDTH / 2, kSUBBLOCK_LENGTH = kBLOCK_LENGTH / 2, kSUBBLOCK_HEIGHT = kBLOCK_HEIGHT / 2;
-    // In a sequential TileMap, what should the value be at this location?
+    // In a sequential Tensor3, what should the value be at this location?
     constexpr int kBLOCK_START1D = kBLOCK_X;
     constexpr int kBLOCK_START2D = kBLOCK_X + kBLOCK_Y * kTEST_WIDTH;
     constexpr int kBLOCK_START3D = kBLOCK_X + kBLOCK_Y * kTEST_WIDTH + kBLOCK_Z * kTEST_AREA;
@@ -55,7 +53,7 @@ namespace Block {
 
     TestResult testBlockception() {
         // Test whether a block of a block works as expected.
-        auto blockTest0 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH>();
+        auto blockTest0 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH>();
         // Retrieve a block.
         auto blockTest1 = Stealth::block<kBLOCK_WIDTH, kBLOCK_LENGTH>(blockTest0, kBLOCK_X, kBLOCK_Y);
         // Retrieve a block from that block
@@ -72,8 +70,8 @@ namespace Block {
     }
 
     TestResult testConstBlock() {
-        // Test whether we can grab a block from a const TileMap.
-        const auto blockTest0 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH>();
+        // Test whether we can grab a block from a const Tensor3.
+        const auto blockTest0 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH>();
         // Retrieve a block.
         auto blockTest1 = Stealth::block<kBLOCK_WIDTH, kBLOCK_LENGTH>(blockTest0, kBLOCK_X, kBLOCK_Y);
         // Check whether every digit is consecutive row-by-row and that all the rows start on the correct value.
@@ -100,7 +98,7 @@ namespace Block {
     }
 
     TestResult test2DBlockFrom2D() {
-        auto blockTest0 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH>();
+        auto blockTest0 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH>();
         // Retrieve a block.
         auto blockTest1 = Stealth::block<kBLOCK_WIDTH, kBLOCK_LENGTH>(blockTest0, kBLOCK_X, kBLOCK_Y);
         // Check whether every digit is consecutive row-by-row and that all the rows start on the correct value.
@@ -115,7 +113,7 @@ namespace Block {
     }
 
     TestResult test2DBlockFrom3D() {
-        auto blockTest0 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        auto blockTest0 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
         // Retrieve a block.
         auto blockTest1 = Stealth::block<kBLOCK_WIDTH, kBLOCK_LENGTH>(blockTest0, kBLOCK_X, kBLOCK_Y, kBLOCK_Z);
         // Check whether every digit is consecutive row-by-row and that all the rows start on the correct value.
@@ -146,8 +144,8 @@ bool testBlockOps() {
 namespace Perf {
     TestResult testCopy() {
         Stealth::Benchmark bench;
-        auto perfTest0 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
-        Stealth::TileMapF<kTEST_SIZE> result;
+        auto perfTest0 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        Stealth::Tensor3F<kTEST_SIZE> result;
         bench.start();
         for (int i = 0; i < kPERF_ITERS; ++i) {
             result = perfTest0;
@@ -159,12 +157,12 @@ namespace Perf {
 
     TestResult testLargeSum() {
         Stealth::Benchmark bench;
-        auto perfTest0 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
-        auto perfTest1 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
-        auto perfTest2 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
-        auto perfTest3 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
-        auto perfTest4 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
-        Stealth::TileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT> result;
+        auto perfTest0 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        auto perfTest1 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        auto perfTest2 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        auto perfTest3 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        auto perfTest4 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        Stealth::Tensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT> result;
         bench.start();
         for (int i = 0; i < kPERF_ITERS; ++i) {
             result = perfTest0 + perfTest1 + perfTest2 + perfTest3 + perfTest4;
@@ -174,32 +172,32 @@ namespace Perf {
         return TestResult{};
     }
 
-    // Choose blocks starting about halfway in the TileMap.
+    // Choose blocks starting about halfway in the Tensor3.
     constexpr int kBLOCK_X = kTEST_WIDTH / 2, kBLOCK_Y = kTEST_LENGTH / 2, kBLOCK_Z = kTEST_HEIGHT / 2;
     constexpr int kBLOCK_WIDTH = kTEST_WIDTH / 4, kBLOCK_LENGTH = kTEST_LENGTH / 4, kBLOCK_HEIGHT = kTEST_HEIGHT / 4;
 
     TestResult testBlockSum() {
         Stealth::Benchmark bench;
 
-        auto perfTest0 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
-        auto perfTest1 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
-        auto perfTest2 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
-        auto perfTest3 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
-        auto perfTest4 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        auto perfTest0 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        auto perfTest1 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        auto perfTest2 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        auto perfTest3 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        auto perfTest4 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
 
-        auto perfTest5 = SequentialTileMapF<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>();
-        auto perfTest6 = SequentialTileMapF<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>();
-        auto perfTest7 = SequentialTileMapF<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>();
-        auto perfTest8 = SequentialTileMapF<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>();
-        auto perfTest9 = SequentialTileMapF<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>();
-        // This should force 3D accesses, since the block is in the center of a 3D TileMap.
+        auto perfTest5 = SequentialTensor3F<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>();
+        auto perfTest6 = SequentialTensor3F<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>();
+        auto perfTest7 = SequentialTensor3F<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>();
+        auto perfTest8 = SequentialTensor3F<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>();
+        auto perfTest9 = SequentialTensor3F<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>();
+        // This should force 3D accesses, since the block is in the center of a 3D Tensor3.
         auto block0 = Stealth::block<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>(perfTest0 + perfTest1
             + perfTest2 + perfTest3 + perfTest4, kBLOCK_X, kBLOCK_Y, kBLOCK_Z);
         // This should use 1D accesses.
         auto block1 = Stealth::block<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>(perfTest5 + perfTest6
             + perfTest7 + perfTest8 + perfTest9);
 
-        Stealth::TileMapF<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT> result;
+        Stealth::Tensor3F<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT> result;
         bench.start();
         for (int i = 0; i < kPERF_ITERS; ++i) {
             result = block0 + block1;
@@ -221,9 +219,9 @@ bool testPerf() {
 
 namespace Binary {
     TestResult testSum() {
-        auto binaryTest0 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
-        auto binaryTest1 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
-        Stealth::TileMapF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT> result = binaryTest0 + binaryTest1;
+        auto binaryTest0 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        auto binaryTest1 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
+        Stealth::Tensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT> result = binaryTest0 + binaryTest1;
         int numIncorrect = 0;
         for (int i = 0; i < result.size(); ++i) {
             numIncorrect += result(i) != i * 2;
@@ -232,9 +230,9 @@ namespace Binary {
     }
 
     TestResult test1DBroadcastOver2DSum() {
-        auto binaryTest0 = SequentialTileMapF<kTEST_WIDTH, kTEST_LENGTH>();
-        auto binaryTest1 = SequentialTileMapF<kTEST_WIDTH, 1>();
-        Stealth::TileMapF<kTEST_WIDTH, kTEST_LENGTH> result = binaryTest0 + binaryTest1;
+        auto binaryTest0 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH>();
+        auto binaryTest1 = SequentialTensor3F<kTEST_WIDTH, 1>();
+        Stealth::Tensor3F<kTEST_WIDTH, kTEST_LENGTH> result = binaryTest0 + binaryTest1;
         int numIncorrect = 0;
         for (int k = 0; k < result.height(); ++k) {
             for (int j = 0; j < result.length(); ++j) {

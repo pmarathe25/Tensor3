@@ -1,6 +1,6 @@
 #pragma once
 #include "../ForwardDeclarations.hpp"
-#include "../TileMapBase.hpp"
+#include "../Tensor3Base.hpp"
 #include "../utils.hpp"
 
 namespace Stealth {
@@ -25,7 +25,7 @@ namespace Stealth {
     } /* internal */
 
     template <typename UnaryOperation, typename LHS>
-    class ElemWiseUnaryExpr : public TileMapBase<ElemWiseUnaryExpr<UnaryOperation, LHS>> {
+    class ElemWiseUnaryExpr : public Tensor3Base<ElemWiseUnaryExpr<UnaryOperation, LHS>> {
         public:
             // Store either a reference or copy depending on what the operand is.
             using StoredLHS = typename internal::traits<ElemWiseUnaryExpr>::StoredLHS;

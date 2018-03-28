@@ -4,7 +4,7 @@
 
 namespace Stealth {
     template <typename Derived>
-    class TileMapBase {
+    class Tensor3Base {
         public:
             typedef typename internal::traits<Derived>::ScalarType ScalarType;
             // Dimensions
@@ -40,8 +40,8 @@ namespace Stealth {
                 return static_cast<const Derived*>(this) -> operator()(x);
             }
 
-            constexpr STEALTH_ALWAYS_INLINE TileMap<ScalarType, TileMapBase::width(),
-                TileMapBase::length(), TileMapBase::height()> eval() const {
+            constexpr STEALTH_ALWAYS_INLINE Tensor3<ScalarType, Tensor3Base::width(),
+                Tensor3Base::length(), Tensor3Base::height()> eval() const {
                 return *(static_cast<const Derived*>(this));
             }
     };
@@ -64,12 +64,12 @@ namespace Stealth {
     }
 
     template <typename Derived>
-    std::ostream& operator<<(std::ostream& os, const TileMapBase<Derived>& tileMap) {
-        for (int k = 0; k < tileMap.height(); ++k) {
+    std::ostream& operator<<(std::ostream& os, const Tensor3Base<Derived>& tensor3) {
+        for (int k = 0; k < tensor3.height(); ++k) {
             os << "Layer " << k << '\n';
-            for (int j = 0; j < tileMap.length(); ++j) {
-                for (int i = 0; i < tileMap.width(); ++i) {
-                    os << internal_to_string(tileMap(i, j, k)) << " ";
+            for (int j = 0; j < tensor3.length(); ++j) {
+                for (int i = 0; i < tensor3.width(); ++i) {
+                    os << internal_to_string(tensor3(i, j, k)) << " ";
                 }
                 os << '\n';
             }

@@ -1,6 +1,6 @@
 #pragma once
 #include "../ForwardDeclarations.hpp"
-#include "../TileMapBase.hpp"
+#include "../Tensor3Base.hpp"
 #include "../utils.hpp"
 
 namespace Stealth {
@@ -32,7 +32,7 @@ namespace Stealth {
 
         template <typename LHS, typename RHS>
         constexpr STEALTH_ALWAYS_INLINE auto assert_compatibility() noexcept {
-            // Check if these TileMaps can be operated on correctly.
+            // Check if these Tensor3s can be operated on correctly.
             constexpr int lhsWidth = internal::traits<raw_type<LHS>>::width,
                 lhsLength = internal::traits<raw_type<LHS>>::length,
                 lhsHeight = internal::traits<raw_type<LHS>>::height,
@@ -61,7 +61,7 @@ namespace Stealth {
                         or (lhsWidth == rhsWidth and lhsHeight == rhsHeight)
                         or (lhsLength == rhsLength and lhsHeight == rhsHeight));
             } else {
-                // Same size TileMaps are automatically compatible!
+                // Same size Tensor3s are automatically compatible!
                 return true;
             }
         }
@@ -90,7 +90,7 @@ namespace Stealth {
 
 
     template <typename LHS, typename BinaryOperation, typename RHS>
-    class ElemWiseBinaryExpr : public TileMapBase<ElemWiseBinaryExpr<LHS, BinaryOperation, RHS>> {
+    class ElemWiseBinaryExpr : public Tensor3Base<ElemWiseBinaryExpr<LHS, BinaryOperation, RHS>> {
         // Store either a reference or copy depending on what the operands are.
         using StoredLHS = typename internal::traits<ElemWiseBinaryExpr>::StoredLHS;
         using StoredRHS = typename internal::traits<ElemWiseBinaryExpr>::StoredRHS;

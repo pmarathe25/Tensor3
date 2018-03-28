@@ -1,6 +1,6 @@
 #pragma once
 #include "../ForwardDeclarations.hpp"
-#include "../TileMapBase.hpp"
+#include "../Tensor3Base.hpp"
 
 namespace Stealth {
     namespace {
@@ -55,52 +55,52 @@ namespace Stealth {
 
         // TODO: Specialization for blocks of other blocks
         // template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
-        //     int otherWidth, int otherLength, int otherHeight, typename otherInternalTileMap>
+        //     int otherWidth, int otherLength, int otherHeight, typename otherInternalTensor3>
         // struct traits<BlockExpr<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime,
-        //     BlockExpr<otherWidth, otherLength, otherHeight, otherInternalTileMap>>> {
+        //     BlockExpr<otherWidth, otherLength, otherHeight, otherInternalTensor3>>> {
         // };
 
     } /* internal */
 
     template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename LHS>
-    class BlockExpr : public TileMapBase<BlockExpr<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, LHS>> {
+    class BlockExpr : public Tensor3Base<BlockExpr<widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, LHS>> {
         public:
             using StoredLHS = typename internal::traits<BlockExpr>::StoredLHS;
 
-            constexpr STEALTH_ALWAYS_INLINE BlockExpr(LHS&& otherTileMap, int x = 0, int y = 0, int z = 0) noexcept
-                : tileMap{otherTileMap}, minX{x}, minY{y}, minZ{z},
-                offset{minX + minY * tileMap.width() + minZ * tileMap.area()} { }
+            constexpr STEALTH_ALWAYS_INLINE BlockExpr(LHS&& otherTensor3, int x = 0, int y = 0, int z = 0) noexcept
+                : tensor3{otherTensor3}, minX{x}, minY{y}, minZ{z},
+                offset{minX + minY * tensor3.width() + minZ * tensor3.area()} { }
 
             // TODO: Constructor for blocks of blocks.
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z)
                 -> typename std::invoke_result<StoredLHS, int, int, int>::type {
-                return tileMap(x + minX, y + minY, z + minZ);
+                return tensor3(x + minX, y + minY, z + minZ);
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z) const
                 -> typename std::invoke_result<StoredLHS, int, int, int>::type {
-                return tileMap(x + minX, y + minY, z + minZ);
+                return tensor3(x + minX, y + minY, z + minZ);
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y)
                 -> typename std::invoke_result<StoredLHS, int, int>::type {
-                return tileMap(x + minX + minZ * tileMap.area(), y + minY);
+                return tensor3(x + minX + minZ * tensor3.area(), y + minY);
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y) const
                 -> typename std::invoke_result<StoredLHS, int, int>::type {
-                return tileMap(x + minX + minZ * tileMap.area(), y + minY);
+                return tensor3(x + minX + minZ * tensor3.area(), y + minY);
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x)
                 -> typename std::invoke_result<StoredLHS, int>::type {
-                return tileMap(x + offset);
+                return tensor3(x + offset);
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x) const
                 -> typename std::invoke_result<StoredLHS, int>::type {
-                return tileMap(x + offset);
+                return tensor3(x + offset);
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto data() const noexcept {
@@ -114,7 +114,7 @@ namespace Stealth {
         private:
             const int minX, minY, minZ;
             const int offset;
-            StoredLHS tileMap;
+            StoredLHS tensor3;
     };
 
 } /* Stealth */

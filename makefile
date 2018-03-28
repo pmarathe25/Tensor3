@@ -8,8 +8,8 @@ TESTOBJS = $(addprefix $(BUILDDIR)/, test.o)
 # Headers
 INCLUDEPATH = include/
 INCLUDE = -I$(INCLUDEPATH)
-HEADERS = $(addprefix $(INCLUDEPATH)/, TileMapBase.hpp TileMap.hpp ForwardDeclarations.hpp utils.hpp \
-	Expressions/ElemWiseBinaryExpr.hpp Expressions/ElemWiseUnaryExpr.hpp Expressions/BlockExpr.hpp Expressions/TileMapRandomGenerator.hpp \
+HEADERS = $(addprefix $(INCLUDEPATH)/, Tensor3Base.hpp Tensor3.hpp ForwardDeclarations.hpp utils.hpp \
+	Expressions/ElemWiseBinaryExpr.hpp Expressions/ElemWiseUnaryExpr.hpp Expressions/BlockExpr.hpp Expressions/Tensor3RandomGenerator.hpp \
 	Operations/BinaryOperations.hpp Operations/UnaryOperations.hpp Operations/BlockOperations.hpp \
 	Functors/BinaryFunctors.hpp Functors/UnaryFunctors.hpp)
 # Compiler settings
@@ -37,8 +37,8 @@ test: $(TESTDIR)/test
 
 .PHONY: install
 install:
-	sudo ln -snf $(CURDIR)/$(INCLUDEPATH) /usr/local/include/TileMap
+	sudo ln -snf $(CURDIR)/$(INCLUDEPATH) /usr/local/include/Tensor3
 
 .PHONY: uninstall
 uninstall:
-	sudo rm /usr/local/include/TileMap
+	sudo rm /usr/local/include/Tensor3
