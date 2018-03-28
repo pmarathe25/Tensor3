@@ -2,14 +2,24 @@
 #include <type_traits>
 
 namespace Stealth {
-    namespace {
-        // Remove const and reference
-        template <typename QualifiedType>
-        using raw_type = typename std::remove_const<typename std::remove_reference<QualifiedType>::type>::type;
+    // Method to create copies of objects.
+    template <typename T>
+    constexpr STEALTH_ALWAYS_INLINE auto copy(const T& copyable) {
+        return T{copyable};
+    }
 
+    template <typename T>
+    constexpr STEALTH_ALWAYS_INLINE auto move(T&& moveable) {
+        return std::move(moveable);
+    }
+
+    // Remove const and reference
+    template <typename QualifiedType>
+    using raw_type = typename std::remove_const<typename std::remove_reference<QualifiedType>::type>::type;
+
+    namespace {
         // Determine what expressions should store - a reference or a copy.
         // Generally want a reference for lvalues and copy for rvalues.
-        // FIXME: If a Tensor3 does not contain data (i.e. is an expression, make a copy)
         template <typename Tensor3Type>
         using expression_stored_type = typename std::conditional<
             std::is_rvalue_reference<Tensor3Type>::value,
