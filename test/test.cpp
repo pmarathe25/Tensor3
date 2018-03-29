@@ -3,9 +3,9 @@
 #include <iostream>
 #include <algorithm>
 
-constexpr int kTEST_WIDTH = 4;
-constexpr int kTEST_LENGTH = 4;
-constexpr int kTEST_HEIGHT = 4;
+constexpr int kTEST_WIDTH = 12;
+constexpr int kTEST_LENGTH = 12;
+constexpr int kTEST_HEIGHT = 12;
 constexpr int kTEST_AREA = kTEST_WIDTH * kTEST_LENGTH;
 constexpr int kTEST_SIZE = kTEST_AREA * kTEST_HEIGHT;
 constexpr int kPERF_ITERS = 10000;
@@ -39,7 +39,7 @@ constexpr bool runTest(const Callable& test) {
 namespace Block {
     // Choose blocks starting about halfway in the Tensor3.
     constexpr int kBLOCK_X = kTEST_WIDTH / 2, kBLOCK_Y = kTEST_LENGTH / 2, kBLOCK_Z = kTEST_HEIGHT / 2;
-    constexpr int kBLOCK_WIDTH = kTEST_WIDTH / 4, kBLOCK_LENGTH = kTEST_LENGTH / 4, kBLOCK_HEIGHT = kTEST_HEIGHT / 4;
+    constexpr int kBLOCK_WIDTH = kTEST_WIDTH / 2, kBLOCK_LENGTH = kTEST_LENGTH / 2, kBLOCK_HEIGHT = kTEST_HEIGHT / 2;
     // Choose subblocks starting about halfway in the other blocks.
     constexpr int kSUBBLOCK_X = kBLOCK_WIDTH / 2, kSUBBLOCK_Y = kBLOCK_LENGTH / 2, kSUBBLOCK_Z = kBLOCK_HEIGHT / 2;
     constexpr int kSUBBLOCK_WIDTH = kBLOCK_WIDTH / 2, kSUBBLOCK_LENGTH = kBLOCK_LENGTH / 2, kSUBBLOCK_HEIGHT = kBLOCK_HEIGHT / 2;
@@ -63,9 +63,14 @@ namespace Block {
         for (int y = 0; y < blockTest2.length(); ++y) {
             numIncorrect += blockTest2(0, y) != (kSUBBLOCK_START2D + kTEST_WIDTH * y);
             for (int x = 1; x < blockTest2.width(); ++x) {
-                numIncorrect += blockTest2(x, y) != blockTest2(x - 1, y) + 1;
+                numIncorrect += blockTest2(x, y) != (blockTest2(x - 1, y) + 1);
             }
         }
+
+        std::cout << blockTest0 << '\n';
+        std::cout << blockTest1 << '\n';
+        std::cout << blockTest2 << '\n';
+
         return TestResult{numIncorrect};
     }
 
@@ -174,7 +179,7 @@ namespace Perf {
 
     // Choose blocks starting about halfway in the Tensor3.
     constexpr int kBLOCK_X = kTEST_WIDTH / 2, kBLOCK_Y = kTEST_LENGTH / 2, kBLOCK_Z = kTEST_HEIGHT / 2;
-    constexpr int kBLOCK_WIDTH = kTEST_WIDTH / 4, kBLOCK_LENGTH = kTEST_LENGTH / 4, kBLOCK_HEIGHT = kTEST_HEIGHT / 4;
+    constexpr int kBLOCK_WIDTH = kTEST_WIDTH / 2, kBLOCK_LENGTH = kTEST_LENGTH / 2, kBLOCK_HEIGHT = kTEST_HEIGHT / 2;
 
     TestResult testBlockSum() {
         Stealth::Benchmark bench;

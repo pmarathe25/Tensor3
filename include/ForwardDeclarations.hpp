@@ -1,5 +1,4 @@
 #pragma once
-#include <type_traits>
 
 // Macros
 #ifdef __GNUC__
@@ -24,14 +23,19 @@
 
 namespace Stealth {
     namespace internal {
-        template <typename T>
-        struct traits {
-            typedef T ScalarType;
-            static constexpr int length = 1, width = 1, height = 1, size = 1;
-            static constexpr bool is_scalar = size == 1;
-            static constexpr bool is_vector = !is_scalar and (width == size or length == size or height == size);
-            static constexpr bool is_matrix = !is_vector and (width == 1 or length == 1 or height == 1);
+        enum class ExpressionType : int {
+            Unknown = 0,
+            Tensor3,
+            ElemWiseBinaryExpr,
+            ElemWiseUnaryExpr,
+            BlockExpr
         };
+
+        template <typename T> struct traits { };
+        template <typename T> struct traits<const T> : traits<T> { };
+        template <typename T> struct traits<T&> : traits<T> { };
+        template <typename T> struct traits<const T&> : traits<T> { };
+        template <typename T> struct traits<T&&> : traits<T> { };
     } /* internal */
 
     // Tensor3Base
@@ -56,11 +60,4 @@ namespace Stealth {
     // View of a section of a Tensor3 or OpStruct
     template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename Tensor3Type>
     class BlockExpr;
-
-    // Generate random numbers on demand
-    template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
-        typename Distribution, typename Generator, int areaAtCompileTime
-        = widthAtCompileTime * lengthAtCompileTime, int sizeAtCompileTime
-        = widthAtCompileTime * lengthAtCompileTime * heightAtCompileTime>
-    class Tensor3RandomGenerator;
 } /* Stealth */

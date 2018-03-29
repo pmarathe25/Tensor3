@@ -8,16 +8,16 @@ namespace Stealth {
         template <typename LHS, typename RHS>
         constexpr STEALTH_ALWAYS_INLINE auto optimal_indexing_mode() noexcept {
             // Figure out what the operands require
-            constexpr int intrinsicIndexingMode = std::max(internal::traits<raw_type<LHS>>::indexingMode,
-                internal::traits<raw_type<RHS>>::indexingMode);
+            constexpr int intrinsicIndexingMode = std::max(internal::traits<LHS>::indexingMode,
+                internal::traits<RHS>::indexingMode);
             // Now figure out what broadcasting would require.
-            constexpr int lhsLength = internal::traits<raw_type<LHS>>::length,
-                lhsSize = internal::traits<raw_type<LHS>>::size;
-            constexpr bool lhs_is_scalar = internal::traits<raw_type<LHS>>::is_scalar;
+            constexpr int lhsLength = internal::traits<LHS>::length,
+                lhsSize = internal::traits<LHS>::size;
+            constexpr bool lhs_is_scalar = internal::traits<LHS>::is_scalar;
             // RHS
-            constexpr int rhsLength = internal::traits<raw_type<RHS>>::length,
-                rhsSize = internal::traits<raw_type<RHS>>::size;
-            constexpr bool rhs_is_scalar = internal::traits<raw_type<RHS>>::is_scalar;
+            constexpr int rhsLength = internal::traits<RHS>::length,
+                rhsSize = internal::traits<RHS>::size;
+            constexpr bool rhs_is_scalar = internal::traits<RHS>::is_scalar;
             // If dimensions match or either value is a scalar, we can index in 1D.
             if constexpr (lhs_is_scalar or rhs_is_scalar or lhsSize == rhsSize) {
                 return std::max(1, intrinsicIndexingMode);
@@ -33,21 +33,21 @@ namespace Stealth {
         template <typename LHS, typename RHS>
         constexpr STEALTH_ALWAYS_INLINE auto assert_compatibility() noexcept {
             // Check if these Tensor3s can be operated on correctly.
-            constexpr int lhsWidth = internal::traits<raw_type<LHS>>::width,
-                lhsLength = internal::traits<raw_type<LHS>>::length,
-                lhsHeight = internal::traits<raw_type<LHS>>::height,
-                lhsSize = internal::traits<raw_type<LHS>>::size;
-            constexpr bool lhs_is_scalar = internal::traits<raw_type<LHS>>::is_scalar,
-                lhs_is_vector = internal::traits<raw_type<LHS>>::is_vector,
-                lhs_is_matrix = internal::traits<raw_type<LHS>>::is_matrix;
+            constexpr int lhsWidth = internal::traits<LHS>::width,
+                lhsLength = internal::traits<LHS>::length,
+                lhsHeight = internal::traits<LHS>::height,
+                lhsSize = internal::traits<LHS>::size;
+            constexpr bool lhs_is_scalar = internal::traits<LHS>::is_scalar,
+                lhs_is_vector = internal::traits<LHS>::is_vector,
+                lhs_is_matrix = internal::traits<LHS>::is_matrix;
             // RHS
-            constexpr int rhsWidth = internal::traits<raw_type<RHS>>::width,
-                rhsLength = internal::traits<raw_type<RHS>>::length,
-                rhsHeight = internal::traits<raw_type<RHS>>::height,
-                rhsSize = internal::traits<raw_type<RHS>>::size;
-            constexpr bool rhs_is_scalar = internal::traits<raw_type<RHS>>::is_scalar,
-                rhs_is_vector = internal::traits<raw_type<RHS>>::is_vector,
-                rhs_is_matrix = internal::traits<raw_type<RHS>>::is_matrix;
+            constexpr int rhsWidth = internal::traits<RHS>::width,
+                rhsLength = internal::traits<RHS>::length,
+                rhsHeight = internal::traits<RHS>::height,
+                rhsSize = internal::traits<RHS>::size;
+            constexpr bool rhs_is_scalar = internal::traits<RHS>::is_scalar,
+                rhs_is_vector = internal::traits<RHS>::is_vector,
+                rhs_is_matrix = internal::traits<RHS>::is_matrix;
             if constexpr (rhsSize != lhsSize) {
                 // If their sizes do not match, either one is a scalar...
                 if constexpr (lhs_is_scalar or rhs_is_scalar)
@@ -70,18 +70,19 @@ namespace Stealth {
     namespace internal {
         template <typename LHS, typename BinaryOperation, typename RHS>
         struct traits<ElemWiseBinaryExpr<LHS, BinaryOperation, RHS>> {
+            static constexpr ExpressionType exprType = ExpressionType::ElemWiseBinaryExpr; 
             // Since the incoming LHS/RHS is either a reference or copy, we need to remove qualifiers to get size information.
-            using ScalarType = typename std::invoke_result<BinaryOperation, scalar_element<raw_type<LHS>>,
-                scalar_element<raw_type<RHS>>>::type;
+            using ScalarType = typename std::invoke_result<BinaryOperation, scalar_element<LHS>,
+                scalar_element<RHS>>::type;
             // Dimensions
-            static constexpr int length = std::max(internal::traits<raw_type<LHS>>::length, internal::traits<raw_type<RHS>>::length),
-                width = std::max(internal::traits<raw_type<LHS>>::width, internal::traits<raw_type<RHS>>::width),
-                height = std::max(internal::traits<raw_type<LHS>>::height, internal::traits<raw_type<RHS>>::height),
-                area = std::max(internal::traits<raw_type<LHS>>::area, internal::traits<raw_type<RHS>>::area),
-                size = std::max(internal::traits<raw_type<LHS>>::size, internal::traits<raw_type<RHS>>::size),
+            static constexpr int length = std::max(internal::traits<LHS>::length, internal::traits<RHS>::length),
+                width = std::max(internal::traits<LHS>::width, internal::traits<RHS>::width),
+                height = std::max(internal::traits<LHS>::height, internal::traits<RHS>::height),
+                area = std::max(internal::traits<LHS>::area, internal::traits<RHS>::area),
+                size = std::max(internal::traits<LHS>::size, internal::traits<RHS>::size),
                 indexingMode = optimal_indexing_mode<LHS, RHS>();
-            using StoredLHS = expression_stored_type<LHS>;
-            using StoredRHS = expression_stored_type<RHS>;
+            using StoredLHS = expr_ref<LHS>;
+            using StoredRHS = expr_ref<RHS>;
             static constexpr bool is_scalar = size == 1;
             static constexpr bool is_vector = !is_scalar and (width == size or length == size or height == size);
             static constexpr bool is_matrix = !is_vector and (width == 1 or length == 1 or height == 1);

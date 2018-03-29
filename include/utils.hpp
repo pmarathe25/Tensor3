@@ -21,20 +21,20 @@ namespace Stealth {
         // Determine what expressions should store - a reference or a copy.
         // Generally want a reference for lvalues and copy for rvalues.
         template <typename Tensor3Type>
-        using expression_stored_type = typename std::conditional<
+        using expr_ref = typename std::conditional<
             std::is_rvalue_reference<Tensor3Type>::value,
             // Make it a copy.
             raw_type<Tensor3Type>,
             // Otherwise, make it a reference.
             typename std::add_lvalue_reference<Tensor3Type>::type
-        >::type;
+            >::type;
 
         // If the scalar is large enough, use a const reference, otherwise pass by copy.
         template <typename Tensor3Type>
         using scalar_element = typename std::conditional<
-            sizeof(typename internal::traits<raw_type<Tensor3Type>>::ScalarType) <= sizeof(void*),
-            typename internal::traits<raw_type<Tensor3Type>>::ScalarType,
-            const typename internal::traits<raw_type<Tensor3Type>>::ScalarType&
-        >::type;
+            sizeof(typename internal::traits<Tensor3Type>::ScalarType) <= sizeof(void*),
+            typename internal::traits<Tensor3Type>::ScalarType,
+            const typename internal::traits<Tensor3Type>::ScalarType&
+            >::type;
     }
 }

@@ -7,17 +7,18 @@ namespace Stealth {
     namespace internal {
         template <typename UnaryOperation, typename LHS>
         struct traits<ElemWiseUnaryExpr<UnaryOperation, LHS>> {
+            static constexpr ExpressionType exprType = ExpressionType::ElemWiseUnaryExpr; 
             // Since the incoming LHS is either a reference or copy,
             // we need to remove qualifiers to get size information.
-            using ScalarType = typename std::invoke_result<UnaryOperation, scalar_element<raw_type<LHS>>>::type;
+            using ScalarType = typename std::invoke_result<UnaryOperation, scalar_element<LHS>>::type;
             // Dimensions
-            static constexpr int length = internal::traits<raw_type<LHS>>::length,
-                width = internal::traits<raw_type<LHS>>::width,
-                height = internal::traits<raw_type<LHS>>::height,
-                area = internal::traits<raw_type<LHS>>::area,
-                size = internal::traits<raw_type<LHS>>::size,
-                indexingMode = internal::traits<raw_type<LHS>>::indexingMode;
-            using StoredLHS = expression_stored_type<LHS>;
+            static constexpr int length = internal::traits<LHS>::length,
+                width = internal::traits<LHS>::width,
+                height = internal::traits<LHS>::height,
+                area = internal::traits<LHS>::area,
+                size = internal::traits<LHS>::size,
+                indexingMode = internal::traits<LHS>::indexingMode;
+            using StoredLHS = expr_ref<LHS>;
             static constexpr bool is_scalar = size == 1;
             static constexpr bool is_vector = !is_scalar and (width == size or length == size or height == size);
             static constexpr bool is_matrix = !is_vector and (width == 1 or length == 1 or height == 1);

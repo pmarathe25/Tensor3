@@ -18,6 +18,7 @@ namespace Stealth {
         template <typename type, int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
             int areaAtCompileTime, int sizeAtCompileTime>
         struct traits<Tensor3<type, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime>> {
+            static constexpr ExpressionType exprType = ExpressionType::Tensor3; 
             using ScalarType = type;
             static constexpr int width = widthAtCompileTime,
                 length = lengthAtCompileTime,
@@ -183,7 +184,7 @@ namespace Stealth {
                 static_assert(other.size() == Tensor3::size(), "Cannot copy incompatible Tensor3s.");
 
                 constexpr int indexingModeToUse = std::max(internal::traits<Tensor3>::indexingMode,
-                    internal::traits<raw_type<OtherTensor3>>::indexingMode);
+                    internal::traits<OtherTensor3>::indexingMode);
 
                 #ifdef DEBUG
                     std::cout << "\t\t!!!!Doing copy using indexing mode: " << indexingModeToUse << '\n';
