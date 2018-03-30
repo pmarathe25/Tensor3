@@ -1,7 +1,7 @@
 #pragma once
 #include <type_traits>
 
-namespace Stealth {
+namespace StealthMath {
     // Method to create copies of objects.
     template <typename T>
     constexpr STEALTH_ALWAYS_INLINE auto copy(const T& copyable) {

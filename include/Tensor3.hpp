@@ -5,7 +5,6 @@
 #include "./Operations/UnaryOperations.hpp"
 #include "./Operations/UnaryOperations.hpp"
 #include "./Operations/BlockOperations.hpp"
-#include <stealthutil>
 #include <vector>
 #include <random>
 
@@ -13,12 +12,12 @@
     #include <iostream>
 #endif
 
-namespace Stealth {
+namespace StealthMath {
     namespace internal {
         template <typename type, int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
             int areaAtCompileTime, int sizeAtCompileTime>
         struct traits<Tensor3<type, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime>> {
-            static constexpr ExpressionType exprType = ExpressionType::Tensor3; 
+            static constexpr ExpressionType exprType = ExpressionType::Tensor3;
             using ScalarType = type;
             static constexpr int width = widthAtCompileTime,
                 length = lengthAtCompileTime,
@@ -265,4 +264,4 @@ namespace Stealth {
 
     template <int width, int length>
     using MatrixD = Matrix<double, width, length>;
-} /* Stealth */
+} /* StealthMath */

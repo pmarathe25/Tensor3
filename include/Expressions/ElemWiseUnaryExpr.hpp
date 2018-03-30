@@ -3,11 +3,11 @@
 #include "../Tensor3Base.hpp"
 #include "../utils.hpp"
 
-namespace Stealth {
+namespace StealthMath {
     namespace internal {
         template <typename UnaryOperation, typename LHS>
         struct traits<ElemWiseUnaryExpr<UnaryOperation, LHS>> {
-            static constexpr ExpressionType exprType = ExpressionType::ElemWiseUnaryExpr; 
+            static constexpr ExpressionType exprType = ExpressionType::ElemWiseUnaryExpr;
             // Since the incoming LHS is either a reference or copy,
             // we need to remove qualifiers to get size information.
             using ScalarType = typename std::invoke_result<UnaryOperation, scalar_element<LHS>>::type;
@@ -50,4 +50,4 @@ namespace Stealth {
             StoredLHS lhs;
             UnaryOperation op;
     };
-} /* Stealth */
+} /* StealthMath */

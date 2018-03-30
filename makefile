@@ -16,7 +16,7 @@ HEADERS = $(addprefix $(INCLUDEPATH)/, Tensor3Base.hpp Tensor3.hpp ForwardDeclar
 CXX = g++
 CFLAGS = -fPIC -c -std=c++17 -flto -O3 -march=native -Wpedantic -fopenmp
 LFLAGS = -shared -flto -O3 -march=native -Wpedantic -fopenmp
-TESTLFLAGS = -flto -O3 -march=native -Wpedantic -lstealthbenchmark -fopenmp
+TESTLFLAGS = -flto -O3 -march=native -Wpedantic -fopenmp
 EXECLFLAGS = -flto -O3 -march=native -Wpedantic -fopenmp
 
 all: $(TESTOBJS)
@@ -29,7 +29,7 @@ $(BUILDDIR)/test.o: $(TESTDIR)/test.cpp $(HEADERS)
 
 .PHONY: clean
 clean:
-	rm $(OBJS) $(TESTOBJS) $(TESTDIR)/test
+	-rm $(OBJS) $(TESTOBJS) $(TESTDIR)/test
 
 .PHONY: test
 test: $(TESTDIR)/test

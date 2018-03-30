@@ -3,7 +3,7 @@
 #include "../Tensor3Base.hpp"
 #include "../utils.hpp"
 
-namespace Stealth {
+namespace StealthMath {
     namespace {
         template <int width, int length, int height, typename LHS>
         constexpr STEALTH_ALWAYS_INLINE auto optimal_indexing_mode() noexcept {
@@ -34,22 +34,6 @@ namespace Stealth {
                 }
             }
         }
-
-        // Given a block expression, determines what this map should store.
-        // template <int w, int l, int h, typename LHS, template <int, int, int, typename> typename BlockExprType>
-        // using expr_nested_ref = typename std::conditional<
-        //     !std::is_rvalue_reference<BlockExprType<w, l, h, LHS>>::value,
-        //     // If the other block is an lvalue, we simply keep a reference to its internal data.
-        //     // typename std::add_lvalue_reference<expr_ref<LHS>>::type,
-        //     typename BlockExprType::s,
-        //     // Otherwise, use the same type as it does.
-        //     expr_ref<LHS>
-        //     >::type;
-
-        // Given some kind of underlyingTensor3, determine whether it is a BlockExpr, and return the appropriate type.
-        // template <typename LHS>
-        // using blockexpr_ref = typename std::conditional<
-        //
     }
 
     namespace internal {
@@ -81,12 +65,9 @@ namespace Stealth {
                 : tensor3{otherTensor3}, minX{x}, minY{y}, minZ{z},
                 offset{minX + minY * tensor3.width() + minZ * tensor3.area()} {
                 #ifdef DEBUG
-                    debugType();
+                    debugType<StoredLHS>();
                 #endif
             }
-
-            // TODO: Constructor for blocks of blocks.
-            // template <
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z)
                 -> typename std::invoke_result<StoredLHS, int, int, int>::type {
@@ -140,4 +121,4 @@ namespace Stealth {
             StoredLHS tensor3;
     };
 
-} /* Stealth */
+} /* StealthMath */

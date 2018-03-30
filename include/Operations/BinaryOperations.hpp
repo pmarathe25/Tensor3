@@ -2,10 +2,14 @@
 #include "../Expressions/ElemWiseBinaryExpr.hpp"
 #include "../Functors/BinaryFunctors.hpp"
 
-namespace Stealth {
+namespace StealthMath {
     // Helper to construct ElemWiseBinaryExpr expressions.
     template <typename BinaryOperation, typename LHS, typename RHS>
     constexpr auto apply(BinaryOperation&& op, LHS&& lhs, RHS&& rhs) noexcept {
+        // These operations only apply to Tensor3 and its expression classes.
+        static_assert(std::is_base_of<Tensor3Base<raw_type<LHS>>, raw_type<LHS>>::value
+            and std::is_base_of<Tensor3Base<raw_type<RHS>>, raw_type<RHS>>::value,
+            "Cannot perform binary operation on non-tensor3.");
         return ElemWiseBinaryExpr<LHS&&, BinaryOperation, RHS&&>{std::forward<LHS&&>(lhs), std::forward<BinaryOperation&&>(op), std::forward<RHS&&>(rhs)};
     }
 
@@ -134,4 +138,4 @@ namespace Stealth {
             std::forward<RHS&&>(rhs)
         );
     }
-} /* Stealth */
+} /* StealthMath */

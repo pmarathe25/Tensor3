@@ -3,7 +3,7 @@
 #include "../Tensor3Base.hpp"
 #include "../utils.hpp"
 
-namespace Stealth {
+namespace StealthMath {
     namespace {
         template <typename LHS, typename RHS>
         constexpr STEALTH_ALWAYS_INLINE auto optimal_indexing_mode() noexcept {
@@ -70,7 +70,7 @@ namespace Stealth {
     namespace internal {
         template <typename LHS, typename BinaryOperation, typename RHS>
         struct traits<ElemWiseBinaryExpr<LHS, BinaryOperation, RHS>> {
-            static constexpr ExpressionType exprType = ExpressionType::ElemWiseBinaryExpr; 
+            static constexpr ExpressionType exprType = ExpressionType::ElemWiseBinaryExpr;
             // Since the incoming LHS/RHS is either a reference or copy, we need to remove qualifiers to get size information.
             using ScalarType = typename std::invoke_result<BinaryOperation, scalar_element<LHS>,
                 scalar_element<RHS>>::type;
@@ -145,4 +145,4 @@ namespace Stealth {
             BinaryOperation op;
             StoredRHS rhs;
     };
-} /* Stealth */
+} /* StealthMath */
