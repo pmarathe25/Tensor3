@@ -1,6 +1,6 @@
 #pragma once
 
-namespace StealthMath::internal::functors {
+namespace Stealth::Math::internal::functors {
     // Internal Unary Operations
     template <typename LHS>
     struct notOp {
@@ -8,4 +8,4 @@ namespace StealthMath::internal::functors {
             return !lhs;
         }
     };
-} /* StealthMath::internal::ops */
+} /* Stealth::Math::internal::ops */

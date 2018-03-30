@@ -12,7 +12,7 @@
     #include <iostream>
 #endif
 
-namespace StealthMath {
+namespace Stealth::Math {
     namespace internal {
         template <typename type, int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
             int areaAtCompileTime, int sizeAtCompileTime>
@@ -264,4 +264,4 @@ namespace StealthMath {
 
     template <int width, int length>
     using MatrixD = Matrix<double, width, length>;
-} /* StealthMath */
+} /* Stealth::Math */

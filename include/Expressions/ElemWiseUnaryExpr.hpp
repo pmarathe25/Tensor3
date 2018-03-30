@@ -3,7 +3,7 @@
 #include "../Tensor3Base.hpp"
 #include "../utils.hpp"
 
-namespace StealthMath {
+namespace Stealth::Math {
     namespace internal {
         template <typename UnaryOperation, typename LHS>
         struct traits<ElemWiseUnaryExpr<UnaryOperation, LHS>> {
@@ -50,4 +50,4 @@ namespace StealthMath {
             StoredLHS lhs;
             UnaryOperation op;
     };
-} /* StealthMath */
+} /* Stealth::Math */

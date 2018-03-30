@@ -1,6 +1,6 @@
 #pragma once
 
-namespace StealthMath::internal::functors {
+namespace Stealth::Math::internal::functors {
     // Internal Binary Operations
     template <typename LHS, typename RHS>
     struct add {
@@ -99,4 +99,4 @@ namespace StealthMath::internal::functors {
             return std::max(lhs, rhs);
         }
     };
-} /* StealthMath::internal::ops */
+} /* Stealth::Math::internal::ops */

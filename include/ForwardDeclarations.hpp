@@ -21,7 +21,7 @@
 #endif
 
 
-namespace StealthMath {
+namespace Stealth::Math {
     namespace internal {
         enum class ExpressionType : int {
             Unknown = 0,
@@ -60,4 +60,4 @@ namespace StealthMath {
     // View of a section of a Tensor3 or OpStruct
     template <int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime, typename Tensor3Type>
     class BlockExpr;
-} /* StealthMath */
+} /* Stealth::Math */

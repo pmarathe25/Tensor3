@@ -2,7 +2,7 @@
 #include "../Expressions/ElemWiseUnaryExpr.hpp"
 #include "../Functors/UnaryFunctors.hpp"
 
-namespace StealthMath {
+namespace Stealth::Math {
     // Helper to construct ElemWiseUnaryExpr expressions.
     template <typename UnaryOperation, typename LHS>
     constexpr auto apply(UnaryOperation&& op, LHS&& lhs) noexcept {
@@ -16,4 +16,4 @@ namespace StealthMath {
             std::forward<LHS&&>(lhs)
         );
     }
-} /* StealthMath */
+} /* Stealth::Math */

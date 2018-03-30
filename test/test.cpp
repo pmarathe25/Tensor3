@@ -13,7 +13,7 @@ constexpr int kPERF_ITERS = 10000;
 
 template <int width = 1, int length = 1, int height = 1>
 constexpr auto SequentialTensor3F(int startValue = 0) noexcept {
-    StealthMath::Tensor3F<width, length, height> out{};
+    Stealth::Math::Tensor3F<width, length, height> out{};
     std::iota(out.begin(), out.end(), startValue);
     return out;
 }
@@ -56,9 +56,9 @@ namespace Block {
         // Test whether a block of a block works as expected.
         auto blockTest0 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH>();
         // Retrieve a block.
-        auto blockTest1 = StealthMath::block<kBLOCK_WIDTH, kBLOCK_LENGTH>(blockTest0, kBLOCK_X, kBLOCK_Y);
+        auto blockTest1 = Stealth::Math::block<kBLOCK_WIDTH, kBLOCK_LENGTH>(blockTest0, kBLOCK_X, kBLOCK_Y);
         // Retrieve a block from that block
-        auto blockTest2 = StealthMath::block<kSUBBLOCK_WIDTH, kSUBBLOCK_LENGTH>(blockTest1, kSUBBLOCK_X, kSUBBLOCK_Y);
+        auto blockTest2 = Stealth::Math::block<kSUBBLOCK_WIDTH, kSUBBLOCK_LENGTH>(blockTest1, kSUBBLOCK_X, kSUBBLOCK_Y);
         // Check whether every digit is consecutive row-by-row and that all the rows start on the correct value.
         int numIncorrect = 0;
         for (int y = 0; y < blockTest2.length(); ++y) {
@@ -79,7 +79,7 @@ namespace Block {
         // Test whether we can grab a block from a const Tensor3.
         const auto blockTest0 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH>();
         // Retrieve a block.
-        auto blockTest1 = StealthMath::block<kBLOCK_WIDTH, kBLOCK_LENGTH>(blockTest0, kBLOCK_X, kBLOCK_Y);
+        auto blockTest1 = Stealth::Math::block<kBLOCK_WIDTH, kBLOCK_LENGTH>(blockTest0, kBLOCK_X, kBLOCK_Y);
         // Check whether every digit is consecutive row-by-row and that all the rows start on the correct value.
         int numIncorrect = 0;
         for (int y = 0; y < blockTest1.length(); ++y) {
@@ -106,7 +106,7 @@ namespace Block {
     TestResult test2DBlockFrom2D() {
         auto blockTest0 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH>();
         // Retrieve a block.
-        auto blockTest1 = StealthMath::block<kBLOCK_WIDTH, kBLOCK_LENGTH>(blockTest0, kBLOCK_X, kBLOCK_Y);
+        auto blockTest1 = Stealth::Math::block<kBLOCK_WIDTH, kBLOCK_LENGTH>(blockTest0, kBLOCK_X, kBLOCK_Y);
         // Check whether every digit is consecutive row-by-row and that all the rows start on the correct value.
         int numIncorrect = 0;
         for (int y = 0; y < blockTest1.length(); ++y) {
@@ -121,7 +121,7 @@ namespace Block {
     TestResult test2DBlockFrom3D() {
         auto blockTest0 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
         // Retrieve a block.
-        auto blockTest1 = StealthMath::block<kBLOCK_WIDTH, kBLOCK_LENGTH>(blockTest0, kBLOCK_X, kBLOCK_Y, kBLOCK_Z);
+        auto blockTest1 = Stealth::Math::block<kBLOCK_WIDTH, kBLOCK_LENGTH>(blockTest0, kBLOCK_X, kBLOCK_Y, kBLOCK_Z);
         // Check whether every digit is consecutive row-by-row and that all the rows start on the correct value.
         int numIncorrect = 0;
         for (int y = 0; y < blockTest1.length(); ++y) {
@@ -150,7 +150,7 @@ bool testBlockOps() {
 namespace Perf {
     TestResult testCopy() {
         auto perfTest0 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
-        StealthMath::VectorF<kTEST_SIZE> result;
+        Stealth::Math::VectorF<kTEST_SIZE> result;
         for (int i = 0; i < kPERF_ITERS; ++i) {
             result = perfTest0;
         }
@@ -163,7 +163,7 @@ namespace Perf {
         auto perfTest2 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
         auto perfTest3 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
         auto perfTest4 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
-        StealthMath::Tensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT> result;
+        Stealth::Math::Tensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT> result;
         for (int i = 0; i < kPERF_ITERS; ++i) {
             result = perfTest0 + perfTest1 + perfTest2 + perfTest3 + perfTest4;
         }
@@ -188,13 +188,13 @@ namespace Perf {
         auto perfTest8 = SequentialTensor3F<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>();
         auto perfTest9 = SequentialTensor3F<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>();
         // This should force 3D accesses, since the block is in the center of a 3D Tensor3.
-        auto block0 = StealthMath::block<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>(perfTest0 + perfTest1
+        auto block0 = Stealth::Math::block<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>(perfTest0 + perfTest1
             + perfTest2 + perfTest3 + perfTest4, kBLOCK_X, kBLOCK_Y, kBLOCK_Z);
         // This should use 1D accesses.
-        auto block1 = StealthMath::block<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>(perfTest5 + perfTest6
+        auto block1 = Stealth::Math::block<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>(perfTest5 + perfTest6
             + perfTest7 + perfTest8 + perfTest9);
 
-        StealthMath::Tensor3F<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT> result;
+        Stealth::Math::Tensor3F<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT> result;
         for (int i = 0; i < kPERF_ITERS; ++i) {
             result = block0 + block1;
         }
@@ -215,7 +215,7 @@ namespace Binary {
     TestResult testSum() {
         auto binaryTest0 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
         auto binaryTest1 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
-        StealthMath::Tensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT> result = binaryTest0 + binaryTest1;
+        Stealth::Math::Tensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT> result = binaryTest0 + binaryTest1;
         int numIncorrect = 0;
         for (int i = 0; i < result.size(); ++i) {
             numIncorrect += result(i) != i * 2;
@@ -226,7 +226,7 @@ namespace Binary {
     TestResult test1DBroadcastOver2DSum() {
         auto binaryTest0 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH>();
         auto binaryTest1 = SequentialTensor3F<kTEST_WIDTH, 1>();
-        StealthMath::MatrixF<kTEST_WIDTH, kTEST_LENGTH> result = binaryTest0 + binaryTest1;
+        Stealth::Math::MatrixF<kTEST_WIDTH, kTEST_LENGTH> result = binaryTest0 + binaryTest1;
         int numIncorrect = 0;
         for (int k = 0; k < result.height(); ++k) {
             for (int j = 0; j < result.length(); ++j) {
@@ -252,8 +252,8 @@ void doNothing() {
 
 int main() {
 
-    auto executionInfo = StealthBenchmark::measureExecutionTime(doNothing);
-    auto executionInfo2 = StealthBenchmark::measureExecutionTime(Perf::testLargeSum);
+    auto executionInfo = Stealth::Benchmark::measureExecutionTime(doNothing);
+    auto executionInfo2 = Stealth::Benchmark::measureExecutionTime(Perf::testLargeSum);
 
     // std::cout << executionInfo.milliseconds() << '\n';
     // std::cout << executionInfo.returnValue << '\n';

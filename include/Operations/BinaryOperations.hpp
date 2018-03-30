@@ -2,7 +2,7 @@
 #include "../Expressions/ElemWiseBinaryExpr.hpp"
 #include "../Functors/BinaryFunctors.hpp"
 
-namespace StealthMath {
+namespace Stealth::Math {
     // Helper to construct ElemWiseBinaryExpr expressions.
     template <typename BinaryOperation, typename LHS, typename RHS>
     constexpr auto apply(BinaryOperation&& op, LHS&& lhs, RHS&& rhs) noexcept {
@@ -138,4 +138,4 @@ namespace StealthMath {
             std::forward<RHS&&>(rhs)
         );
     }
-} /* StealthMath */
+} /* Stealth::Math */
