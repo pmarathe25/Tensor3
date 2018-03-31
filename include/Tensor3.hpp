@@ -177,7 +177,7 @@ namespace Stealth::Math {
         private:
             std::vector<ScalarType> mData;
 
-            constexpr void copy_scalar_impl(ScalarType scalar) {
+            constexpr void assign_scalar_impl(ScalarType scalar) {
                 // Assign the scalar value to every element.
                 for (int i = 0; i < Tensor3::size(); ++i) {
                     (*this)(i) = scalar;
@@ -225,20 +225,30 @@ namespace Stealth::Math {
             constexpr void copy(OtherTensor3&& other) {
                 // If the other thing is a scalar, use the copy scalar function.
                 if constexpr (std::is_scalar<raw_type<OtherTensor3>>::value) {
-                    return copy_scalar_impl(other);
+                    return assign_scalar_impl(other);
                 } else {
                     return copy_impl(std::forward<OtherTensor3&&>(other));
                 }
             }
 
             template <typename OtherTensor3>
-            constexpr void move(OtherTensor3&& other) {
+            constexpr void move_impl(OtherTensor3&& other) {
                 if constexpr (std::is_scalar<raw_type<OtherTensor3>>::value) {
-                    return copy_scalar_impl(other);
+                    return assign_scalar_impl(other);
                 }
 
                 static_assert(other.size() == Tensor3::size(), "Cannot move incompatible Tensor3s");
                 mData = std::move(other.elements());
+            }
+
+            template <typename OtherTensor3>
+            constexpr void move(OtherTensor3&& other) {
+                // If the other thing is a scalar, use the copy scalar function.
+                if constexpr (std::is_scalar<raw_type<OtherTensor3>>::value) {
+                    return assign_scalar_impl(other);
+                } else {
+                    return move_impl(std::forward<OtherTensor3&&>(other));
+                }
             }
 
     };
