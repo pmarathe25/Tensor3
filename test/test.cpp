@@ -1,6 +1,6 @@
-#include "Benchmark/Benchmark.hpp"
-#include "Tensor3/Tensor3.hpp"
-#include <stealthutil>
+#include <Stealth/Benchmark>
+#include <Stealth/Tensor3>
+#include <Stealth/util>
 #include <iostream>
 #include <algorithm>
 

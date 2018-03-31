@@ -1,17 +1,15 @@
+include ../makefile.defines
 BUILDDIR = build/
 BINDIR = ~/bin/
 TESTDIR = test/
 SRCDIR = src/
 # Objects
 OBJS =
-TESTOBJS = $(addprefix $(BUILDDIR)/, test.o)
+TESTOBJS = $(call generate_obj_names,$(TESTDIR),$(BUILDDIR))
 # Headers
 INCLUDEPATH = include/
 INCLUDE = -I$(INCLUDEPATH)
-HEADERS = $(addprefix $(INCLUDEPATH)/, Tensor3Base.hpp Tensor3.hpp ForwardDeclarations.hpp utils.hpp \
-	Expressions/ElemWiseBinaryExpr.hpp Expressions/ElemWiseUnaryExpr.hpp Expressions/BlockExpr.hpp \
-	Operations/ElemWiseBinaryOps.hpp Operations/ElemWiseUnaryOps.hpp Operations/BlockOperations.hpp \
-	Functors/BinaryFunctors.hpp Functors/UnaryFunctors.hpp)
+HEADERS = $(call find_headers,$(INCLUDEPATH))
 # Compiler settings
 CXX = g++
 CFLAGS = -fPIC -c -std=c++17 -flto -O3 -march=native -Wpedantic -fopenmp
@@ -19,6 +17,7 @@ LFLAGS = -shared -flto -O3 -march=native -Wpedantic -fopenmp
 TESTLFLAGS = -flto -O3 -march=native -Wpedantic -fopenmp
 EXECLFLAGS = -flto -O3 -march=native -Wpedantic -fopenmp
 
+.PHONY: clean test install uninstall
 all: $(TESTOBJS)
 
 $(TESTDIR)/test: $(BUILDDIR)/test.o $(HEADERS) $(OBJS)
@@ -27,18 +26,14 @@ $(TESTDIR)/test: $(BUILDDIR)/test.o $(HEADERS) $(OBJS)
 $(BUILDDIR)/test.o: $(TESTDIR)/test.cpp $(HEADERS)
 	$(CXX) $(CFLAGS) $(TESTDIR)/test.cpp -o $(BUILDDIR)/test.o
 
-.PHONY: clean
 clean:
 	-rm $(OBJS) $(TESTOBJS) $(TESTDIR)/test
 
-.PHONY: test
 test: $(TESTDIR)/test
 	$(TESTDIR)/test
 
-.PHONY: install
 install:
-	sudo ln -snf $(CURDIR)/$(INCLUDEPATH) /usr/local/include/Tensor3
+	$(call install_headers,$(INCLUDEPATH),Tensor3,Tensor3.hpp)
 
-.PHONY: uninstall
 uninstall:
-	sudo rm /usr/local/include/Tensor3
+	$(call uninstall_headers,Tensor3)
