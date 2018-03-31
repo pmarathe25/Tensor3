@@ -246,20 +246,12 @@ bool testBinary() {
     return allTestsPassed;
 }
 
-void doNothing() {
-    return;
-}
-
 int main() {
 
-    auto executionInfo = Stealth::Benchmark::measureExecutionTime(doNothing);
-    auto executionInfo2 = Stealth::Benchmark::measureExecutionTime(Perf::testLargeSum);
+    auto executionInfo = Stealth::Benchmark::measureExecutionTime(Perf::testLargeSum);
 
-    // std::cout << executionInfo.milliseconds() << '\n';
-    // std::cout << executionInfo.returnValue << '\n';
-
-    std::cout << executionInfo2.milliseconds() << '\n';
-    // std::cout << executionInfo2.returnValue << '\n';
+    std::cout << executionInfo.milliseconds() << '\n';
+    // std::cout << executionInfo.returnValue.testName << '\n';
 
 
     bool allTestsPassed = true;

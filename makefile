@@ -33,7 +33,7 @@ test: $(TESTDIR)/test
 	$(TESTDIR)/test
 
 install:
-	$(call install_headers,$(INCLUDEPATH),Tensor3,Tensor3.hpp)
+	$(call install_headers,$(INCLUDEPATH),Tensor3,$(HEADERS))
 
 uninstall:
 	$(call uninstall_headers,Tensor3)

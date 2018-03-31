@@ -1,4 +1,5 @@
 #pragma once
+#include "../ForwardDeclarations.hpp"
 
 namespace Stealth::Math::internal::functors {
     // Internal Unary Operations

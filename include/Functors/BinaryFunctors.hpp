@@ -1,4 +1,6 @@
 #pragma once
+#include "../ForwardDeclarations.hpp"
+#include <algorithm>
 
 namespace Stealth::Math::internal::functors {
     // Internal Binary Operations
