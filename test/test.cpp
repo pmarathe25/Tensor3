@@ -262,17 +262,17 @@ int main() {
     // std::cout << executionInfo2.returnValue << '\n';
 
 
-    // bool allTestsPassed = true;
-    // allTestsPassed &= testBlockOps();
-    // allTestsPassed &= testPerf();
-    // allTestsPassed &= testBinary();
-    // // numFailed += testUnaryOps();
-    // // numFailed += testTemporaryExpressionPersistence();
-    // // numFailed += testExpressionIndexing();
-    // if (allTestsPassed) {
-    //     std::cout << "All tests passed!" << '\n';
-    //     return 0;
-    // } else {
-    //     return 1;
-    // }
+    bool allTestsPassed = true;
+    allTestsPassed &= testBlockOps();
+    allTestsPassed &= testPerf();
+    allTestsPassed &= testBinary();
+    // numFailed += testUnaryOps();
+    // numFailed += testTemporaryExpressionPersistence();
+    // numFailed += testExpressionIndexing();
+    if (allTestsPassed) {
+        std::cout << "All tests passed!" << '\n';
+        return 0;
+    } else {
+        return 1;
+    }
 }

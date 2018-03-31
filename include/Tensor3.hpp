@@ -1,9 +1,9 @@
 #pragma once
 #include "./ForwardDeclarations.hpp"
 #include "./Tensor3Base.hpp"
-#include "./Operations/BinaryOperations.hpp"
-#include "./Operations/UnaryOperations.hpp"
-#include "./Operations/UnaryOperations.hpp"
+#include "./Operations/ElemWiseBinaryOps.hpp"
+#include "./Operations/ElemWiseUnaryOps.hpp"
+#include "./Operations/ElemWiseUnaryOps.hpp"
 #include "./Operations/BlockOperations.hpp"
 #include <vector>
 #include <random>
