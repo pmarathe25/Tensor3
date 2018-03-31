@@ -3,13 +3,13 @@ BUILDDIR = build/
 BINDIR = ~/bin/
 TESTDIR = test/
 SRCDIR = src/
+INCLUDEDIR = include
 # Objects
 OBJS =
 TESTOBJS = $(call generate_obj_names,$(TESTDIR),$(BUILDDIR))
 # Headers
-INCLUDEPATH = include/
-INCLUDE = -I$(INCLUDEPATH)
-HEADERS = $(call find_headers,$(INCLUDEPATH))
+INCLUDE = -I$(INCLUDEDIR)
+HEADERS = $(call find_headers,$(INCLUDEDIR))
 # Compiler settings
 CXX = g++
 CFLAGS = -fPIC -c -std=c++17 -flto -O3 -march=native -Wpedantic -fopenmp
@@ -33,7 +33,7 @@ test: $(TESTDIR)/test
 	$(TESTDIR)/test
 
 install:
-	$(call install_headers,$(INCLUDEPATH),Tensor3,$(HEADERS))
+	$(call install_headers,$(INCLUDEDIR),Tensor3,$(HEADERS))
 
 uninstall:
 	$(call uninstall_headers,Tensor3)

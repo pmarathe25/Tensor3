@@ -13,7 +13,7 @@ constexpr int kPERF_ITERS = 10000;
 
 template <int width = 1, int length = 1, int height = 1>
 constexpr auto SequentialTensor3F(int startValue = 0) noexcept {
-    Stealth::Math::Tensor3F<width, length, height> out{};
+    Stealth::Math::Tensor3FF<width, length, height> out{};
     std::iota(out.begin(), out.end(), startValue);
     return out;
 }
@@ -163,7 +163,7 @@ namespace Perf {
         auto perfTest2 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
         auto perfTest3 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
         auto perfTest4 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
-        Stealth::Math::Tensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT> result;
+        Stealth::Math::Tensor3FF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT> result;
         for (int i = 0; i < kPERF_ITERS; ++i) {
             result = perfTest0 + perfTest1 + perfTest2 + perfTest3 + perfTest4;
         }
@@ -194,7 +194,7 @@ namespace Perf {
         auto block1 = Stealth::Math::block<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT>(perfTest5 + perfTest6
             + perfTest7 + perfTest8 + perfTest9);
 
-        Stealth::Math::Tensor3F<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT> result;
+        Stealth::Math::Tensor3FF<kBLOCK_WIDTH, kBLOCK_LENGTH, kBLOCK_HEIGHT> result;
         for (int i = 0; i < kPERF_ITERS; ++i) {
             result = block0 + block1;
         }
@@ -215,7 +215,7 @@ namespace Binary {
     TestResult testSum() {
         auto binaryTest0 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
         auto binaryTest1 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
-        Stealth::Math::Tensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT> result = binaryTest0 + binaryTest1;
+        Stealth::Math::Tensor3FF<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT> result = binaryTest0 + binaryTest1;
         int numIncorrect = 0;
         for (int i = 0; i < result.size(); ++i) {
             numIncorrect += result(i) != i * 2;

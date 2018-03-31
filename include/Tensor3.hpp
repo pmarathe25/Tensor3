@@ -46,13 +46,24 @@ namespace Stealth::Math {
             }
 
             // Copy
+            constexpr STEALTH_ALWAYS_INLINE Tensor3(const Tensor3& other) noexcept : mData(sizeAtCompileTime) {
+                copy(other);
+            }
+
             template <typename OtherTensor3>
             constexpr STEALTH_ALWAYS_INLINE Tensor3(OtherTensor3&& other) noexcept : mData(sizeAtCompileTime) {
                 copy(std::forward<OtherTensor3&&>(other));
             }
 
-            constexpr STEALTH_ALWAYS_INLINE Tensor3(const Tensor3& other) noexcept : mData(sizeAtCompileTime) {
+            constexpr STEALTH_ALWAYS_INLINE Tensor3& operator=(const Tensor3& other) noexcept {
                 copy(other);
+                return *this;
+            }
+
+            template <typename OtherTensor3>
+            constexpr STEALTH_ALWAYS_INLINE Tensor3& operator=(OtherTensor3&& other) noexcept {
+                copy(std::forward<OtherTensor3&&>(other));
+                return *this;
             }
 
             // Move Constructor
@@ -74,18 +85,6 @@ namespace Stealth::Math {
             template <typename OtherType, int width, int length, int height>
             constexpr STEALTH_ALWAYS_INLINE Tensor3& operator=(Tensor3<OtherType, width, length, height>&& other) {
                 move(other);
-                return *this;
-            }
-
-            // Copy Assignment
-            constexpr STEALTH_ALWAYS_INLINE Tensor3& operator=(const Tensor3& other) noexcept {
-                copy(other);
-                return *this;
-            }
-
-            template <typename OtherTensor3>
-            constexpr STEALTH_ALWAYS_INLINE Tensor3& operator=(OtherTensor3&& other) noexcept {
-                copy(std::forward<OtherTensor3&&>(other));
                 return *this;
             }
 
@@ -178,10 +177,16 @@ namespace Stealth::Math {
         private:
             std::vector<ScalarType> mData;
 
-            template <typename OtherTensor3>
-            constexpr void copy(OtherTensor3&& other) {
-                static_assert(other.size() == Tensor3::size(), "Cannot copy incompatible Tensor3s.");
+            constexpr void copy_scalar_impl(ScalarType scalar) {
+                // Assign the scalar value to every element.
+                for (int i = 0; i < Tensor3::size(); ++i) {
+                    (*this)(i) = scalar;
+                }
+            }
 
+            template <typename OtherTensor3>
+            constexpr void copy_impl(OtherTensor3&& other) {
+                static_assert(other.size() == Tensor3::size(), "Cannot copy incompatible Tensor3s.");
                 constexpr int indexingModeToUse = std::max(internal::traits<Tensor3>::indexingMode,
                     internal::traits<OtherTensor3>::indexingMode);
 
@@ -214,54 +219,28 @@ namespace Stealth::Math {
                         }
                     }
                 }
+            }
 
+            template <typename OtherTensor3>
+            constexpr void copy(OtherTensor3&& other) {
+                // If the other thing is a scalar, use the copy scalar function.
+                if constexpr (std::is_scalar<raw_type<OtherTensor3>>::value) {
+                    return copy_scalar_impl(other);
+                } else {
+                    return copy_impl(std::forward<OtherTensor3&&>(other));
+                }
             }
 
             template <typename OtherTensor3>
             constexpr void move(OtherTensor3&& other) {
+                if constexpr (std::is_scalar<raw_type<OtherTensor3>>::value) {
+                    return copy_scalar_impl(other);
+                }
+
                 static_assert(other.size() == Tensor3::size(), "Cannot move incompatible Tensor3s");
                 mData = std::move(other.elements());
             }
 
     };
 
-    template <int widthAtCompileTime = 1, int lengthAtCompileTime = 1, int heightAtCompileTime = 1>
-    using Tensor3I = Tensor3<int, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime>;
-
-    template <int widthAtCompileTime = 1, int lengthAtCompileTime = 1, int heightAtCompileTime = 1>
-    using Tensor3F = Tensor3<float, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime>;
-
-    template <int widthAtCompileTime = 1, int lengthAtCompileTime = 1, int heightAtCompileTime = 1>
-    using Tensor3D = Tensor3<double, widthAtCompileTime, lengthAtCompileTime, heightAtCompileTime>;
-
-    template <typename ScalarType>
-    using Scalar = Tensor3<ScalarType, 1, 1, 1>;
-
-    template <typename ScalarType, int size>
-    using Vector = Tensor3<ScalarType, size, 1, 1>;
-
-    template <typename ScalarType, int width, int length>
-    using Matrix = Tensor3<ScalarType, width, length, 1>;
-
-    using ScalarI = Scalar<int>;
-    using ScalarF = Scalar<float>;
-    using ScalarD = Scalar<double>;
-
-    template <int size>
-    using VectorI = Vector<int, size>;
-
-    template <int size>
-    using VectorF = Vector<float, size>;
-
-    template <int size>
-    using VectorD = Vector<double, size>;
-
-    template <int width, int length>
-    using MatrixI = Matrix<int, width, length>;
-
-    template <int width, int length>
-    using MatrixF = Matrix<float, width, length>;
-
-    template <int width, int length>
-    using MatrixD = Matrix<double, width, length>;
 } /* Stealth::Math */
