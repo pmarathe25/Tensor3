@@ -3,7 +3,7 @@
 #include "../Tensor3Base.hpp"
 #include "../utils.hpp"
 
-namespace Stealth::Math {
+namespace Stealth::Tensor {
     namespace {
         template <int width, int length, int height, typename LHS>
         constexpr STEALTH_ALWAYS_INLINE auto optimal_indexing_mode() noexcept {
@@ -121,4 +121,4 @@ namespace Stealth::Math {
             StoredLHS tensor3;
     };
 
-} /* Stealth::Math */
+} /* Stealth::Tensor */

@@ -21,7 +21,7 @@
 #endif
 
 
-namespace Stealth::Math {
+namespace Stealth::Tensor {
     namespace internal {
         enum class ExpressionType : int {
             Unknown = 0,
@@ -106,4 +106,4 @@ namespace Stealth::Math {
 
     template <int width, int length>
     using MatrixD = Matrix<double, width, length>;
-} /* Stealth::Math */
+} /* Stealth::Tensor */

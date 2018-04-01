@@ -2,7 +2,7 @@
 #include "../ForwardDeclarations.hpp"
 #include <algorithm>
 
-namespace Stealth::Math::internal::functors {
+namespace Stealth::Tensor::internal::functors {
     // Internal Binary Operations
     template <typename LHS, typename RHS>
     struct add {
@@ -101,4 +101,4 @@ namespace Stealth::Math::internal::functors {
             return std::max(lhs, rhs);
         }
     };
-} /* Stealth::Math::internal::ops */
+} /* Stealth::Tensor::internal::ops */

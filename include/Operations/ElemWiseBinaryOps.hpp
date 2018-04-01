@@ -1,24 +1,16 @@
 #pragma once
 #include "../Expressions/ElemWiseBinaryExpr.hpp"
 #include "../Functors/BinaryFunctors.hpp"
+#include "../ForwardDeclarations.hpp"
 
-namespace Stealth::Math {
+namespace Stealth::Tensor {
     // Helper to construct ElemWiseBinaryExpr expressions.
-    template <typename BinaryOperation, typename LHS, typename RHS>
-    constexpr auto apply(BinaryOperation&& op, LHS&& lhs, RHS&& rhs) noexcept {
-        // If there's a scalar, we can create a Stealth::Math::Scalar from it.
-        if constexpr (std::is_scalar<raw_type<LHS>>::value) {
-            auto scalarLHS = Scalar<raw_type<LHS>>{lhs};
-            return ElemWiseBinaryExpr<decltype(scalarLHS)&&, BinaryOperation, RHS&&>{move(scalarLHS),
-                std::forward<BinaryOperation&&>(op), std::forward<RHS&&>(rhs)};
-        } else if constexpr (std::is_scalar<raw_type<RHS>>::value) {
-            auto scalarRHS = Scalar<raw_type<RHS>>{rhs};
-            return ElemWiseBinaryExpr<LHS&&, BinaryOperation, decltype(scalarRHS)&&>{std::forward<LHS&&>(lhs),
-                std::forward<BinaryOperation&&>(op), move(scalarRHS)};
-        } else {
-            // These operations only apply to Tensor3 and its expression classes.
-            return ElemWiseBinaryExpr<LHS&&, BinaryOperation, RHS&&>{std::forward<LHS&&>(lhs), std::forward<BinaryOperation&&>(op), std::forward<RHS&&>(rhs)};
-        }
+    template <typename BinaryOperation, typename _LHS, typename _RHS>
+    constexpr auto apply(BinaryOperation&& op, _LHS&& lhs, _RHS&& rhs) noexcept {
+        // If there's a scalar, we can create a Stealth::Tensor::Scalar from it.
+        using LHS = tensor3_type<_LHS>;
+        using RHS = tensor3_type<_RHS>;
+        return ElemWiseBinaryExpr<LHS&&, BinaryOperation, RHS&&>{std::forward<LHS&&>(lhs), std::forward<BinaryOperation&&>(op), std::forward<RHS&&>(rhs)};
     }
 
     template <typename LHS, typename RHS>
@@ -146,4 +138,4 @@ namespace Stealth::Math {
             std::forward<RHS&&>(rhs)
         );
     }
-} /* Stealth::Math */
+} /* Stealth::Tensor */

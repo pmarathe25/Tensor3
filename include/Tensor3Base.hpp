@@ -2,7 +2,7 @@
 #include "./ForwardDeclarations.hpp"
 #include <ostream>
 
-namespace Stealth::Math {
+namespace Stealth::Tensor {
     template <typename Derived>
     class Tensor3Base {
         public:
@@ -76,4 +76,4 @@ namespace Stealth::Math {
         }
         return os;
     }
-} /* Stealth::Math */
+} /* Stealth::Tensor */

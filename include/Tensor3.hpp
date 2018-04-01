@@ -3,7 +3,7 @@
 #include "./Tensor3Base.hpp"
 #include "./Operations/ElemWiseBinaryOps.hpp"
 #include "./Operations/ElemWiseUnaryOps.hpp"
-#include "./Operations/ElemWiseUnaryOps.hpp"
+#include "./Operations/BinaryProductOps.hpp"
 #include "./Operations/BlockOperations.hpp"
 #include <vector>
 #include <random>
@@ -12,7 +12,7 @@
     #include <iostream>
 #endif
 
-namespace Stealth::Math {
+namespace Stealth::Tensor {
     namespace internal {
         template <typename type, int widthAtCompileTime, int lengthAtCompileTime, int heightAtCompileTime,
             int areaAtCompileTime, int sizeAtCompileTime>
@@ -253,4 +253,4 @@ namespace Stealth::Math {
 
     };
 
-} /* Stealth::Math */
+} /* Stealth::Tensor */

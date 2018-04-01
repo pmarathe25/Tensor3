@@ -1,7 +1,7 @@
 #pragma once
 #include "../ForwardDeclarations.hpp"
 
-namespace Stealth::Math::internal::functors {
+namespace Stealth::Tensor::internal::functors {
     // Internal Unary Operations
     template <typename LHS>
     struct notOp {
@@ -9,4 +9,4 @@ namespace Stealth::Math::internal::functors {
             return !lhs;
         }
     };
-} /* Stealth::Math::internal::ops */
+} /* Stealth::Tensor::internal::ops */
