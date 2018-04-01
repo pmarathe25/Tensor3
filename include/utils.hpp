@@ -29,7 +29,7 @@ namespace Stealth::Tensor {
             typename std::add_lvalue_reference<Tensor3Type>::type
             >::type;
 
-        // Determines what this type would be in Tensor3 terms.
+        // Determines what this type would be in Tensor3 terms (i.e. convert to a Tensor::Scalar if possible).
         template <typename LHS>
         using tensor3_type = typename std::conditional<std::is_scalar<raw_type<LHS>>::value, Scalar<raw_type<LHS>>, LHS>::type;
 

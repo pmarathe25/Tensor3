@@ -153,11 +153,6 @@ namespace Stealth::Tensor {
             }
 
             template <typename OtherTensor3>
-            constexpr STEALTH_ALWAYS_INLINE void operator*=(OtherTensor3&& other) {
-                (*this) = (*this) * std::forward<OtherTensor3&&>(other);
-            }
-
-            template <typename OtherTensor3>
             constexpr STEALTH_ALWAYS_INLINE void operator-=(OtherTensor3&& other) {
                 (*this) = (*this) - std::forward<OtherTensor3&&>(other);
             }

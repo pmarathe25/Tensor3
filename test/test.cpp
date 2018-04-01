@@ -67,11 +67,6 @@ namespace Block {
                 numIncorrect += blockTest2(x, y) != (blockTest2(x - 1, y) + 1);
             }
         }
-
-        std::cout << blockTest0 << '\n';
-        std::cout << blockTest1 << '\n';
-        std::cout << blockTest2 << '\n';
-
         return TestResult{numIncorrect};
     }
 
@@ -237,12 +232,28 @@ namespace Binary {
         }
         return TestResult{numIncorrect};
     }
+
+    TestResult testScalarMultiply() {
+        auto binaryTest0 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH>();
+        constexpr float kSCALAR_CONST = 2.0f;
+        Stealth::Tensor::MatrixF<kTEST_WIDTH, kTEST_LENGTH> result = binaryTest0 * kSCALAR_CONST;
+        int numIncorrect = 0;
+        for (int k = 0; k < result.height(); ++k) {
+            for (int j = 0; j < result.length(); ++j) {
+                for (int i = 0; i < result.width(); ++i) {
+                    numIncorrect += result(i, j, k) != (binaryTest0(i, j, k) * kSCALAR_CONST);
+                }
+            }
+        }
+        return TestResult{numIncorrect};
+    }
 } /* Binary */
 
 bool testBinary() {
     bool allTestsPassed = true;
     allTestsPassed &= runTest(Binary::testSum);
     allTestsPassed &= runTest(Binary::test1DBroadcastOver2DSum);
+    allTestsPassed &= runTest(Binary::testScalarMultiply);
     return allTestsPassed;
 }
 

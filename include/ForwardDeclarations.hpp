@@ -35,6 +35,9 @@ namespace Stealth::Tensor {
             using ScalarType = T;
             static constexpr int width = 1, length = 1, height = 1, area = 1, size = 1,
                 indexingMode = 1;
+            static constexpr bool is_scalar = size == 1;
+            static constexpr bool is_vector = !is_scalar and (width == size or length == size or height == size);
+            static constexpr bool is_matrix = !is_vector and (width == 1 or length == 1 or height == 1);
         };
 
         template <typename T> struct traits<const T> : traits<T> { };
