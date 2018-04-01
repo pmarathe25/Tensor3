@@ -1,6 +1,7 @@
 #pragma once
 #include "ForwardDeclarations.hpp"
 #include "Tensor3Base.hpp"
+#include "DenseStorage.hpp"
 #include "../Operations/ElemWiseBinaryOps.hpp"
 #include "../Operations/ElemWiseUnaryOps.hpp"
 #include "../Operations/MatrixOps.hpp"
@@ -45,9 +46,9 @@ namespace Stealth::Tensor {
                 mData = std::move(other);
             }
 
-            // Copy
+            // Copy Constructors
             constexpr STEALTH_ALWAYS_INLINE Tensor3(const Tensor3& other) noexcept : mData(sizeAtCompileTime) {
-                copy(other);
+                mData = other.elements();
             }
 
             template <typename OtherTensor3>
@@ -55,8 +56,9 @@ namespace Stealth::Tensor {
                 copy(std::forward<OtherTensor3&&>(other));
             }
 
+            // Copy Assignment
             constexpr STEALTH_ALWAYS_INLINE Tensor3& operator=(const Tensor3& other) noexcept {
-                copy(other);
+                mData = other.elements();
                 return *this;
             }
 
@@ -66,7 +68,7 @@ namespace Stealth::Tensor {
                 return *this;
             }
 
-            // Move Constructor
+            // Move Constructors
             constexpr STEALTH_ALWAYS_INLINE Tensor3(Tensor3&& other) noexcept {
                 move(other);
             }
@@ -219,26 +221,19 @@ namespace Stealth::Tensor {
                     std::cout << "\t\t!!!!Doing copy using indexing mode: " << indexingModeToUse << '\n';
                 #endif
 
-                if constexpr (indexingModeToUse == 1) {
-                    // Treat it as a 1D array
-                    return copy_impl_1D(std::forward<OtherTensor3&&>(other));
-                } else if constexpr (indexingModeToUse == 2) {
-                    // Treat it as a long 2D array.
-                    return copy_impl_2D(std::forward<OtherTensor3&&>(other));
-                } else {
-                    // Copy as 3D array.
-                    return copy_impl_3D(std::forward<OtherTensor3&&>(other));
-                }
+                // Treat it as a 1D array
+                if constexpr (indexingModeToUse == 1) return copy_impl_1D(std::forward<OtherTensor3&&>(other));
+                // Treat it as a long 2D array.
+                else if constexpr (indexingModeToUse == 2) return copy_impl_2D(std::forward<OtherTensor3&&>(other));
+                // Copy as 3D array.
+                else return copy_impl_3D(std::forward<OtherTensor3&&>(other));
             }
 
             template <typename OtherTensor3>
             constexpr STEALTH_ALWAYS_INLINE void copy(OtherTensor3&& other) {
                 // If the other thing is a scalar, use the copy scalar function.
-                if constexpr (std::is_scalar<raw_type<OtherTensor3>>::value) {
-                    return assign_scalar_impl(other);
-                } else {
-                    return copy_impl(std::forward<OtherTensor3&&>(other));
-                }
+                if constexpr (std::is_scalar<raw_type<OtherTensor3>>::value) return assign_scalar_impl(other);
+                else return copy_impl(std::forward<OtherTensor3&&>(other));
             }
 
             template <typename OtherTensor3>
@@ -250,11 +245,8 @@ namespace Stealth::Tensor {
             template <typename OtherTensor3>
             constexpr STEALTH_ALWAYS_INLINE void move(OtherTensor3&& other) {
                 // If the other thing is a scalar, use the copy scalar function.
-                if constexpr (std::is_scalar<raw_type<OtherTensor3>>::value) {
-                    return assign_scalar_impl(other);
-                } else {
-                    return move_impl(std::forward<OtherTensor3&&>(other));
-                }
+                if constexpr (std::is_scalar<raw_type<OtherTensor3>>::value) return assign_scalar_impl(other);
+                else return move_impl(std::forward<OtherTensor3&&>(other));
             }
 
     };
