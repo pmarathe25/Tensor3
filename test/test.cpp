@@ -4,12 +4,12 @@
 #include <iostream>
 #include <algorithm>
 
-constexpr int kTEST_WIDTH = 12;
-constexpr int kTEST_LENGTH = 12;
-constexpr int kTEST_HEIGHT = 12;
+constexpr int kTEST_WIDTH = 30;
+constexpr int kTEST_LENGTH = 30;
+constexpr int kTEST_HEIGHT = 30;
 constexpr int kTEST_AREA = kTEST_WIDTH * kTEST_LENGTH;
 constexpr int kTEST_SIZE = kTEST_AREA * kTEST_HEIGHT;
-constexpr int kPERF_ITERS = 10000;
+constexpr int kPERF_ITERS = 100000;
 
 template <int width = 1, int length = 1, int height = 1>
 constexpr auto SequentialTensor3F(int startValue = 0) noexcept {

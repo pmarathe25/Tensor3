@@ -221,13 +221,13 @@ namespace Stealth::Tensor {
 
                 if constexpr (indexingModeToUse == 1) {
                     // Treat it as a 1D array
-                    copy_impl_1D(std::forward<OtherTensor3&&>(other));
+                    return copy_impl_1D(std::forward<OtherTensor3&&>(other));
                 } else if constexpr (indexingModeToUse == 2) {
                     // Treat it as a long 2D array.
-                    copy_impl_2D(std::forward<OtherTensor3&&>(other));
+                    return copy_impl_2D(std::forward<OtherTensor3&&>(other));
                 } else {
                     // Copy as 3D array.
-                    copy_impl_3D(std::forward<OtherTensor3&&>(other));
+                    return copy_impl_3D(std::forward<OtherTensor3&&>(other));
                 }
             }
 
