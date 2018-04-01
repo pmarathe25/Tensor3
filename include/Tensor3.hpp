@@ -172,7 +172,7 @@ namespace Stealth::Tensor {
         private:
             std::vector<ScalarType> mData;
 
-            constexpr void assign_scalar_impl(ScalarType scalar) {
+            constexpr STEALTH_ALWAYS_INLINE void assign_scalar_impl(ScalarType scalar) {
                 // Assign the scalar value to every element.
                 for (int i = 0; i < Tensor3::size(); ++i) {
                     (*this)(i) = scalar;
@@ -180,7 +180,37 @@ namespace Stealth::Tensor {
             }
 
             template <typename OtherTensor3>
-            constexpr void copy_impl(OtherTensor3&& other) {
+            constexpr STEALTH_ALWAYS_INLINE void copy_impl_1D(OtherTensor3&& other) {
+                #pragma omp parallel for simd
+                for (int i = 0; i < other.size(); ++i) {
+                    (*this)(i) = other(i);
+                }
+            }
+
+            template <typename OtherTensor3>
+            constexpr STEALTH_ALWAYS_INLINE void copy_impl_2D(OtherTensor3&& other) {
+                #pragma omp parallel for simd
+                for (int j = 0; j < other.length() * other.height(); ++j) {
+                    for (int i = 0; i < other.width(); ++i) {
+                        (*this)(i + j * other.width()) = other(i, j);
+                    }
+                }
+            }
+
+            template <typename OtherTensor3>
+            constexpr STEALTH_ALWAYS_INLINE void copy_impl_3D(OtherTensor3&& other) {
+                #pragma omp parallel for simd
+                for (int z = 0; z < other.height(); ++z) {
+                    for (int j = 0; j < other.length(); ++j) {
+                        for (int i = 0; i < other.width(); ++i) {
+                            (*this)(i + j * other.width() + z * other.area()) = other(i, j, z);
+                        }
+                    }
+                }
+            }
+
+            template <typename OtherTensor3>
+            constexpr STEALTH_ALWAYS_INLINE void copy_impl(OtherTensor3&& other) {
                 static_assert(other.size() == Tensor3::size(), "Cannot copy incompatible Tensor3s.");
                 constexpr int indexingModeToUse = std::max(internal::traits<Tensor3>::indexingMode,
                     internal::traits<OtherTensor3>::indexingMode);
@@ -191,33 +221,18 @@ namespace Stealth::Tensor {
 
                 if constexpr (indexingModeToUse == 1) {
                     // Treat it as a 1D array
-                    #pragma omp parallel for simd
-                    for (int i = 0; i < other.size(); ++i) {
-                        (*this)(i) = other(i);
-                    }
+                    copy_impl_1D(std::forward<OtherTensor3&&>(other));
                 } else if constexpr (indexingModeToUse == 2) {
                     // Treat it as a long 2D array.
-                    #pragma omp parallel for simd
-                    for (int j = 0; j < other.length() * other.height(); ++j) {
-                        for (int i = 0; i < other.width(); ++i) {
-                            (*this)(i + j * other.width()) = other(i, j);
-                        }
-                    }
+                    copy_impl_2D(std::forward<OtherTensor3&&>(other));
                 } else {
                     // Copy as 3D array.
-                    #pragma omp parallel for simd
-                    for (int z = 0; z < other.height(); ++z) {
-                        for (int j = 0; j < other.length(); ++j) {
-                            for (int i = 0; i < other.width(); ++i) {
-                                (*this)(i + j * other.width() + z * other.area()) = other(i, j, z);
-                            }
-                        }
-                    }
+                    copy_impl_3D(std::forward<OtherTensor3&&>(other));
                 }
             }
 
             template <typename OtherTensor3>
-            constexpr void copy(OtherTensor3&& other) {
+            constexpr STEALTH_ALWAYS_INLINE void copy(OtherTensor3&& other) {
                 // If the other thing is a scalar, use the copy scalar function.
                 if constexpr (std::is_scalar<raw_type<OtherTensor3>>::value) {
                     return assign_scalar_impl(other);
@@ -227,17 +242,13 @@ namespace Stealth::Tensor {
             }
 
             template <typename OtherTensor3>
-            constexpr void move_impl(OtherTensor3&& other) {
-                if constexpr (std::is_scalar<raw_type<OtherTensor3>>::value) {
-                    return assign_scalar_impl(other);
-                }
-
+            constexpr STEALTH_ALWAYS_INLINE void move_impl(OtherTensor3&& other) {
                 static_assert(other.size() == Tensor3::size(), "Cannot move incompatible Tensor3s");
                 mData = std::move(other.elements());
             }
 
             template <typename OtherTensor3>
-            constexpr void move(OtherTensor3&& other) {
+            constexpr STEALTH_ALWAYS_INLINE void move(OtherTensor3&& other) {
                 // If the other thing is a scalar, use the copy scalar function.
                 if constexpr (std::is_scalar<raw_type<OtherTensor3>>::value) {
                     return assign_scalar_impl(other);

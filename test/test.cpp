@@ -27,12 +27,12 @@ struct TestResult {
 template <typename Callable>
 constexpr bool runTest(const Callable& test) {
     // Returns true if the test passed, false otherwise.
-    auto result = test();
-    if (result.errorCode) {
-        std::cout << "Test " << result.testName << " failed with error code " << result.errorCode << '\n';
+    auto executionInfo = Stealth::Benchmark::measureExecutionTime(test);
+    if (executionInfo.returnValue.errorCode) {
+        std::cout << "Test " << executionInfo.returnValue.testName << " failed with error code " << executionInfo.returnValue.errorCode << '\n';
         return false;
     } else {
-        std::cout << "Test " << result.testName << " passed." << '\n';
+        std::cout << "Test " << executionInfo.returnValue.testName << " passed in " << executionInfo.microseconds() << " μs." << '\n';
         return true;
     }
 }
@@ -54,7 +54,7 @@ namespace Block {
 
     TestResult testBlockception() {
         // Test whether a block of a block works as expected.
-        auto blockTest0 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH>();
+        auto blockTest0 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH, kTEST_HEIGHT>();
         // Retrieve a block.
         auto blockTest1 = Stealth::Tensor::block<kBLOCK_WIDTH, kBLOCK_LENGTH>(blockTest0, kBLOCK_X, kBLOCK_Y);
         // Retrieve a block from that block
@@ -258,20 +258,10 @@ bool testBinary() {
 }
 
 int main() {
-
-    auto executionInfo = Stealth::Benchmark::measureExecutionTime(Perf::testLargeSum);
-
-    std::cout << executionInfo.milliseconds() << '\n';
-    // std::cout << executionInfo.returnValue.testName << '\n';
-
-
     bool allTestsPassed = true;
     allTestsPassed &= testBlockOps();
     allTestsPassed &= testPerf();
     allTestsPassed &= testBinary();
-    // numFailed += testUnaryOps();
-    // numFailed += testTemporaryExpressionPersistence();
-    // numFailed += testExpressionIndexing();
     if (allTestsPassed) {
         std::cout << "All tests passed!" << '\n';
         return 0;

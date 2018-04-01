@@ -63,7 +63,8 @@ namespace Stealth::Tensor {
 
             constexpr STEALTH_ALWAYS_INLINE BlockExpr(LHS&& otherTensor3, int x = 0, int y = 0, int z = 0) noexcept
                 : tensor3{otherTensor3}, minX{x}, minY{y}, minZ{z},
-                offset{minX + minY * tensor3.width() + minZ * tensor3.area()} {
+                offset{minX + minY * tensor3.width() + minZ * tensor3.area()},
+                offsetXZ{minX + minZ * tensor3.area()} {
                 #ifdef DEBUG
                     debugType<StoredLHS>();
                 #endif
@@ -81,12 +82,12 @@ namespace Stealth::Tensor {
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y)
                 -> typename std::invoke_result<StoredLHS, int, int>::type {
-                return tensor3(x + minX + minZ * tensor3.area(), y + minY);
+                return tensor3(x + offsetXZ, y + minY);
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y) const
                 -> typename std::invoke_result<StoredLHS, int, int>::type {
-                return tensor3(x + minX + minZ * tensor3.area(), y + minY);
+                return tensor3(x + offsetXZ, y + minY);
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x)
@@ -117,7 +118,7 @@ namespace Stealth::Tensor {
 
         private:
             const int minX, minY, minZ;
-            const int offset;
+            const int offset, offsetXZ;
             StoredLHS tensor3;
     };
 
