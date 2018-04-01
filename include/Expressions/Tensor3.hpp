@@ -1,10 +1,10 @@
 #pragma once
-#include "./ForwardDeclarations.hpp"
-#include "./Tensor3Base.hpp"
-#include "./Operations/ElemWiseBinaryOps.hpp"
-#include "./Operations/ElemWiseUnaryOps.hpp"
-#include "./Operations/BinaryProductOps.hpp"
-#include "./Operations/BlockOperations.hpp"
+#include "ForwardDeclarations.hpp"
+#include "Tensor3Base.hpp"
+#include "../Operations/ElemWiseBinaryOps.hpp"
+#include "../Operations/ElemWiseUnaryOps.hpp"
+#include "../Operations/BinaryProductOps.hpp"
+#include "../Operations/BlockOperations.hpp"
 #include <vector>
 #include <random>
 

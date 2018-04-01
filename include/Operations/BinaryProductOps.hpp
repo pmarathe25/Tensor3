@@ -1,5 +1,5 @@
 #pragma once
-#include "../ForwardDeclarations.hpp"
+#include "../Expressions/ForwardDeclarations.hpp"
 #include "ElemWiseBinaryOps.hpp"
 
 namespace Stealth::Tensor {

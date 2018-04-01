@@ -1,7 +1,7 @@
 #pragma once
 #include "../Expressions/ElemWiseBinaryExpr.hpp"
 #include "../Functors/BinaryFunctors.hpp"
-#include "../ForwardDeclarations.hpp"
+#include "../Expressions/ForwardDeclarations.hpp"
 
 namespace Stealth::Tensor {
     // Helper to construct ElemWiseBinaryExpr expressions.

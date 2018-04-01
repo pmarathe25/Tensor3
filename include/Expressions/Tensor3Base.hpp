@@ -1,5 +1,5 @@
 #pragma once
-#include "./ForwardDeclarations.hpp"
+#include "ForwardDeclarations.hpp"
 #include <ostream>
 
 namespace Stealth::Tensor {
