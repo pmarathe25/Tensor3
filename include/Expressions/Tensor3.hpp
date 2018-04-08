@@ -92,19 +92,19 @@ namespace Stealth::Tensor {
 
             // Accessors - conditionally multiply to save cycles for lower dimensional tensors.
             constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x, int y, int z) {
-                return mData[x + (Tensor3::length() == 1 ? 0 : y * Tensor3::width()) + (Tensor3::height() == 1 ? 0 : z * Tensor3::area())];
+                return mData[x + (lengthAtCompileTime == 1 ? 0 : y * widthAtCompileTime) + (heightAtCompileTime == 1 ? 0 : z * areaAtCompileTime)];
             }
 
             constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x, int y, int z) const {
-                return mData[x + (Tensor3::length() == 1 ? 0 : y * Tensor3::width()) + (Tensor3::height() == 1 ? 0 : z * Tensor3::area())];
+                return mData[x + (lengthAtCompileTime == 1 ? 0 : y * widthAtCompileTime) + (heightAtCompileTime == 1 ? 0 : z * areaAtCompileTime)];
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x, int y) {
-                return mData[x + (Tensor3::length() == 1 ? 0 : y * Tensor3::width())];
+                return mData[x + (lengthAtCompileTime == 1 ? 0 : y * widthAtCompileTime)];
             }
 
             constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x, int y) const {
-                return mData[x + (Tensor3::length() == 1 ? 0 : y * Tensor3::width())];
+                return mData[x + (lengthAtCompileTime == 1 ? 0 : y * widthAtCompileTime)];
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x) {
