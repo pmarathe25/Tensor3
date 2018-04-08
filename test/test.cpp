@@ -22,10 +22,10 @@ constexpr auto SequentialTensor3F(int startValue = 0) noexcept {
 }
 
 struct TestResult {
-    TestResult(bool failed = false, std::string info = {}, std::string testName = __builtin_FUNCTION())
-        : failed{failed}, testName{testName}, info{info} { }
-    bool failed;
-    std::string info;
+    TestResult(bool passed = true, std::string errorMessage = {}, std::string testName = __builtin_FUNCTION())
+        : passed{passed}, testName{testName}, errorMessage{errorMessage} { }
+    bool passed;
+    std::string errorMessage;
     std::string testName;
 };
 
@@ -33,12 +33,11 @@ template <typename Callable>
 constexpr bool runTest(const Callable& test) {
     // Returns true if the test passed, false otherwise.
     auto executionInfo = Stealth::Benchmark::measureExecutionTime(test);
-    if (executionInfo.returnValue.failed) {
-        std::cout << "Test " << executionInfo.returnValue.testName << " failed with: " << executionInfo.returnValue.info << '\n';
+    if (!executionInfo.returnValue.passed) {
+        std::cout << "FAILED Test " << executionInfo.returnValue.testName << " with: " << executionInfo.returnValue.errorMessage << '\n';
         return false;
     } else {
-        std::cout << "Test " << executionInfo.returnValue.testName << " passed in " << executionInfo.microseconds()
-            << " μs with: " << executionInfo.returnValue.info << '\n';
+        std::cout << "PASSED Test " << executionInfo.returnValue.testName << " in " << executionInfo.microseconds() << " μs.\n";
         return true;
     }
 }
@@ -73,7 +72,7 @@ namespace Block {
                 numIncorrect += blockTest2(x, y) != (blockTest2(x - 1, y) + 1);
             }
         }
-        return TestResult{numIncorrect, std::to_string(numIncorrect) + " values incorrect."};
+        return TestResult{!numIncorrect, std::to_string(numIncorrect) + " values incorrect."};
     }
 
     TestResult testConstBlock() {
@@ -89,7 +88,7 @@ namespace Block {
                 numIncorrect += blockTest1(x, y) != blockTest1(x - 1, y) + 1;
             }
         }
-        return TestResult{numIncorrect, std::to_string(numIncorrect) + " values incorrect."};
+        return TestResult{!numIncorrect, std::to_string(numIncorrect) + " values incorrect."};
     }
 
     TestResult test1DBlockFrom1D() {
@@ -116,7 +115,7 @@ namespace Block {
                 numIncorrect += blockTest1(x, y) != blockTest1(x - 1, y) + 1;
             }
         }
-        return TestResult{numIncorrect, std::to_string(numIncorrect) + " values incorrect."};
+        return TestResult{!numIncorrect, std::to_string(numIncorrect) + " values incorrect."};
     }
 
     TestResult test2DBlockFrom3D() {
@@ -131,7 +130,7 @@ namespace Block {
                 numIncorrect += blockTest1(x, y) != blockTest1(x - 1, y) + 1;
             }
         }
-        return TestResult{numIncorrect, std::to_string(numIncorrect) + " values incorrect."};
+        return TestResult{!numIncorrect, std::to_string(numIncorrect) + " values incorrect."};
     }
 
     int test3DBlockFrom3D() {
@@ -221,7 +220,7 @@ namespace Binary {
         for (int i = 0; i < result.size(); ++i) {
             numIncorrect += result(i) != i * 2;
         }
-        return TestResult{numIncorrect, std::to_string(numIncorrect) + " values incorrect."};
+        return TestResult{!numIncorrect, std::to_string(numIncorrect) + " values incorrect."};
     }
 
     TestResult test1DBroadcastOver2DSum() {
@@ -236,7 +235,7 @@ namespace Binary {
                 }
             }
         }
-        return TestResult{numIncorrect, std::to_string(numIncorrect) + " values incorrect."};
+        return TestResult{!numIncorrect, std::to_string(numIncorrect) + " values incorrect."};
     }
 
     TestResult testScalarMultiply() {
@@ -251,7 +250,7 @@ namespace Binary {
                 }
             }
         }
-        return TestResult{numIncorrect, std::to_string(numIncorrect) + " values incorrect."};
+        return TestResult{!numIncorrect, std::to_string(numIncorrect) + " values incorrect."};
     }
 } /* Binary */
 
@@ -266,23 +265,12 @@ bool testBinary() {
 namespace Storage {
     TestResult testDenseStorageSmall() {
         auto storageTest0 = Stealth::Tensor::internal::DenseStorage<float, 16>{};
-        // std::cout << "Using small optimizations? " << storageTest0.smallOptimizationsEnabled() << '\n';
-        // for (int i = 0; i < storageTest0.size(); ++i) {
-        //     std::cout << storageTest0[i] << ' ';
-        // }
-        // std::cout << '\n';
-        return TestResult{};
+        return TestResult{storageTest0.smallOptimizationsEnabled(), "Small storage optimizations were not enabled."};
     }
 
     TestResult testDenseStorageLarge() {
         auto storageTest0 = Stealth::Tensor::internal::DenseStorage<float, kTEST_SIZE / 2>{};
-        // std::cout << "Using small optimizations? " << storageTest0.smallOptimizationsEnabled() << '\n';
-        // for (int i = 0; i < storageTest0.size(); ++i) {
-        //     std::cout << storageTest0[i] << ' ';
-        // }
-        // std::cout << '\n';
-        // std::cout << storageTest0.size() << '\n';
-        return TestResult{};
+        return TestResult{!storageTest0.smallOptimizationsEnabled(), "Small storage optimizations were mistakenly enabled."};
     }
 }
 
@@ -303,6 +291,7 @@ int main() {
         std::cout << "All tests passed!" << '\n';
         return 0;
     } else {
+        std::cout << "One or more tests failed!" << '\n';
         return 1;
     }
 }
