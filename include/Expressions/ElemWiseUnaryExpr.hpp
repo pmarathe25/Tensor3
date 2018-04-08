@@ -32,7 +32,7 @@ namespace Stealth::Tensor {
             using StoredLHS = typename internal::traits<ElemWiseUnaryExpr>::StoredLHS;
 
             constexpr STEALTH_ALWAYS_INLINE ElemWiseUnaryExpr(UnaryOperation op, LHS&& lhs) noexcept
-                : op{std::move(op)}, lhs{std::forward<LHS&&>(lhs)} { }
+                : op{Stealth::move(op)}, lhs{std::forward<LHS&&>(lhs)} { }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z) const {
                 return op(lhs(x, y, z));

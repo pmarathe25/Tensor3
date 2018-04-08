@@ -22,14 +22,6 @@ namespace Stealth::Tensor::internal {
         public:
             constexpr STEALTH_ALWAYS_INLINE InternalContainer() { }
 
-            constexpr STEALTH_ALWAYS_INLINE auto* operator->() noexcept {
-                return &mData;
-            }
-
-            constexpr STEALTH_ALWAYS_INLINE const auto* operator->() const noexcept {
-                return &mData;
-            }
-
             constexpr STEALTH_ALWAYS_INLINE auto& operator*() noexcept {
                 return mData;
             }
@@ -45,14 +37,6 @@ namespace Stealth::Tensor::internal {
     class InternalContainer<ScalarType, sizeAtCompileTime, true> {
         public:
             constexpr STEALTH_ALWAYS_INLINE InternalContainer() : mData{new std::array<ScalarType, sizeAtCompileTime>} { }
-
-            constexpr STEALTH_ALWAYS_INLINE auto* operator->() noexcept {
-                return &(*mData);
-            }
-
-            constexpr STEALTH_ALWAYS_INLINE const auto* operator->() const noexcept {
-                return &(*mData);
-            }
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator*() noexcept {
                 return (*mData);
@@ -70,6 +54,14 @@ namespace Stealth::Tensor::internal {
     class DenseStorage {
         public:
             constexpr STEALTH_ALWAYS_INLINE DenseStorage() { }
+
+            // Move constructor.
+            constexpr STEALTH_ALWAYS_INLINE DenseStorage(DenseStorage&& other) {
+                mData = move(other.mData);
+            }
+
+            // Copy constructor.
+            constexpr STEALTH_ALWAYS_INLINE DenseStorage(const DenseStorage& other) = default;
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator[](int index) {
                 return (*mData)[index];

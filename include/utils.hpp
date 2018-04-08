@@ -1,18 +1,8 @@
 #pragma once
 #include <type_traits>
+#include <Stealth/util>
 
 namespace Stealth::Tensor {
-    // Method to create copies of objects.
-    template <typename T>
-    constexpr STEALTH_ALWAYS_INLINE auto copy(const T& copyable) {
-        return T{copyable};
-    }
-
-    template <typename T>
-    constexpr STEALTH_ALWAYS_INLINE auto move(T&& moveable) {
-        return std::move(moveable);
-    }
-
     // Remove const and reference
     template <typename QualifiedType>
     using raw_type = typename std::remove_const<typename std::remove_reference<QualifiedType>::type>::type;

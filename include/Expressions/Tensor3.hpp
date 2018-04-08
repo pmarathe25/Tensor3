@@ -43,7 +43,7 @@ namespace Stealth::Tensor {
                 if (other.size() > sizeAtCompileTime) {
                     throw std::invalid_argument("Cannot initialize Tensor3 from incompatible initializer list");
                 }
-                mData = std::move(other);
+                mData = Stealth::move(other);
             }
 
             // Copy Constructors
@@ -70,41 +70,41 @@ namespace Stealth::Tensor {
 
             // Move Constructors
             constexpr STEALTH_ALWAYS_INLINE Tensor3(Tensor3&& other) noexcept {
-                move(other);
+                this -> move(other);
             }
 
             template <int width, int length, int height>
             constexpr STEALTH_ALWAYS_INLINE Tensor3(Tensor3<ScalarType, width, length, height>&& other) {
-                move(other);
+                this -> move(other);
             }
 
             // Move Assignment
             constexpr STEALTH_ALWAYS_INLINE Tensor3& operator=(Tensor3&& other) noexcept {
-                move(other);
+                this -> move(other);
                 return *this;
             }
 
             template <typename OtherType, int width, int length, int height>
             constexpr STEALTH_ALWAYS_INLINE Tensor3& operator=(Tensor3<OtherType, width, length, height>&& other) {
-                move(other);
+                this -> move(other);
                 return *this;
             }
 
-            // Accessors
+            // Accessors - conditionally multiply to save cycles for lower dimensional tensors.
             constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x, int y, int z) {
-                return mData[x + y * Tensor3::width() + z * Tensor3::area()];
+                return mData[x + (Tensor3::length() == 1 ? 0 : y * Tensor3::width()) + (Tensor3::height() == 1 ? 0 : z * Tensor3::area())];
             }
 
             constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x, int y, int z) const {
-                return mData[x + y * Tensor3::width() + z * Tensor3::area()];
+                return mData[x + (Tensor3::length() == 1 ? 0 : y * Tensor3::width()) + (Tensor3::height() == 1 ? 0 : z * Tensor3::area())];
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x, int y) {
-                return mData[x + y * Tensor3::width()];
+                return mData[x + (Tensor3::length() == 1 ? 0 : y * Tensor3::width())];
             }
 
             constexpr STEALTH_ALWAYS_INLINE const auto& operator()(int x, int y) const {
-                return mData[x + y * Tensor3::width()];
+                return mData[x + (Tensor3::length() == 1 ? 0 : y * Tensor3::width())];
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator()(int x) {
@@ -239,7 +239,7 @@ namespace Stealth::Tensor {
             template <typename OtherTensor3>
             constexpr STEALTH_ALWAYS_INLINE void move_impl(OtherTensor3&& other) {
                 static_assert(other.size() == Tensor3::size(), "Cannot move incompatible Tensor3s");
-                mData = std::move(other.elements());
+                mData = Stealth::move(other.elements());
             }
 
             template <typename OtherTensor3>

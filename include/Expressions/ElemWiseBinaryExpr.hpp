@@ -98,7 +98,7 @@ namespace Stealth::Tensor {
 
         public:
             constexpr STEALTH_ALWAYS_INLINE ElemWiseBinaryExpr(LHS&& lhs, BinaryOperation op, RHS&& rhs) noexcept
-                : lhs{std::forward<LHS&&>(lhs)}, op{std::move(op)}, rhs{std::forward<RHS&&>(rhs)} {
+                : lhs{std::forward<LHS&&>(lhs)}, op{Stealth::move(op)}, rhs{std::forward<RHS&&>(rhs)} {
                 static_assert(assert_compatibility<LHS, RHS>(),
                     "Cannot perform element-wise binary operation on incompatible arguments");
 
