@@ -6,7 +6,7 @@ namespace Stealth::Tensor {
     // Helper to construct ElemWiseUnaryExpr expressions.
     template <typename UnaryOperation, typename LHS>
     constexpr auto apply(UnaryOperation&& op, LHS&& lhs) noexcept {
-        return ElemWiseUnaryExpr<UnaryOperation, LHS&&>{std::forward<UnaryOperation&&>(op), std::forward<LHS&&>(lhs)};
+        return ElemWiseUnaryExpr<UnaryOperation&&, LHS&&>{std::forward<UnaryOperation&&>(op), std::forward<LHS&&>(lhs)};
     }
 
     template <typename LHS>

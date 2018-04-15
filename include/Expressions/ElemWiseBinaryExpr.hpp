@@ -97,8 +97,8 @@ namespace Stealth::Tensor {
         using StoredRHS = typename internal::traits<ElemWiseBinaryExpr>::StoredRHS;
 
         public:
-            constexpr STEALTH_ALWAYS_INLINE ElemWiseBinaryExpr(LHS&& lhs, BinaryOperation op, RHS&& rhs) noexcept
-                : lhs{std::forward<LHS&&>(lhs)}, op{Stealth::move(op)}, rhs{std::forward<RHS&&>(rhs)} {
+            constexpr STEALTH_ALWAYS_INLINE ElemWiseBinaryExpr(LHS&& lhs, BinaryOperation&& op, RHS&& rhs) noexcept
+                : lhs{std::forward<LHS&&>(lhs)}, op{std::forward<BinaryOperation&&>(op)}, rhs{std::forward<RHS&&>(rhs)} {
                 static_assert(assert_compatibility<LHS, RHS>(),
                     "Cannot perform element-wise binary operation on incompatible arguments");
 
@@ -142,7 +142,7 @@ namespace Stealth::Tensor {
             }
         private:
             StoredLHS lhs;
-            BinaryOperation op;
+            expr_ref<BinaryOperation> op;
             StoredRHS rhs;
     };
 } /* Stealth::Tensor */

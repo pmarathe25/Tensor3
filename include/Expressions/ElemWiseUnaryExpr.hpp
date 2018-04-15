@@ -31,8 +31,8 @@ namespace Stealth::Tensor {
             // Store either a reference or copy depending on what the operand is.
             using StoredLHS = typename internal::traits<ElemWiseUnaryExpr>::StoredLHS;
 
-            constexpr STEALTH_ALWAYS_INLINE ElemWiseUnaryExpr(UnaryOperation op, LHS&& lhs) noexcept
-                : op{Stealth::move(op)}, lhs{std::forward<LHS&&>(lhs)} { }
+            constexpr STEALTH_ALWAYS_INLINE ElemWiseUnaryExpr(UnaryOperation&& op, LHS&& lhs) noexcept
+                : op{std::forward<UnaryOperation&&>(op)}, lhs{std::forward<LHS&&>(lhs)} { }
 
             constexpr STEALTH_ALWAYS_INLINE auto operator()(int x, int y, int z) const {
                 return op(lhs(x, y, z));
@@ -48,6 +48,6 @@ namespace Stealth::Tensor {
 
         private:
             StoredLHS lhs;
-            UnaryOperation op;
+            expr_ref<UnaryOperation> op;
     };
 } /* Stealth::Tensor */

@@ -10,7 +10,7 @@ namespace Stealth::Tensor {
         // If there's a scalar, we can create a Stealth::Tensor::Scalar from it.
         using LHS = tensor3_type<_LHS>;
         using RHS = tensor3_type<_RHS>;
-        return ElemWiseBinaryExpr<LHS&&, BinaryOperation, RHS&&>{std::forward<LHS&&>(lhs), std::forward<BinaryOperation&&>(op), std::forward<RHS&&>(rhs)};
+        return ElemWiseBinaryExpr<LHS&&, BinaryOperation&&, RHS&&>{std::forward<LHS&&>(lhs), std::forward<BinaryOperation&&>(op), std::forward<RHS&&>(rhs)};
     }
 
     template <typename LHS, typename RHS>
