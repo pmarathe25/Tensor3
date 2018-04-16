@@ -4,7 +4,6 @@
 #include <iostream>
 
 namespace Stealth::Tensor::internal {
-
     // Below this threshold, small storage optimizations apply.
     constexpr int kSMALL_THRESHOLD = 16;
 
@@ -49,19 +48,25 @@ namespace Stealth::Tensor::internal {
             std::unique_ptr<std::array<ScalarType, sizeAtCompileTime>> mData;
     };
 
-
     template <typename ScalarType, int sizeAtCompileTime>
     class DenseStorage {
         public:
             constexpr STEALTH_ALWAYS_INLINE DenseStorage() { }
 
             // Move constructor.
-            constexpr STEALTH_ALWAYS_INLINE DenseStorage(DenseStorage&& other) {
-                mData = move(other.mData);
-            }
+            // constexpr STEALTH_ALWAYS_INLINE DenseStorage(DenseStorage&& other) {
+            //     mData = move(other.mData);
+            // }
+            //
+            // constexpr STEALTH_ALWAYS_INLINE DenseStorage& operator=(DenseStorage&& other) {
+            //     mData = move(other.mData);
+            //     return *this;
+            // }
 
-            // Copy constructor.
-            constexpr STEALTH_ALWAYS_INLINE DenseStorage(const DenseStorage& other) = default;
+            // Copy.
+            // constexpr STEALTH_ALWAYS_INLINE DenseStorage(const DenseStorage& other) = default;
+            //
+            // constexpr STEALTH_ALWAYS_INLINE DenseStorage& operator=(const DenseStorage& other) = default;
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator[](int index) {
                 return (*mData)[index];

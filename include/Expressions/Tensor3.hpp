@@ -37,9 +37,9 @@ namespace Stealth::Tensor {
     class Tensor3 : public Tensor3Base<Tensor3<ScalarType, widthAtCompileTime, lengthAtCompileTime,
         heightAtCompileTime, areaAtCompileTime, sizeAtCompileTime>> {
         public:
-            constexpr STEALTH_ALWAYS_INLINE Tensor3() noexcept : mData(sizeAtCompileTime) { }
+            constexpr STEALTH_ALWAYS_INLINE Tensor3() noexcept { }
 
-            constexpr STEALTH_ALWAYS_INLINE Tensor3(const std::initializer_list<ScalarType>& other) noexcept : mData(sizeAtCompileTime) {
+            constexpr STEALTH_ALWAYS_INLINE Tensor3(const std::initializer_list<ScalarType>& other) noexcept {
                 if (other.size() > sizeAtCompileTime) {
                     throw std::invalid_argument("Cannot initialize Tensor3 from incompatible initializer list");
                 }
@@ -47,12 +47,12 @@ namespace Stealth::Tensor {
             }
 
             // Copy Constructors
-            constexpr STEALTH_ALWAYS_INLINE Tensor3(const Tensor3& other) noexcept : mData(sizeAtCompileTime) {
+            constexpr STEALTH_ALWAYS_INLINE Tensor3(const Tensor3& other) noexcept {
                 mData = other.elements();
             }
 
             template <typename OtherTensor3>
-            constexpr STEALTH_ALWAYS_INLINE Tensor3(OtherTensor3&& other) noexcept : mData(sizeAtCompileTime) {
+            constexpr STEALTH_ALWAYS_INLINE Tensor3(OtherTensor3&& other) noexcept {
                 copy(std::forward<OtherTensor3&&>(other));
             }
 
@@ -172,7 +172,7 @@ namespace Stealth::Tensor {
                 return (*this);
             }
         private:
-            std::vector<ScalarType> mData;
+            internal::DenseStorage<ScalarType, sizeAtCompileTime> mData;
 
             constexpr STEALTH_ALWAYS_INLINE void assign_scalar_impl(ScalarType scalar) {
                 // Assign the scalar value to every element.

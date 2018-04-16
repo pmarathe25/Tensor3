@@ -270,7 +270,7 @@ namespace Storage {
 
     TestResult testDenseStorageLarge() {
         auto storageTest0 = Stealth::Tensor::internal::DenseStorage<float, kTEST_SIZE / 2>{};
-        return TestResult{!storageTest0.smallOptimizationsEnabled(), "Small storage optimizations were mistakenly enabled."};
+        return TestResult{!storageTest0.smallOptimizationsEnabled(), "Small storage optimizations were incorrectly enabled."};
     }
 }
 

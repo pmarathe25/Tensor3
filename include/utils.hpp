@@ -8,8 +8,8 @@ namespace Stealth::Tensor {
     using raw_type = typename std::remove_const<typename std::remove_reference<QualifiedType>::type>::type;
 
     namespace {
-        // Determine what expressions should store - a reference or a copy.
-        // Generally want a reference for lvalues and copy for rvalues.
+        // Determine what expressions we should store - a reference or a copy.
+        // Generally we want a reference for lvalues and copy for rvalues.
         template <typename Tensor3Type>
         using expr_ref = typename std::conditional<
             std::is_rvalue_reference<Tensor3Type>::value,
