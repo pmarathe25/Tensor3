@@ -34,8 +34,18 @@ namespace Stealth::Tensor::internal {
 
     template <typename ScalarType, int sizeAtCompileTime>
     class InternalContainer<ScalarType, sizeAtCompileTime, true> {
+        using ContainerType = std::array<ScalarType, sizeAtCompileTime>;
+
         public:
             constexpr STEALTH_ALWAYS_INLINE InternalContainer() : mData{new std::array<ScalarType, sizeAtCompileTime>} { }
+
+            constexpr STEALTH_ALWAYS_INLINE InternalContainer(const InternalContainer& other) {
+                mData = std::make_unique<ContainerType>(*other.mData);
+            }
+
+            constexpr STEALTH_ALWAYS_INLINE InternalContainer& operator=(const InternalContainer& other) {
+                mData = std::make_unique<ContainerType>(*other.mData);
+            }
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator*() noexcept {
                 return (*mData);
@@ -45,7 +55,7 @@ namespace Stealth::Tensor::internal {
                 return (*mData);
             }
         private:
-            std::unique_ptr<std::array<ScalarType, sizeAtCompileTime>> mData;
+            std::unique_ptr<ContainerType> mData;
     };
 
     template <typename ScalarType, int sizeAtCompileTime>
@@ -64,9 +74,13 @@ namespace Stealth::Tensor::internal {
             // }
 
             // Copy.
-            // constexpr STEALTH_ALWAYS_INLINE DenseStorage(const DenseStorage& other) = default;
+            // constexpr STEALTH_ALWAYS_INLINE DenseStorage(const DenseStorage& other) {
+            //     mData = other.mData;
+            // }
             //
-            // constexpr STEALTH_ALWAYS_INLINE DenseStorage& operator=(const DenseStorage& other) = default;
+            // constexpr STEALTH_ALWAYS_INLINE DenseStorage& operator=(const DenseStorage& other) {
+            //     mData = other.mData;
+            // }
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator[](int index) {
                 return (*mData)[index];
