@@ -272,12 +272,25 @@ namespace Storage {
         auto storageTest0 = Stealth::Tensor::internal::DenseStorage<float, kTEST_SIZE / 2>{};
         return TestResult{!storageTest0.smallOptimizationsEnabled(), "Small storage optimizations were incorrectly enabled."};
     }
+
+
+    TestResult testInitializerListAssignment() {
+        auto storageTest0 = Stealth::Tensor::VectorI<5>{};
+        storageTest0 = {0.f, 1.f, 2.f, 3.f, 4.f};
+        int numIncorrect = 0;
+        float expected = 0.f;
+        for (auto& elem : storageTest0) {
+            numIncorrect += (elem != expected++);
+        }
+        return TestResult{!numIncorrect, std::to_string(numIncorrect) + " values incorrect."};
+    }
 }
 
 bool testStorage() {
     bool allTestsPassed = true;
     allTestsPassed &= runTest(Storage::testDenseStorageSmall);
     allTestsPassed &= runTest(Storage::testDenseStorageLarge);
+    allTestsPassed &= runTest(Storage::testInitializerListAssignment);
     return allTestsPassed;
 }
 

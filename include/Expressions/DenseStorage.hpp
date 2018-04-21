@@ -19,7 +19,7 @@ namespace Stealth::Tensor::internal {
     template <typename ScalarType, int sizeAtCompileTime>
     class InternalContainer<ScalarType, sizeAtCompileTime, false> {
         public:
-            constexpr STEALTH_ALWAYS_INLINE InternalContainer() { }
+            constexpr STEALTH_ALWAYS_INLINE InternalContainer() : mData{} { }
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator*() noexcept {
                 return mData;
@@ -92,6 +92,14 @@ namespace Stealth::Tensor::internal {
 
             constexpr STEALTH_ALWAYS_INLINE auto size() const noexcept {
                 return sizeAtCompileTime;
+            }
+
+            constexpr STEALTH_ALWAYS_INLINE auto begin() const noexcept {
+                return (*mData).begin();
+            }
+
+            constexpr STEALTH_ALWAYS_INLINE auto end() const noexcept {
+                return (*mData).end();
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto smallOptimizationsEnabled() const noexcept {
