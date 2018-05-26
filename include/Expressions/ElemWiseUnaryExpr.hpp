@@ -1,6 +1,6 @@
 #pragma once
-#include "../Expressions/ForwardDeclarations.hpp"
-#include "../Expressions/Tensor3Base.hpp"
+#include "../core/ForwardDeclarations.hpp"
+#include "../core/Tensor3Base.hpp"
 #include "../utils.hpp"
 
 namespace Stealth::Tensor {

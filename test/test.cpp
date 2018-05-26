@@ -1,5 +1,5 @@
-#include <Stealth/Benchmark>
 #include <Stealth/Tensor3>
+// #include <Stealth/Benchmark>
 #include <Stealth/util>
 #include <iostream>
 #include <algorithm>
@@ -32,14 +32,23 @@ struct TestResult {
 template <typename Callable>
 constexpr bool runTest(const Callable& test) {
     // Returns true if the test passed, false otherwise.
-    auto executionInfo = Stealth::Benchmark::measureExecutionTime(test);
-    if (!executionInfo.returnValue.passed) {
-        std::cout << "FAILED Test " << executionInfo.returnValue.testName << " with: " << executionInfo.returnValue.errorMessage << '\n';
-        return false;
+    // auto executionInfo = Stealth::Benchmark::measureExecutionTime(test);
+    // if (!executionInfo.returnValue.passed) {
+    //     std::cout << "FAILED Test " << executionInfo.returnValue.testName << " with: " << executionInfo.returnValue.errorMessage << '\n';
+    //     return false;
+    // } else {
+    //     std::cout << "PASSED Test " << executionInfo.returnValue.testName << " in " << executionInfo.microseconds() << " μs.\n";
+    //     return true;
+    // }
+    // FIXME:
+    TestResult result = test();
+    if (result.passed) {
+        std::cout << "PASSED Test " << result.testName << '\n';
     } else {
-        std::cout << "PASSED Test " << executionInfo.returnValue.testName << " in " << executionInfo.microseconds() << " μs.\n";
-        return true;
+        std::cout << "FAILED Test " << result.testName << " with: "
+            << result.errorMessage << '\n';
     }
+    return result.passed;
 }
 
 namespace Block {

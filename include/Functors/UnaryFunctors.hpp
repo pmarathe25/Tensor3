@@ -1,5 +1,5 @@
 #pragma once
-#include "../Expressions/ForwardDeclarations.hpp"
+#include "../core/ForwardDeclarations.hpp"
 
 namespace Stealth::Tensor::internal::functors {
     // Internal Unary Operations
