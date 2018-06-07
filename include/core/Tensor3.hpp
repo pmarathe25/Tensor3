@@ -3,11 +3,6 @@
 #include "Tensor3Base.hpp"
 #include "DenseStorage.hpp"
 #include "../Operations/ElemWiseBinaryOps.hpp"
-#include "../Operations/ElemWiseUnaryOps.hpp"
-#include "../Operations/MatrixOps.hpp"
-#include "../Operations/BlockOperations.hpp"
-#include <vector>
-#include <random>
 
 #ifdef DEBUG
     #include <iostream>

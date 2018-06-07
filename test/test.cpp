@@ -1,4 +1,4 @@
-#include <Stealth/Tensor3>
+#include <interfaces/Tensor3>
 // #include <Stealth/Benchmark>
 #include <Stealth/util>
 #include <iostream>
@@ -9,7 +9,7 @@ constexpr int kTEST_LENGTH = 30;
 constexpr int kTEST_HEIGHT = 30;
 constexpr int kTEST_AREA = kTEST_WIDTH * kTEST_LENGTH;
 constexpr int kTEST_SIZE = kTEST_AREA * kTEST_HEIGHT;
-constexpr int kPERF_ITERS = 10000;
+constexpr int kPERF_ITERS = 100;
 
 template <int width = 1, int length = 1, int height = 1>
 constexpr auto SequentialTensor3F(int startValue = 0) noexcept {
