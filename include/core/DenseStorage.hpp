@@ -18,13 +18,9 @@ namespace Stealth::Tensor {
                     const Scalar* mData;
             };
 
-            constexpr DenseStorage(size_t size = 0) {
-                allocate(size);
-            }
+            constexpr DenseStorage(size_t size = 0) { allocate(size); }
 
-            constexpr DenseStorage(DenseStorage&& other) {
-                move(std::forward<DenseStorage&&>(other));
-            }
+            constexpr DenseStorage(DenseStorage&& other) { move(std::forward<DenseStorage&&>(other)); }
 
             constexpr DenseStorage& operator=(DenseStorage&& other) {
                 if (mData) delete[] mData;
@@ -32,31 +28,21 @@ namespace Stealth::Tensor {
                 return *this;
             }
 
-            constexpr const_iterator begin() const {
-                return const_iterator{mData, 0};
-            }
+            constexpr const_iterator begin() const { return const_iterator{mData, 0}; }
 
-            constexpr const_iterator end() const {
-                return const_iterator{mData, mSize};
-            }
+            constexpr const_iterator end() const { return const_iterator{mData, mSize}; }
 
-            constexpr Scalar& front() {
-                return mData[0];
-            }
+            constexpr Scalar& front() { return mData[0]; }
 
-            constexpr Scalar& back() {
-                return mData[size() - 1];
-            }
+            constexpr Scalar& back() { return mData[size() - 1]; }
 
-            constexpr const Scalar& operator[](size_t index) const {
-                return mData[index];
-            }
+            constexpr const Scalar& operator[](size_t index) const { return mData[index]; }
 
-            constexpr Scalar& operator[](size_t index) {
-                return mData[index];
-            }
+            constexpr Scalar& operator[](size_t index) { return mData[index]; }
 
             constexpr size_t size() const noexcept { return mSize; }
+            constexpr const Scalar* data() const noexcept { return mData; }
+            constexpr Scalar* data() noexcept { return mData; }
 
             ~DenseStorage() {
                 if (mData) delete[] mData;
