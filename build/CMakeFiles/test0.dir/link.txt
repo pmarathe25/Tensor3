@@ -1,0 +1,1 @@
+/usr/bin/c++   -fopenmp    CMakeFiles/test0.dir/test/test.cpp.o  -o test0 -flto 
