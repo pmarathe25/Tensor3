@@ -28,26 +28,20 @@ namespace Stealth::Tensor {
                 return *this;
             }
 
+            // Managed access.
             constexpr const_iterator begin() const { return const_iterator{mData, 0}; }
-
             constexpr const_iterator end() const { return const_iterator{mData, mSize}; }
-
             constexpr Scalar& front() { return mData[0]; }
-
             constexpr Scalar& back() { return mData[size() - 1]; }
-
+            // Raw access.
             constexpr const Scalar& operator[](size_t index) const { return mData[index]; }
-
             constexpr Scalar& operator[](size_t index) { return mData[index]; }
-
-            constexpr size_t size() const noexcept { return mSize; }
             constexpr const Scalar* data() const noexcept { return mData; }
             constexpr Scalar* data() noexcept { return mData; }
+            // Metadata
+            constexpr size_t size() const noexcept { return mSize; }
 
-            ~DenseStorage() {
-                if (mData) delete[] mData;
-            }
-
+            ~DenseStorage() { if (mData) delete[] mData; }
         private:
             void allocate(size_t size) {
                 mSize = size;
