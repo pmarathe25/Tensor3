@@ -2,18 +2,21 @@
 #include <initializer_list>
 
 namespace Stealth::Tensor {
-    template <typename Scalar, size_t rank>
+    // Static Tensor - dimensions are know at compile time.
+    template <typename Scalar, int... dims>
     class Tensor {
+
+    };
+
+    // Specialization for Dynamic Tensors.
+    template <typename Scalar>
+    class Tensor<Scalar> {
         using RankArray = DenseStorage<size_t>;
         public:
             Tensor(const std::initializer_list<size_t>& dims) {
-                mDims = RankArray{dims.size()};
-                mStrides = RankArray{dims.size()};
-                int index = 0;
-                for (auto elem : dims)
-                    mDims[index++] = elem;
-                mStrides = computeStrides(mDims);
-                mData = std::move(DenseStorage<Scalar>{mStrides.front() * mDims[0]});
+                setDims(dims);
+                calculateStrides();
+                mData.resize(mStrides.front() * mDims[0]);
             }
 
             constexpr size_t size() const { return mData.size(); }
@@ -21,22 +24,33 @@ namespace Stealth::Tensor {
             constexpr const auto end() const { return mData.end(); }
 
             constexpr const RankArray& dims() const { return mDims; }
+            constexpr const RankArray& rank() const { return mDims.size(); }
             constexpr const RankArray& strides() const { return mStrides; }
         private:
-            constexpr RankArray computeStrides(const RankArray& dims) {
-                RankArray strides{dims.size()};
-                strides.back() = 1;
-                for (int index = dims.size() - 1; index > 0; --index) {
-                    strides[index - 1] = dims[index] * strides[index];
+            constexpr RankArray setDims(const std::initializer_list<size_t>& dims) {
+                // Set dims.
+                mDims.resize(dims.size());
+                int index = 0;
+                for (auto elem : dims)
+                mDims[index++] = elem;
+            }
+
+            constexpr RankArray calculateStrides() {
+                // Compute strides.
+                mStrides.resize(mDims.size());
+                mStrides.back() = 1;
+                for (int index = mDims.size() - 1; index > 0; --index) {
+                    mStrides[index - 1] = mDims[index] * mStrides[index];
                 }
-                return strides;
             }
 
             DenseStorage<Scalar> mData;
-            RankArray mDims{rank};
-            RankArray mStrides{rank};
+            RankArray mDims;
+            RankArray mStrides;
     };
 
-    template <int rank>
-    using TensorF = Tensor<float, rank>;
+    template <int... dims>
+    using StaticTensorF = Tensor<float, dims...>;
+    using TensorF = Tensor<float>;
+
 } /* Stealth::Tensor */
