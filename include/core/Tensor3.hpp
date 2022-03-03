@@ -2,7 +2,7 @@
 #include "ForwardDeclarations.hpp"
 #include "Tensor3Base.hpp"
 #include "DenseStorage.hpp"
-#include "../Operations/ElemWiseBinaryOps.hpp"
+#include "ElemWiseBinaryOps.hpp"
 
 #ifdef DEBUG
     #include <iostream>

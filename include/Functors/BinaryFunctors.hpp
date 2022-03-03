@@ -1,5 +1,5 @@
 #pragma once
-#include "../core/ForwardDeclarations.hpp"
+#include "ForwardDeclarations.hpp"
 #include <algorithm>
 
 namespace Stealth::Tensor::internal::functors {

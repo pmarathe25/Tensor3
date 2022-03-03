@@ -1,5 +1,5 @@
 #pragma once
-#include "../Expressions/BlockExpr.hpp"
+#include "BlockExpr.hpp"
 
 namespace Stealth::Tensor {
     template <int width = 1, int length = 1, int height = 1, typename LHS>

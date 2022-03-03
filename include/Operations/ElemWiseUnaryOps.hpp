@@ -1,6 +1,6 @@
 #pragma once
-#include "../Expressions/ElemWiseUnaryExpr.hpp"
-#include "../Functors/UnaryFunctors.hpp"
+#include "ElemWiseUnaryExpr.hpp"
+#include "UnaryFunctors.hpp"
 
 namespace Stealth::Tensor {
     // Helper to construct ElemWiseUnaryExpr expressions.

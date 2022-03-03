@@ -1,7 +1,7 @@
 #pragma once
-#include "../core/ForwardDeclarations.hpp"
-#include "../core/Tensor3Base.hpp"
-#include "../utils.hpp"
+#include "ForwardDeclarations.hpp"
+#include "Tensor3Base.hpp"
+#include "utils.hpp"
 
 namespace Stealth::Tensor {
     namespace {
