@@ -45,6 +45,7 @@ namespace Stealth::Tensor::internal {
 
             constexpr STEALTH_ALWAYS_INLINE InternalContainer& operator=(const InternalContainer& other) {
                 mData = std::make_unique<ContainerType>(*other.mData);
+                return *this;
             }
 
             constexpr STEALTH_ALWAYS_INLINE auto& operator*() noexcept {

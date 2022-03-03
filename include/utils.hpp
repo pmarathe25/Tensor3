@@ -1,6 +1,5 @@
 #pragma once
 #include <type_traits>
-#include <Stealth/util>
 
 namespace Stealth::Tensor {
     // Remove const and reference

@@ -49,7 +49,7 @@ namespace Stealth::Tensor {
     namespace {
         // Display Functions
         template <typename T>
-        constexpr std::string internal_to_string(const T& i) {
+        std::string internal_to_string(const T& i) {
             if constexpr (std::is_scalar<T>::value) {
                 return std::to_string(i);
             } else {

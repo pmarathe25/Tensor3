@@ -222,7 +222,7 @@ namespace Stealth::Tensor {
 
             template <typename OtherTensor3>
             constexpr STEALTH_ALWAYS_INLINE void copy_impl(OtherTensor3&& other) {
-                static_assert(other.size() == Tensor3::size(), "Cannot copy incompatible Tensor3s.");
+                static_assert(std::remove_reference_t<OtherTensor3>::size() == Tensor3::size(), "Cannot copy incompatible Tensor3s.");
                 constexpr int indexingModeToUse = std::max(internal::traits<Tensor3>::indexingMode,
                     internal::traits<OtherTensor3>::indexingMode);
 
@@ -247,8 +247,8 @@ namespace Stealth::Tensor {
 
             template <typename OtherTensor3>
             constexpr STEALTH_ALWAYS_INLINE void move_impl(OtherTensor3&& other) {
-                static_assert(other.size() == Tensor3::size(), "Cannot move incompatible Tensor3s");
-                mData = Stealth::move(other.elements());
+                static_assert(std::remove_reference_t<OtherTensor3>::size() == Tensor3::size(), "Cannot move incompatible Tensor3s");
+                mData = std::move(other.elements());
             }
 
             template <typename OtherTensor3>

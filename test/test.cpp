@@ -1,6 +1,4 @@
 #include <interfaces/Tensor3>
-// #include <Stealth/Benchmark>
-#include <Stealth/util>
 #include <iostream>
 #include <algorithm>
 
@@ -30,17 +28,8 @@ struct TestResult {
 };
 
 template <typename Callable>
-constexpr bool runTest(const Callable& test) {
+bool runTest(const Callable& test) {
     // Returns true if the test passed, false otherwise.
-    // auto executionInfo = Stealth::Benchmark::measureExecutionTime(test);
-    // if (!executionInfo.returnValue.passed) {
-    //     std::cout << "FAILED Test " << executionInfo.returnValue.testName << " with: " << executionInfo.returnValue.errorMessage << '\n';
-    //     return false;
-    // } else {
-    //     std::cout << "PASSED Test " << executionInfo.returnValue.testName << " in " << executionInfo.microseconds() << " μs.\n";
-    //     return true;
-    // }
-    // FIXME:
     TestResult result = test();
     if (result.passed) {
         std::cout << "PASSED Test " << result.testName << '\n';
@@ -100,17 +89,17 @@ namespace Block {
         return TestResult{!numIncorrect, std::to_string(numIncorrect) + " values incorrect."};
     }
 
-    TestResult test1DBlockFrom1D() {
+    // TestResult test1DBlockFrom1D() {
 
-    }
+    // }
 
-    TestResult test1DBlockFrom2D() {
+    // TestResult test1DBlockFrom2D() {
 
-    }
+    // }
 
-    TestResult test1DBlockFrom3D() {
+    // TestResult test1DBlockFrom3D() {
 
-    }
+    // }
 
     TestResult test2DBlockFrom2D() {
         auto blockTest0 = SequentialTensor3F<kTEST_WIDTH, kTEST_LENGTH>();
@@ -142,9 +131,9 @@ namespace Block {
         return TestResult{!numIncorrect, std::to_string(numIncorrect) + " values incorrect."};
     }
 
-    int test3DBlockFrom3D() {
+    // int test3DBlockFrom3D() {
 
-    }
+    // }
 } /* Block */
 
 bool testBlockOps() {

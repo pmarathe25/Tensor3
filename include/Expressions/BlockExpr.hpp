@@ -63,8 +63,8 @@ namespace Stealth::Tensor {
 
             constexpr STEALTH_ALWAYS_INLINE BlockExpr(LHS&& otherTensor3, int x = 0, int y = 0, int z = 0) noexcept
                 : tensor3{otherTensor3}, minX{x}, minY{y}, minZ{z},
-                offset{minX + minY * tensor3.width() + minZ * tensor3.area()},
-                offsetXZ{minX + minZ * tensor3.area()} {
+                offset{minX + minY * std::remove_reference_t<LHS>::width() + minZ * std::remove_reference_t<LHS>::area()},
+                offsetXZ{minX + minZ * std::remove_reference_t<LHS>::area()} {
                 #ifdef DEBUG
                     debugType<StoredLHS>();
                 #endif
