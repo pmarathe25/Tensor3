@@ -9,6 +9,6 @@ namespace Stealth::Tensor {
 
     template <typename LHS>
     constexpr STEALTH_ALWAYS_INLINE auto layer(LHS&& lhs, int layerNum = 0) {
-        return block<lhs.width(), lhs.length()>(std::forward<LHS&&>(lhs), 0, 0, layerNum);
+        return block<std::remove_reference_t<LHS>::width(), std::remove_reference_t<LHS>::length()>(std::forward<LHS&&>(lhs), 0, 0, layerNum);
     }
 } /* Stealth::Tensor */
